@@ -1,0 +1,116 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:teamup/mixins/baseClass.dart';
+import 'package:teamup/utils/app_strings.dart';
+import 'package:teamup/views/home/home_page.dart';
+import 'package:teamup/views/settings/settings_page.dart';
+
+import '../../utils/app_colors.dart';
+import '../add_goals/set_goals/set_goal_page.dart';
+
+class HomeBasePage extends StatefulWidget {
+  const HomeBasePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomeBasePage> createState() => _HomeBasePageState();
+}
+
+class _HomeBasePageState extends State<HomeBasePage> with BaseClass {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    print("Index is $index");
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  Widget getBodyHome(){
+    switch(_selectedIndex){
+      case 0: return HomePage();
+      case 2: return SetGoalPage();
+        case 4:
+      default: return Container();
+
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.white,
+      appBar: AppBar(
+        backgroundColor: AppColors.white,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          AppStrings.goals,
+          style: GoogleFonts.roboto(color: AppColors.black),
+        ),
+        actions: [
+          Icon(
+            Icons.notifications,
+            color: AppColors.greyWithShade900,
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+        ],
+        leading: InkWell(
+          onTap: () {
+            pushToNextScreen(
+              context: context,
+              destination: SettingsPage(),
+            );
+          },
+          child: const Icon(
+            Icons.dehaze_rounded,
+            color: AppColors.black,
+          ),
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _selectedIndex,
+          selectedItemColor: AppColors.red,
+          unselectedItemColor: AppColors.black,
+          unselectedFontSize: 10,
+          selectedFontSize: 12,
+          iconSize: 20,
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+          onTap: _onItemTapped,
+          elevation: 5,
+          items: const [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: AppStrings.goals,
+                backgroundColor: AppColors.white),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_month),
+                label: AppStrings.journey,
+                backgroundColor: AppColors.white),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.add_circle_outline_sharp,
+                  size: 30,
+                ),
+                label: '',
+                backgroundColor: AppColors.white),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.perm_phone_msg_outlined),
+                label: AppStrings.connect,
+                backgroundColor: AppColors.white),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.bar_chart),
+                label: AppStrings.performance,
+                backgroundColor: AppColors.white),
+          ]),
+      body: _selectedIndex == 0
+          ? const HomePage()
+          : _selectedIndex == 2
+              ? SetGoalPage()
+              : Container(),
+    );
+  }
+}
