@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sizer/sizer.dart';
 import 'package:teamup/mixins/baseClass.dart';
+import 'package:teamup/performanceModule/Views/PerformanceView.dart';
 import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/views/home/home_page.dart';
 import 'package:teamup/views/settings/settings_page.dart';
@@ -17,6 +19,7 @@ class HomeBasePage extends StatefulWidget {
 
 class _HomeBasePageState extends State<HomeBasePage> with BaseClass {
   int _selectedIndex = 0;
+  String pageTitle = "Goals";
 
   void _onItemTapped(int index) {
     print("Index is $index");
@@ -25,13 +28,29 @@ class _HomeBasePageState extends State<HomeBasePage> with BaseClass {
     });
   }
 
-  Widget getBodyHome(){
-    switch(_selectedIndex){
-      case 0: return HomePage();
-      case 2: return SetGoalPage();
-        case 4:
-      default: return Container();
-
+  Widget getBodyHome() {
+    switch (_selectedIndex) {
+      case 0:
+        pageTitle = "Goals";
+        return HomePage();
+      case 2:
+        pageTitle = "Goals";
+        return SetGoalPage();
+      case 4:
+        pageTitle = "Performance";
+        return Sizer(
+            builder: (context, orientation, deviceType) {
+              return PerformanceView();
+            }
+        );
+      case 1:
+        pageTitle = "Journey";
+        return Container();
+      case 3:
+        pageTitle = "Connect";
+        return Container();
+      default:
+        return Container();
     }
   }
 
@@ -44,7 +63,7 @@ class _HomeBasePageState extends State<HomeBasePage> with BaseClass {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          AppStrings.goals,
+          pageTitle,
           style: GoogleFonts.roboto(color: AppColors.black),
         ),
         actions: [
@@ -83,7 +102,7 @@ class _HomeBasePageState extends State<HomeBasePage> with BaseClass {
           elevation: 5,
           items: const [
             BottomNavigationBarItem(
-                icon: Icon(Icons.home),
+                icon: Icon(Icons.scoreboard_outlined),
                 label: AppStrings.goals,
                 backgroundColor: AppColors.white),
             BottomNavigationBarItem(
@@ -106,11 +125,7 @@ class _HomeBasePageState extends State<HomeBasePage> with BaseClass {
                 label: AppStrings.performance,
                 backgroundColor: AppColors.white),
           ]),
-      body: _selectedIndex == 0
-          ? const HomePage()
-          : _selectedIndex == 2
-              ? SetGoalPage()
-              : Container(),
+      body: getBodyHome(),
     );
   }
 }
