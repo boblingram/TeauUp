@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 import 'package:teamup/views/splash/splash_page.dart';
 
 void main() {
@@ -23,7 +24,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home:  const SplashPage(),
-    );
+      home:  Sizer(
+    builder: (context, orientation, deviceType) {
+    return SplashPage();
+    }
+    ));
   }
 }

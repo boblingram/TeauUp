@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
+import 'package:teamup/controllers/goalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/performanceModule/Views/PerformanceView.dart';
 import 'package:teamup/utils/app_strings.dart';
@@ -21,8 +23,14 @@ class _HomeBasePageState extends State<HomeBasePage> with BaseClass {
   int _selectedIndex = 0;
   String pageTitle = "Goals";
 
+  GoalController goalController = Get.put(GoalController());
+
   void _onItemTapped(int index) {
     print("Index is $index");
+    if(index == 2){
+      print("Navigate to Add new goals");
+      Get.to(SetGoalPage());
+    }
     setState(() {
       _selectedIndex = index;
     });
@@ -33,9 +41,12 @@ class _HomeBasePageState extends State<HomeBasePage> with BaseClass {
       case 0:
         pageTitle = "Goals";
         return HomePage();
-      case 2:
-        pageTitle = "Goals";
-        return SetGoalPage();
+      case 1:
+        pageTitle = "Journey";
+        return Container();
+      case 3:
+        pageTitle = "Connect";
+        return Container();
       case 4:
         pageTitle = "Performance";
         return Sizer(
@@ -43,12 +54,6 @@ class _HomeBasePageState extends State<HomeBasePage> with BaseClass {
               return PerformanceView();
             }
         );
-      case 1:
-        pageTitle = "Journey";
-        return Container();
-      case 3:
-        pageTitle = "Connect";
-        return Container();
       default:
         return Container();
     }

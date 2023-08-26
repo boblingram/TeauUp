@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sizer/sizer.dart';
 import 'package:teamup/controllers/goalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
+import 'package:teamup/utils/app_colors.dart';
 import 'package:teamup/widgets/edittext_with_hint.dart';
 import 'package:teamup/widgets/rounded_edge_button.dart';
 
+import '../../../utils/app_Images.dart';
 import '../create_goal_activities/create_goal_activities_page.dart';
 
 class DescribeGoalPage extends StatefulWidget {
@@ -24,7 +28,37 @@ class DescribeGoalPage extends StatefulWidget {
 
 class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
   File? imagePicked;
-  GoalController _goalController = Get.put(GoalController());
+  GoalController _goalController = Get.find();
+
+  TextEditingController goalNTC = TextEditingController(text: "");
+  TextEditingController goalDTC = TextEditingController(text: "");
+
+  var isNextAllowed = false.obs;
+
+  @override
+  void initState() {
+    super.initState();
+    goalNTC.addListener(_handleTextChanged);
+    goalDTC.addListener(_handleTextChanged);
+  }
+  
+  @override
+  void dispose() {
+    goalNTC.removeListener(_handleTextChanged);
+    goalDTC.removeListener(_handleTextChanged);
+    goalNTC.dispose();
+    goalDTC.dispose();
+    super.dispose();
+  }
+
+  void _handleTextChanged() {
+    isNextAllowed.value = goalNTC.text
+        .trim()
+        .isNotEmpty &&
+      goalDTC.text
+            .trim()
+            .isNotEmpty;
+  }
 
   Future pickImage() async {
     try {
@@ -39,6 +73,51 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
     }
   }
 
+  String getColorName(String selectedGoal) {
+    switch (selectedGoal) {
+      case "Wellness":
+        return AppColors.wellnessIconBG;
+      case "Yoga":
+        return AppColors.yogaIconBG;
+      case "Study":
+        return AppColors.studyIconBG;
+      case "Cycling":
+        return AppColors.cyclingIconBG;
+      case "Running":
+        return AppColors.runningIconBG;
+      case "Walking":
+        return AppColors.walkingIconBG;
+      case "Gym":
+        return AppColors.gymIconBG;
+      case "Introspection":
+        return AppColors.introspectionIconBG;
+      default:
+        return AppColors.customIconBG;
+    }
+  }
+
+  String getImageName(String elementAt) {
+    switch (elementAt){
+      case "Wellness":
+        return AppImages.wellnessIcon;
+      case "Walking":
+        return AppImages.walkingIcon;
+      case "Yoga":
+        return AppImages.yogaIcon;
+      case "Study":
+        return AppImages.studyIcon;
+      case "Running":
+        return AppImages.runningIcon;
+      case "Gym":
+        return AppImages.gymIcon;
+      case "Introspection":
+        return AppImages.introspectionIcon;
+      case "Cycling":
+      default:
+        return AppImages.cyclingIcon;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,28 +126,26 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
           children: [
             Container(
               width: double.infinity,
-              color: const Color(0xff589288),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+              color: HexColor(AppColors.describeGoalColor),
+              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: 1.5.h,),
                   InkWell(
                     onTap: () {
                       popToPreviousScreen(context: context);
                     },
                     child: Container(
-                      height: 50,
-                      width: 50,
-                      margin: const EdgeInsets.only(top: 20),
+                      height: 5.w,
+                      width: 5.w,
                       child: const Icon(
                         Icons.arrow_back_ios,
                         color: Colors.white,
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 30,
-                  ),
+                  SizedBox(height: 11.h,),
                   Text(
                     "2/4",
                     style: GoogleFonts.roboto(
@@ -99,9 +176,7 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 25,
-                  ),
+                  SizedBox(height: 2.h,),
                   Text(
                     "Describe your Goal",
                     style: GoogleFonts.roboto(
@@ -146,12 +221,15 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                                   ),
                                 )
                               : Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.red,
+                                  height: 6.w,
+                                  width: 6.w,
+                                  decoration: BoxDecoration(
+                                    color: HexColor(getColorName(widget.selectedGoal)),
                                     shape: BoxShape.circle,
                                   ),
+                                  child: Padding(
+                                      padding: EdgeInsets.all(0.9.w),
+                                      child: Image.asset(getImageName(widget.selectedGoal))),
                                 ),
                           const SizedBox(
                             width: 10,
@@ -168,8 +246,7 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                       ),
                       InkWell(
                         onTap: () {
-                          //popToPreviousScreen(context: context);
-                          pickImage();
+                          popToPreviousScreen(context: context);
                         },
                         child: Row(
                           children: [
@@ -200,7 +277,7 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                     style: GoogleFonts.roboto(
                       color: Colors.black,
                       fontSize: 16,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                   const SizedBox(
@@ -217,7 +294,7 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                         rightMargin: 0,
                         radius: 5,
                         textEditingController:
-                            _goalController.goalNameController,
+                            goalNTC,
                         inputAction: TextInputAction.done,
                         inputType: TextInputType.text),
                   ),
@@ -229,7 +306,7 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                     style: GoogleFonts.roboto(
                       color: Colors.black,
                       fontSize: 16,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                   const SizedBox(
@@ -246,7 +323,7 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                         leftMargin: 0,
                         rightMargin: 0,
                         textEditingController:
-                            _goalController.goalDescriptionController,
+                            goalDTC,
                         inputAction: TextInputAction.done,
                         inputType: TextInputType.text),
                   ),
@@ -264,63 +341,66 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                           fontWeight: FontWeight.w400,
                         ),
                       ),
-                      Row(
-                        children: [
-                          imagePicked != null
-                              ? Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
+                      InkWell(
+                        onTap: () {
+                          pickImage();
+                        },
+                        child: Row(
+                          children: [
+                            imagePicked != null
+                                ? Container(
+                                    height: 20,
+                                    width: 20,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Image(
+                                      image: FileImage(imagePicked!),
+                                    ),
+                                  )
+                                : Container(
+                                    height: 6.w,
+                                    width: 6.w,
+                                    decoration: BoxDecoration(
+                                        color: HexColor(getColorName(widget.selectedGoal)),
+                                        shape: BoxShape.circle),
+                              child: Padding(
+                                  padding: EdgeInsets.all(0.9.w),
+                                  child: Image.asset(getImageName(widget.selectedGoal))),
                                   ),
-                                  child: Image(
-                                    image: FileImage(imagePicked!),
-                                  ),
-                                )
-                              : Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle),
-                                ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          const Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.black,
-                            size: 15,
-                          ),
-                        ],
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            const Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.black,
+                              size: 15,
+                            ),
+                          ],
+                        ),
                       )
                     ],
                   ),
-                  GetBuilder<GoalController>(
-                    init: _goalController,
-                    builder: (snapshot) {
-                      return RoundedEdgeButton(
-                          backgroundColor: _goalController.goalNameController.text
-                                      .trim()
-                                      .isNotEmpty &&
-                                  _goalController.goalDescriptionController.text
-                                      .trim()
-                                      .isNotEmpty
-                              ? Colors.red
-                              : Colors.grey,
-                          text: "Next",
-                          leftMargin: 0,
-                          rightMargin: 0,
-                          topMargin: 20,
-                          buttonRadius: 5,
-                          onPressed: () {
-                            pushToNextScreen(
-                                context: context,
-                                destination: CreateGoalActivities());
-                          },
-                          context: context);
-                    }
-                  ),
+                  Obx(()=>RoundedEdgeButton(
+                      backgroundColor: isNextAllowed.value
+                          ? Colors.red
+                          : Colors.grey,
+                      text: "Next",
+                      leftMargin: 0,
+                      rightMargin: 0,
+                      topMargin: 20,
+                      buttonRadius: 5,
+                      onPressed: () {
+                        if(!isNextAllowed.value){
+                          //TODO Show Error
+                          return;
+                        }
+                        _goalController.updateNameAndDescription(goalNTC.text.trim(),goalDTC.text.trim(),widget.selectedGoal);
+                        pushToNextScreen(
+                            context: context,
+                            destination: CreateGoalActivities());
+                      },
+                      context: context)),
                 ],
               ),
             )

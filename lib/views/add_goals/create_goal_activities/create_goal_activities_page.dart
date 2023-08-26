@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:sizer/sizer.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:teamup/controllers/activity_frequency_controller.dart';
 import 'package:teamup/mixins/baseClass.dart';
+import 'package:teamup/utils/app_colors.dart';
 
 import '../../../bottom_sheets/date_picker.dart';
 import '../../../controllers/goalController.dart';
@@ -27,6 +30,7 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
       required int value,
       required Function onChanged}) {
     return RadioListTile(
+      activeColor: Colors.grey.shade700,
       value: value,
       contentPadding: EdgeInsets.zero,
       groupValue: goalsController.radioGroupValue.value,
@@ -50,29 +54,26 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                   children: [
                     Container(
                       width: double.infinity,
-                      color: const Color(0xff589288),
-                      padding: const EdgeInsets.only(
-                          left: 20, right: 20, top: 10, bottom: 30),
+                      color: HexColor(AppColors.describeGoalColor),
+                      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          SizedBox(height: 1.5.h,),
                           InkWell(
                             onTap: () {
                               popToPreviousScreen(context: context);
                             },
                             child: Container(
-                              height: 50,
-                              width: 50,
-                              margin: const EdgeInsets.only(top: 20),
+                              height: 5.w,
+                              width: 5.w,
                               child: const Icon(
                                 Icons.arrow_back_ios,
                                 color: Colors.white,
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 30,
-                          ),
+                          SizedBox(height: 11.h,),
                           Text(
                             "3/4",
                             style: GoogleFonts.roboto(
@@ -103,9 +104,7 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 40,
-                          ),
+                          SizedBox(height: 2.h,),
                           Text(
                             "Create goal Activities",
                             style: GoogleFonts.roboto(
@@ -139,12 +138,10 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                             style: GoogleFonts.roboto(
                               color: Colors.black,
                               fontSize: 16,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                          const SizedBox(
-                            height: 15,
-                          ),
+                          SizedBox(height: 2.h,),
                           GetBuilder<GoalController>(
                               init: activityController,
                               builder: (snapshot) {
@@ -213,15 +210,12 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                                       );
                                     });
                               }),
-                          const SizedBox(
-                            height: 10,
-                          ),
                           Text(
                             "Activity Name",
                             style: GoogleFonts.roboto(
-                              color: Colors.black,
+                              color: Colors.grey.shade900,
                               fontSize: 16,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
                           const SizedBox(
@@ -244,12 +238,13 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                           const SizedBox(
                             height: 15,
                           ),
+                          ///Frequency
                           Text(
                             "Frequency",
                             style: GoogleFonts.roboto(
-                              color: Colors.grey.shade700,
+                              color: Colors.grey.shade900,
                               fontSize: 16,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
                           const SizedBox(
@@ -269,8 +264,9 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                                               .updateSelection(e["index"]);
                                         },
                                         child: Container(
+                                          margin: EdgeInsets.symmetric(horizontal: 3),
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 15, vertical: 5),
+                                              horizontal: 12, vertical: 5),
                                           decoration: BoxDecoration(
                                               color: e["isSelected"]
                                                   ? Colors.red
@@ -293,8 +289,8 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                           Obx(() {
                             return getSelectedDays(context);
                           }),
-                          const SizedBox(
-                            height: 15,
+                          SizedBox(
+                            height: 2.h,
                           ),
                           goalsController.selectedFrequencyIndex == 2 ||
                                   goalsController.selectedFrequencyIndex == 3
@@ -358,15 +354,15 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                                   ],
                                 )
                               : Container(),
-                          const SizedBox(
-                            height: 15,
+                           SizedBox(
+                            height: 2.h,
                           ),
                           Text(
                             "When",
                             style: GoogleFonts.roboto(
-                              color: Colors.grey.shade700,
+                              color: Colors.grey.shade900,
                               fontSize: 16,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
                           GetBuilder<GoalsController>(
@@ -518,7 +514,7 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                                                                     .isPmSelected
                                                                 ? Colors.white
                                                                 : Colors.grey
-                                                                    .shade400,
+                                                                    .shade300,
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
@@ -588,9 +584,10 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                                                               e["index"]);
                                                     },
                                                     child: Container(
+                                                      margin: EdgeInsets.symmetric(horizontal: 3),
                                                       padding: const EdgeInsets
                                                               .symmetric(
-                                                          horizontal: 15,
+                                                          horizontal: 12,
                                                           vertical: 5),
                                                       decoration: BoxDecoration(
                                                           color: e["isSelected"]
