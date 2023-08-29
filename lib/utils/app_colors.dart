@@ -13,6 +13,10 @@ class AppColors {
   static  Color greyWithShade300 = Colors.grey.shade300;
   static  Color prupleWithShade300 = Colors.purple.shade300;
 
+  //Performance Module
+  //FBC - Fall back Color
+  static String performanceFBC = "#5B5B5B";
+
   //Goal Screen 1
   static String goalBackgroundColor = "#6B8D96";
   static String studyIconBG = "#94BFB6";
@@ -27,6 +31,6 @@ class AppColors {
 
   //Goal Screen 2
   static String describeGoalColor = "#429488";
-
+  static String sliderColor = "#000000";
 
 }
