@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sizer/sizer.dart';
+import 'package:teamup/controllers/GoalDetailController.dart';
+import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
-import 'package:teamup/views/goal_detail/participants_tab.dart';
+import 'package:teamup/views/goal_detail/goal_participants_tab.dart';
 
+import '../../utils/app_Images.dart';
 import '../../utils/app_colors.dart';
+import '../../widgets/rounded_edge_button.dart';
 import 'goal_activity_tab.dart';
 
 class GoalDetailPage extends StatefulWidget {
-  const GoalDetailPage({Key? key}) : super(key: key);
+  final String goalId;
+  const GoalDetailPage({Key? key, required this.goalId}) : super(key: key);
 
   @override
   State<GoalDetailPage> createState() => _GoalDetailPageState();
@@ -18,10 +25,14 @@ class _GoalDetailPageState extends State<GoalDetailPage>
   TabController? controller;
   int _selectedTabValue = 0;
 
+  GoalDetailController goalDetailController = Get.put(GoalDetailController());
+
   @override
   void initState() {
     super.initState();
     controller = TabController(length: 3, vsync: this);
+
+    goalDetailController.updateGoalId(widget.goalId);
   }
 
   @override
@@ -44,8 +55,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                       Container(
                         width: double.infinity,
                         color: const Color(0xff589288),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 30),
+                        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -66,8 +76,8 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                               ),
                             ),
                           ),*/
-                            const SizedBox(
-                              height: 56,
+                            SizedBox(
+                              height: 11.h,
                             ),
                             Row(
                               children: [
@@ -89,11 +99,11 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                const Icon(
+                                /*const Icon(
                                   Icons.keyboard_arrow_down_sharp,
                                   color: Colors.white,
                                   size: 15,
-                                )
+                                )*/
                               ],
                             ),
                             const SizedBox(
@@ -120,13 +130,18 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                Text(
-                                  "Edit",
-                                  style: GoogleFonts.roboto(
-                                    color: AppColors.white,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 16,
-                                    decoration: TextDecoration.underline,
+                                InkWell(
+                                  onTap: (){
+                                    goalDetailController.editGoalNDSheet();
+                                  },
+                                  child: Text(
+                                    "Edit",
+                                    style: GoogleFonts.roboto(
+                                      color: AppColors.white,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 16,
+                                      decoration: TextDecoration.underline,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -209,9 +224,9 @@ class _GoalDetailPageState extends State<GoalDetailPage>
             ];
           },
           body: _selectedTabValue == 0
-              ? const GoalActivityTabPage()
+              ? GoalActivityTabPage()
               : _selectedTabValue == 1
-                  ? const ParticipantsTabPage()
+                  ? const GoalParticipantsTabPage()
                   : Container()),
     );
   }

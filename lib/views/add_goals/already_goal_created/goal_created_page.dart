@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:teamup/mixins/baseClass.dart';
-import 'package:teamup/views/home_base/home_base_page.dart';
+import 'package:teamup/views/HomeView.dart';
 
 import '../../../utils/app_colors.dart';
 
@@ -15,7 +15,7 @@ class GoalCreatedPage extends StatelessWidget with BaseClass{
     return Scaffold(
       bottomNavigationBar: InkWell(
         onTap: (){
-          pushReplaceAndClearStack(context: context, destination: HomeBasePage());
+          pushReplaceAndClearStack(context: context, destination: HomeView());
         },
         child: Container(
           height: 45,

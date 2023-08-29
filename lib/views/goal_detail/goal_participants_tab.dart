@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../utils/app_colors.dart';
 
-class ParticipantsTabPage extends StatelessWidget {
-  const ParticipantsTabPage({Key? key}) : super(key: key);
+class GoalParticipantsTabPage extends StatelessWidget {
+  const GoalParticipantsTabPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

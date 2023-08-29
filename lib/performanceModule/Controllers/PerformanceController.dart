@@ -4,7 +4,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import '../Constants.dart';
+import '../../utils/Constants.dart';
+import '../PerformanceConstants.dart';
 import '../Model/LeaderboardItemExpansionModel.dart';
 
 import '../Model/LeaderboardListModel.dart';

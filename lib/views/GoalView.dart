@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/views/active_goals/active_goals_page.dart';
 
-import '../../utils/app_colors.dart';
-import '../end_goal/end_goal_page.dart';
+import '../utils/app_colors.dart';
+import 'end_goal/end_goal_page.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class GoalView extends StatefulWidget {
+  const GoalView({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<GoalView> createState() => _GoalViewState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _GoalViewState extends State<GoalView> {
   int _selectedTabValue = 0;
+
+  VEGoalController veGoalController = Get.find();
+
+  @override
+  void initState() {
+    super.initState();
+    //veGoalController.createGoalMutation("Cycling", "Goal2", "Description1");
+    veGoalController.tempFetchQuery();
+  }
 
   @override
   Widget build(BuildContext context) {

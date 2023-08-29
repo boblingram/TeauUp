@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
 
-import '../Constants.dart';
+import '../../utils/Constants.dart';
+
 
 class CircularContainer extends StatelessWidget {
   const CircularContainer(

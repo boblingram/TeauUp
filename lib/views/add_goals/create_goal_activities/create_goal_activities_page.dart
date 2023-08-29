@@ -6,34 +6,40 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:teamup/controllers/activity_frequency_controller.dart';
 import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/utils/app_colors.dart';
 
 import '../../../bottom_sheets/date_picker.dart';
-import '../../../controllers/goalController.dart';
+import '../../../controllers/GoalController.dart';
 import '../../../widgets/edittext_with_hint.dart';
 import '../../../widgets/rounded_edge_button.dart';
 
-import '../invite_to_goal/invite_to_goal_page.dart';
+import '../../../widgets/CreateGoalMetaDataView.dart';
+import '../invite_to_goal_page.dart';
 
-class CreateGoalActivities extends StatelessWidget with BaseClass {
-  CreateGoalActivities({Key? key}) : super(key: key);
 
-  final GoalsController goalsController = Get.put(GoalsController());
-  final GoalController activityController = Get.put(GoalController());
+class CreateGoalActivities extends StatefulWidget {
+  const CreateGoalActivities({super.key});
+
+  @override
+  State<CreateGoalActivities> createState() => _CreateGoalActivitiesState();
+}
+
+class _CreateGoalActivitiesState extends State<CreateGoalActivities> with BaseClass{
+
+  final GoalController activityGC = Get.put(GoalController());
   final TextEditingController controller = TextEditingController();
   String selectedDate = "";
 
   Widget _myRadioButton(
       {required String title,
-      required int value,
-      required Function onChanged}) {
+        required int value,
+        required Function onChanged}) {
     return RadioListTile(
       activeColor: Colors.grey.shade700,
       value: value,
       contentPadding: EdgeInsets.zero,
-      groupValue: goalsController.radioGroupValue.value,
+      groupValue: activityGC.radioGroupValue.value,
       onChanged: (val) {
         onChanged(val);
       },
@@ -43,89 +49,23 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
 
   @override
   Widget build(BuildContext context) {
-    goalsController.resetData();
+    activityGC.resetData();
     return Scaffold(
-      body: SafeArea(
-        child: GetBuilder<GoalsController>(
-            init: goalsController,
+      body: Container(
+        child: GetBuilder<GoalController>(
+            init: activityGC,
             builder: (val) {
               return SingleChildScrollView(
                 child: Column(
                   children: [
-                    Container(
-                      width: double.infinity,
-                      color: HexColor(AppColors.describeGoalColor),
-                      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 1.5.h,),
-                          InkWell(
-                            onTap: () {
-                              popToPreviousScreen(context: context);
-                            },
-                            child: Container(
-                              height: 5.w,
-                              width: 5.w,
-                              child: const Icon(
-                                Icons.arrow_back_ios,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 11.h,),
-                          Text(
-                            "3/4",
-                            style: GoogleFonts.roboto(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                              wordSpacing: 2,
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          Stack(
-                            children: [
-                              Container(
-                                width: 120,
-                                height: 5,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                              ),
-                              Container(
-                                width: 90,
-                                height: 5,
-                                decoration: BoxDecoration(
-                                  color: Colors.black,
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 2.h,),
-                          Text(
-                            "Create goal Activities",
-                            style: GoogleFonts.roboto(
-                              color: Colors.white,
-                              fontSize: 23,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Text(
-                            "List the unique set of activities that need\nto be completed to achieve your goal.",
-                            style: GoogleFonts.roboto(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16),
-                          ),
-                        ],
-                      ),
-                    ),
+                    CreateGoalMetaDataView(onPressed: (){
+                      popToPreviousScreen(context: context);
+                    },
+                      sliderText: "3/4",
+                      sliderValue: 80,
+                      sliderColor: HexColor(AppColors.sliderColor),
+                      goalMetaTitle: "Create goal Activities",
+                      goalMetaDescription: "List the unique set of activities that need\nto be completed to achieve your goal.",),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 20),
@@ -143,13 +83,14 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                           ),
                           SizedBox(height: 2.h,),
                           GetBuilder<GoalController>(
-                              init: activityController,
+                              init: activityGC,
                               builder: (snapshot) {
                                 return ListView.builder(
                                     shrinkWrap: true,
+                                    padding: EdgeInsets.zero,
                                     physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: activityController
+                                    const NeverScrollableScrollPhysics(),
+                                    itemCount: activityGC
                                         .getActivityNames.length,
                                     itemBuilder:
                                         (BuildContext context, int index) {
@@ -157,7 +98,7 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                                         children: [
                                           Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
                                                 "Activity ${index + 1}",
@@ -182,19 +123,19 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                                           ),
                                           Container(
                                             padding:
-                                                const EdgeInsets.only(left: 10),
+                                            const EdgeInsets.only(left: 10),
                                             decoration: BoxDecoration(
                                               border: Border.all(
                                                   color: Colors.grey),
                                               borderRadius:
-                                                  BorderRadius.circular(5),
+                                              BorderRadius.circular(5),
                                             ),
                                             height: 40,
                                             width: double.infinity,
                                             child: Align(
                                               alignment: Alignment.centerLeft,
                                               child: Text(
-                                                activityController
+                                                activityGC
                                                     .getActivityNames
                                                     .elementAt(index),
                                                 style: GoogleFonts.roboto(
@@ -231,7 +172,7 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                                 leftMargin: 0,
                                 rightMargin: 0,
                                 textEditingController:
-                                    activityController.activityNameController,
+                                activityGC.activityNameController,
                                 inputAction: TextInputAction.done,
                                 inputType: TextInputType.text),
                           ),
@@ -250,17 +191,17 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                           const SizedBox(
                             height: 10,
                           ),
-                          GetBuilder<GoalsController>(
-                              init: goalsController,
+                          GetBuilder<GoalController>(
+                              init: activityGC,
                               builder: (value) {
                                 return Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    ...goalsController.frequencies.map((e) {
+                                    ...activityGC.frequencies.map((e) {
                                       return InkWell(
                                         onTap: () {
-                                          goalsController
+                                          activityGC
                                               .updateSelection(e["index"]);
                                         },
                                         child: Container(
@@ -272,7 +213,7 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                                                   ? Colors.red
                                                   : Colors.grey.shade300,
                                               borderRadius:
-                                                  BorderRadius.circular(15)),
+                                              BorderRadius.circular(15)),
                                           child: Text(
                                             e["name"],
                                             style: GoogleFonts.roboto(
@@ -292,69 +233,73 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                           SizedBox(
                             height: 2.h,
                           ),
-                          goalsController.selectedFrequencyIndex == 2 ||
-                                  goalsController.selectedFrequencyIndex == 3
+                          activityGC.selectedFrequencyIndex == 2 ||
+                              activityGC.selectedFrequencyIndex == 3
                               ? Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Select dates",
-                                      style: GoogleFonts.roboto(
-                                        color: Colors.grey.shade700,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Select dates",
+                                style: GoogleFonts.roboto(
+                                  color: Colors.grey.shade700,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                activityGC.selectedDaysText,
+                                style: GoogleFonts.roboto(
+                                  color: Colors.grey.shade400,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              GetBuilder<GoalController>(
+                                  init: activityGC,
+                                  builder: (val) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(8),
+                                          border: Border.all(
+                                              color: Colors.grey)),
+                                      child: TableCalendar(
+                                        calendarStyle: CalendarStyle(selectedDecoration: BoxDecoration(color: Colors.red, shape: BoxShape.circle)),
+                                        firstDay:
+                                        DateTime.utc(2010, 10, 16),
+                                        lastDay:
+                                        DateTime.utc(2030, 3, 14),
+                                        focusedDay: activityGC.selectedCalendarFocusedDay,
+                                        /*onDaySelected:
+                                            (selectedDay, focusedDay) {
+                                          goalsController.updateCalendarDays(
+                                              selectedDay,focusedDay);
+                                        },
+                                        selectedDayPredicate: (day) {
+                                          return isSameDay(
+                                              goalsController
+                                                  .selectedCalendarDay,
+                                              day);
+                                        },*/
+                                        selectedDayPredicate: (day) {
+                                          // Use values from Set to mark multiple days as selected
+                                          return activityGC.selectedDays.contains(day);
+                                        },
+                                        onDaySelected: activityGC.onDaySelected,
+
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      "Selected dates: 4 & 5 of every month",
-                                      style: GoogleFonts.roboto(
-                                        color: Colors.grey.shade400,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    GetBuilder<GoalsController>(
-                                        init: goalsController,
-                                        builder: (val) {
-                                          return Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                border: Border.all(
-                                                    color: Colors.grey)),
-                                            child: TableCalendar(
-                                              firstDay:
-                                                  DateTime.utc(2010, 10, 16),
-                                              lastDay:
-                                                  DateTime.utc(2030, 3, 14),
-                                              focusedDay: DateTime.now(),
-                                              selectedDayPredicate: (day) {
-                                                return isSameDay(
-                                                    goalsController
-                                                        .selectedCalendarDay,
-                                                    day);
-                                              },
-                                              onDaySelected:
-                                                  (selectedDay, focusedDay) {
-                                                goalsController.updateCalendarDays(
-                                                    goalsController
-                                                        .selectedCalendarDay!,
-                                                    goalsController
-                                                        .selectedCalendarFocusedDay);
-                                              },
-                                            ),
-                                          );
-                                        }),
-                                  ],
-                                )
+                                    );
+                                  }),
+                            ],
+                          )
                               : Container(),
-                           SizedBox(
+                          SizedBox(
                             height: 2.h,
                           ),
                           Text(
@@ -365,8 +310,8 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                               fontWeight: FontWeight.w400,
                             ),
                           ),
-                          GetBuilder<GoalsController>(
-                              init: goalsController,
+                          GetBuilder<GoalController>(
+                              init: activityGC,
                               builder: (snapshot) {
                                 return Column(
                                   children: [
@@ -374,7 +319,7 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                                         title: "Any time of the day",
                                         value: 0,
                                         onChanged: (newValue) {
-                                          goalsController
+                                          activityGC
                                               .updateRadioGroupValue(newValue);
                                           /*setState(() {
                                         _groupValue = newValue;
@@ -384,18 +329,18 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                                       height: 45,
                                       child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        MainAxisAlignment.center,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        CrossAxisAlignment.center,
                                         children: [
                                           Expanded(
                                             child: _myRadioButton(
                                               title: "Specific time",
                                               value: 1,
                                               onChanged: (newValue) {
-                                                goalsController
+                                                activityGC
                                                     .updateRadioGroupValue(
-                                                        newValue);
+                                                    newValue);
                                               },
                                             ),
                                           ),
@@ -403,31 +348,31 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                                             children: [
                                               Container(
                                                 padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 10),
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 10),
                                                 height: 40,
                                                 decoration: BoxDecoration(
                                                     color: Colors.grey.shade300,
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
+                                                    BorderRadius.circular(
+                                                        5)),
                                                 child: Center(
                                                   child: DropdownButton<String>(
                                                     icon: const SizedBox(),
                                                     hint: Center(
                                                         child: Text(
-                                                      "3:00",
-                                                      textAlign:
+                                                          "3:00",
+                                                          textAlign:
                                                           TextAlign.center,
-                                                      style: GoogleFonts.roboto(
-                                                        color: Colors.black,
-                                                        fontWeight:
+                                                          style: GoogleFonts.roboto(
+                                                            color: Colors.black,
+                                                            fontWeight:
                                                             FontWeight.w500,
-                                                      ),
-                                                    )),
-                                                    value: goalsController
+                                                          ),
+                                                        )),
+                                                    value: activityGC
                                                         .selectedDropDownTime,
-                                                    items: goalsController
+                                                    items: activityGC
                                                         .getTimeList
                                                         .map((String value) {
                                                       return DropdownMenuItem<
@@ -435,22 +380,22 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                                                         value: value,
                                                         child: Center(
                                                             child: Text(
-                                                          value,
-                                                          textAlign:
+                                                              value,
+                                                              textAlign:
                                                               TextAlign.center,
-                                                          style: GoogleFonts
-                                                              .roboto(
-                                                            color: Colors.black,
-                                                            fontWeight:
+                                                              style: GoogleFonts
+                                                                  .roboto(
+                                                                color: Colors.black,
+                                                                fontWeight:
                                                                 FontWeight.w500,
-                                                          ),
-                                                        )),
+                                                              ),
+                                                            )),
                                                       );
                                                     }).toList(),
                                                     onChanged: (value) {
-                                                      goalsController
+                                                      activityGC
                                                           .updateDropDownTime(
-                                                              value!);
+                                                          value!);
                                                     },
                                                   ),
                                                 ),
@@ -462,70 +407,70 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                                                 decoration: BoxDecoration(
                                                     color: Colors.grey.shade300,
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
+                                                    BorderRadius.circular(
+                                                        5)),
                                                 height: 40,
                                                 padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 8),
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 8),
                                                 child: Row(
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment.center,
+                                                  MainAxisAlignment.center,
                                                   children: [
                                                     InkWell(
                                                       onTap: () {
-                                                        goalsController
+                                                        activityGC
                                                             .updateAmPM(false);
                                                       },
                                                       child: Container(
                                                         height: 30,
                                                         width: 40,
                                                         decoration: BoxDecoration(
-                                                            color: goalsController
-                                                                    .isPmSelected
+                                                            color: activityGC
+                                                                .isPmSelected
                                                                 ? Colors.grey
-                                                                    .shade300
+                                                                .shade300
                                                                 : Colors.white,
                                                             borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        5)),
+                                                            BorderRadius
+                                                                .circular(
+                                                                5)),
                                                         child: Center(
                                                           child: Text(
                                                             "AM",
                                                             style: GoogleFonts
                                                                 .roboto(
-                                                                    color: Colors
-                                                                        .black),
+                                                                color: Colors
+                                                                    .black),
                                                           ),
                                                         ),
                                                       ),
                                                     ),
                                                     InkWell(
                                                       onTap: () {
-                                                        goalsController
+                                                        activityGC
                                                             .updateAmPM(true);
                                                       },
                                                       child: Container(
                                                         height: 30,
                                                         width: 40,
                                                         decoration: BoxDecoration(
-                                                            color: goalsController
-                                                                    .isPmSelected
+                                                            color: activityGC
+                                                                .isPmSelected
                                                                 ? Colors.white
                                                                 : Colors.grey
-                                                                    .shade300,
+                                                                .shade300,
                                                             borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        5)),
+                                                            BorderRadius
+                                                                .circular(
+                                                                5)),
                                                         child: Center(
                                                           child: Text(
                                                             "PM",
                                                             style: GoogleFonts
                                                                 .roboto(
-                                                                    color: Colors
-                                                                        .black),
+                                                                color: Colors
+                                                                    .black),
                                                           ),
                                                         ),
                                                       ),
@@ -545,273 +490,273 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                             height: 15,
                           ),
                           Obx(() {
-                            return goalsController
-                                            .selectedFrequencyIndex.value ==
-                                        1 ||
-                                    goalsController
-                                            .selectedFrequencyIndex.value ==
-                                        2
+                            return activityGC
+                                .selectedFrequencyIndex.value ==
+                                1 ||
+                                activityGC
+                                    .selectedFrequencyIndex.value ==
+                                    2
                                 ? Container()
                                 : Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Duration",
-                                        style: GoogleFonts.roboto(
-                                          color: Colors.grey.shade700,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      GetBuilder<GoalsController>(
-                                          init: goalsController,
-                                          builder: (value) {
-                                            return Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                ...goalsController
-                                                    .dailyFrequencyDuration
-                                                    .map((e) {
-                                                  return InkWell(
-                                                    onTap: () {
-                                                      goalsController
-                                                          .updateDailyFrequencyDuration(
-                                                              e["index"]);
-                                                    },
-                                                    child: Container(
-                                                      margin: EdgeInsets.symmetric(horizontal: 3),
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal: 12,
-                                                          vertical: 5),
-                                                      decoration: BoxDecoration(
-                                                          color: e["isSelected"]
-                                                              ? Colors.red
-                                                              : Colors.grey
-                                                                  .shade300,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      15)),
-                                                      child: Text(
-                                                        e["name"],
-                                                        style: GoogleFonts.roboto(
-                                                            color:
-                                                                e["isSelected"]
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black),
-                                                      ),
-                                                    ),
-                                                  );
-                                                })
-                                              ],
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Duration",
+                                  style: GoogleFonts.roboto(
+                                    color: Colors.grey.shade700,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                GetBuilder<GoalController>(
+                                    init: activityGC,
+                                    builder: (value) {
+                                      return Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          ...activityGC
+                                              .dailyFrequencyDuration
+                                              .map((e) {
+                                            return InkWell(
+                                              onTap: () {
+                                                activityGC
+                                                    .updateDailyFrequencyDuration(
+                                                    e["index"]);
+                                              },
+                                              child: Container(
+                                                margin: EdgeInsets.symmetric(horizontal: 3),
+                                                padding: const EdgeInsets
+                                                    .symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 5),
+                                                decoration: BoxDecoration(
+                                                    color: e["isSelected"]
+                                                        ? Colors.red
+                                                        : Colors.grey
+                                                        .shade300,
+                                                    borderRadius:
+                                                    BorderRadius
+                                                        .circular(
+                                                        15)),
+                                                child: Text(
+                                                  e["name"],
+                                                  style: GoogleFonts.roboto(
+                                                      color:
+                                                      e["isSelected"]
+                                                          ? Colors
+                                                          .white
+                                                          : Colors
+                                                          .black),
+                                                ),
+                                              ),
                                             );
-                                          }),
-                                    ],
-                                  );
+                                          })
+                                        ],
+                                      );
+                                    }),
+                              ],
+                            );
                           }),
                           const SizedBox(
                             height: 20,
                           ),
-                          goalsController.selectedFrequencyIndex == 3
+                          activityGC.selectedFrequencyIndex == 3
                               ? Container()
                               : Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      goalsController.selectedFrequencyIndex ==
-                                              0
-                                          ? "Set End Date (Optional)"
-                                          : goalsController
-                                                      .selectedFrequencyIndex ==
-                                                  2
-                                              ? "Set End Month"
-                                              : "Set End Date",
-                                      style: GoogleFonts.roboto(
-                                        color: Colors.grey.shade700,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400,
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                activityGC.selectedFrequencyIndex ==
+                                    0
+                                    ? "Set End Date (Optional)"
+                                    : activityGC
+                                    .selectedFrequencyIndex ==
+                                    2
+                                    ? "Set End Month"
+                                    : "Set End Date",
+                                style: GoogleFonts.roboto(
+                                  color: Colors.grey.shade700,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              activityGC.selectedFrequencyIndex == 2
+                                  ? Row(
+                                children: [
+                                  Container(
+                                    padding:
+                                    const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.shade300,
+                                        borderRadius:
+                                        BorderRadius.circular(
+                                            5)),
+                                    child: Center(
+                                      child: DropdownButton<String>(
+                                        //icon: const SizedBox(),
+                                        hint: Center(
+                                            child: Text(
+                                              "January",
+                                              textAlign:
+                                              TextAlign.center,
+                                              style: GoogleFonts.roboto(
+                                                color: Colors.black,
+                                                fontWeight:
+                                                FontWeight.w500,
+                                              ),
+                                            )),
+                                        value: activityGC
+                                            .selectedMonth,
+                                        items: activityGC
+                                            .months
+                                            .map((String value) {
+                                          return DropdownMenuItem<
+                                              String>(
+                                            value: value,
+                                            child: Center(
+                                                child: Text(
+                                                  value,
+                                                  textAlign:
+                                                  TextAlign.center,
+                                                  style: GoogleFonts
+                                                      .roboto(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                    FontWeight.w500,
+                                                  ),
+                                                )),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          activityGC
+                                              .updateMonthDropDown(
+                                              value!);
+                                        },
                                       ),
                                     ),
-                                    goalsController.selectedFrequencyIndex == 2
-                                        ? Row(
-                                            children: [
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 10),
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.grey.shade300,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                child: Center(
-                                                  child: DropdownButton<String>(
-                                                    //icon: const SizedBox(),
-                                                    hint: Center(
-                                                        child: Text(
-                                                      "January",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: GoogleFonts.roboto(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
-                                                    )),
-                                                    value: goalsController
-                                                        .selectedMonth,
-                                                    items: goalsController
-                                                        .months
-                                                        .map((String value) {
-                                                      return DropdownMenuItem<
-                                                          String>(
-                                                        value: value,
-                                                        child: Center(
-                                                            child: Text(
-                                                          value,
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: GoogleFonts
-                                                              .roboto(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        )),
-                                                      );
-                                                    }).toList(),
-                                                    onChanged: (value) {
-                                                      goalsController
-                                                          .updateMonthDropDown(
-                                                              value!);
-                                                    },
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Container(
+                                    padding:
+                                    const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.shade300,
+                                        borderRadius:
+                                        BorderRadius.circular(
+                                            5)),
+                                    child: Center(
+                                      child: DropdownButton<String>(
+                                        // icon: const SizedBox(),
+                                        hint: Center(
+                                            child: Text(
+                                              "2021",
+                                              textAlign:
+                                              TextAlign.center,
+                                              style: GoogleFonts.roboto(
+                                                color: Colors.black,
+                                                fontWeight:
+                                                FontWeight.w500,
+                                              ),
+                                            )),
+                                        value: activityGC
+                                            .selectedYears,
+                                        items: activityGC.years
+                                            .map((String value) {
+                                          return DropdownMenuItem<
+                                              String>(
+                                            value: value,
+                                            child: Center(
+                                                child: Text(
+                                                  value,
+                                                  textAlign:
+                                                  TextAlign.center,
+                                                  style: GoogleFonts
+                                                      .roboto(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                    FontWeight.w500,
                                                   ),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 10),
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.grey.shade300,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                child: Center(
-                                                  child: DropdownButton<String>(
-                                                    // icon: const SizedBox(),
-                                                    hint: Center(
-                                                        child: Text(
-                                                      "2021",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: GoogleFonts.roboto(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
-                                                    )),
-                                                    value: goalsController
-                                                        .selectedYears,
-                                                    items: goalsController.years
-                                                        .map((String value) {
-                                                      return DropdownMenuItem<
-                                                          String>(
-                                                        value: value,
-                                                        child: Center(
-                                                            child: Text(
-                                                          value,
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: GoogleFonts
-                                                              .roboto(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        )),
-                                                      );
-                                                    }).toList(),
-                                                    onChanged: (value) {
-                                                      goalsController
-                                                          .updateYearDropDown(
-                                                              value!);
-                                                    },
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        : InkWell(
-                                            onTap: () async {
-                                              CupertinoDatePickerBottomSheet()
-                                                  .cupertinoDatePicker(context,
-                                                      (selectedDate) {
-                                                popToPreviousScreen(
-                                                    context: context);
-                                                goalsController
-                                                    .updateSelectedDate(
-                                                        selectedDate);
-                                              });
-                                            },
-                                            child: Container(
-                                              height: 40,
-                                              width: 150,
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                border: Border.all(
-                                                    color: Colors.grey),
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                              ),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: GetBuilder<
-                                                            GoalsController>(
-                                                        init: goalsController,
-                                                        builder: (snap) {
-                                                          return Text(
-                                                            snap.getSelectedDate
-                                                                    .isEmpty
-                                                                ? "No end date"
-                                                                : snap
-                                                                    .getSelectedDate,
-                                                            style: GoogleFonts
-                                                                .roboto(
-                                                                    color: Colors
-                                                                        .grey),
-                                                          );
-                                                        }),
-                                                  ),
-                                                  const Icon(
-                                                    Icons.calendar_month,
-                                                    color: Colors.grey,
-                                                    size: 20,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                  ],
+                                                )),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          activityGC
+                                              .updateYearDropDown(
+                                              value!);
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                                  : InkWell(
+                                onTap: () async {
+                                  CupertinoDatePickerBottomSheet()
+                                      .cupertinoDatePicker(context,
+                                          (selectedDate) {
+                                        popToPreviousScreen(
+                                            context: context);
+                                        activityGC
+                                            .updateSelectedDate(
+                                            selectedDate);
+                                      });
+                                },
+                                child: Container(
+                                  height: 40,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        color: Colors.grey),
+                                    borderRadius:
+                                    BorderRadius.circular(5),
+                                  ),
+                                  padding:
+                                  const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: GetBuilder<
+                                            GoalController>(
+                                            init: activityGC,
+                                            builder: (snap) {
+                                              return Text(
+                                                snap.getSelectedDate
+                                                    .isEmpty
+                                                    ? "No end date"
+                                                    : snap
+                                                    .getSelectedDate,
+                                                style: GoogleFonts
+                                                    .roboto(
+                                                    color: Colors
+                                                        .grey),
+                                              );
+                                            }),
+                                      ),
+                                      const Icon(
+                                        Icons.calendar_month,
+                                        color: Colors.grey,
+                                        size: 20,
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                              )
+                            ],
+                          ),
                           const SizedBox(
                             height: 20,
                           ),
@@ -827,144 +772,144 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                             height: 5,
                           ),
                           Obx(() {
-                            return goalsController
-                                            .selectedFrequencyIndex.value ==
-                                        1 ||
-                                    goalsController
-                                            .selectedFrequencyIndex.value ==
-                                        2
+                            return activityGC
+                                .selectedFrequencyIndex.value ==
+                                1 ||
+                                activityGC
+                                    .selectedFrequencyIndex.value ==
+                                    2
                                 ? Row(
-                                    children: [
-                                      Text(
-                                        "Remind me at",
-                                        style: GoogleFonts.roboto(
-                                          color: Colors.grey.shade700,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey.shade300,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Center(
-                                          child: DropdownButton<String>(
-                                            //    icon: const SizedBox(),
-                                            hint: Center(
-                                                child: Text(
-                                              "3:00",
-                                              textAlign: TextAlign.center,
-                                              style: GoogleFonts.roboto(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            )),
-                                            value: goalsController
-                                                .selectedDropDownTime,
-                                            items: goalsController.getTimeList
-                                                .map((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Center(
-                                                    child: Text(
-                                                  value,
-                                                  textAlign: TextAlign.center,
-                                                  style: GoogleFonts.roboto(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                )),
-                                              );
-                                            }).toList(),
-                                            onChanged: (value) {
-                                              goalsController
-                                                  .updateDropDownTime(value!);
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        "In the morning",
-                                        style: GoogleFonts.roboto(
-                                          color: Colors.grey.shade700,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      GetBuilder<GoalsController>(
-                                          init: goalsController,
-                                          builder: (value) {
-                                            return FlutterSwitch(
-                                              height: 25,
-                                              width: 50,
-                                              activeColor: Colors.red,
-                                              value: value.isReminderToggleOn,
-                                              onToggle: (value) {
-                                                goalsController
-                                                    .changeToggleState();
-                                              },
-                                            );
-                                          }),
-                                    ],
-                                  )
+                              children: [
+                                Text(
+                                  "Remind me at",
+                                  style: GoogleFonts.roboto(
+                                    color: Colors.grey.shade700,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.shade300,
+                                      borderRadius:
+                                      BorderRadius.circular(5)),
+                                  child: Center(
+                                    child: DropdownButton<String>(
+                                      //    icon: const SizedBox(),
+                                      hint: Center(
+                                          child: Text(
+                                            "3:00",
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.roboto(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          )),
+                                      value: activityGC
+                                          .selectedDropDownTime,
+                                      items: activityGC.getTimeList
+                                          .map((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Center(
+                                              child: Text(
+                                                value,
+                                                textAlign: TextAlign.center,
+                                                style: GoogleFonts.roboto(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              )),
+                                        );
+                                      }).toList(),
+                                      onChanged: (value) {
+                                        activityGC
+                                            .updateDropDownTime(value!);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  "In the morning",
+                                  style: GoogleFonts.roboto(
+                                    color: Colors.grey.shade700,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                GetBuilder<GoalController>(
+                                    init: activityGC,
+                                    builder: (value) {
+                                      return FlutterSwitch(
+                                        height: 25,
+                                        width: 50,
+                                        activeColor: Colors.red,
+                                        value: value.isReminderToggleOn,
+                                        onToggle: (value) {
+                                          activityGC
+                                              .changeToggleState();
+                                        },
+                                      );
+                                    }),
+                              ],
+                            )
                                 : Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          "Remind me 10 minutes before that task starts",
-                                          style: GoogleFonts.roboto(
-                                            color: Colors.grey.shade700,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 20,
-                                      ),
-                                      GetBuilder<GoalsController>(
-                                          init: goalsController,
-                                          builder: (value) {
-                                            return FlutterSwitch(
-                                              height: 28,
-                                              width: 60,
-                                              activeColor: Colors.red,
-                                              value: value.isReminderToggleOn,
-                                              onToggle: (value) {
-                                                goalsController
-                                                    .changeToggleState();
-                                              },
-                                            );
-                                          }),
-                                    ],
-                                  );
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "Remind me 10 minutes before that task starts",
+                                    style: GoogleFonts.roboto(
+                                      color: Colors.grey.shade700,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                GetBuilder<GoalController>(
+                                    init: activityGC,
+                                    builder: (value) {
+                                      return FlutterSwitch(
+                                        height: 28,
+                                        width: 60,
+                                        activeColor: Colors.red,
+                                        value: value.isReminderToggleOn,
+                                        onToggle: (value) {
+                                          activityGC
+                                              .changeToggleState();
+                                        },
+                                      );
+                                    }),
+                              ],
+                            );
                           }),
                           const Divider(),
                           InkWell(
                             onTap: () {
-                              if (activityController.activityNameController.text
+                              if (activityGC.activityNameController.text
                                   .trim()
                                   .isNotEmpty) {
-                                activityController.addActivityName(
-                                    activityController
+                                activityGC.addActivityName(
+                                    activityGC
                                         .activityNameController.text
                                         .trim());
-                                activityController.activityNameController.text =
-                                    "";
-                                goalsController.resetData();
+                                activityGC.activityNameController.text =
+                                "";
+                                activityGC.resetData();
                               }
                               else{
                                 showError(title: "Empty", message: "Please add activity name");
@@ -1008,6 +953,7 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
                               buttonRadius: 10,
                               rightMargin: 0,
                               topMargin: 15,
+                              bottomMargin: 20,
                               onPressed: () {
                                 pushToNextScreen(
                                     context: context,
@@ -1026,59 +972,59 @@ class CreateGoalActivities extends StatelessWidget with BaseClass {
   }
 
   Widget getSelectedDays(BuildContext context) {
-    return goalsController.selectedFrequencyIndex.value == 1
+    return activityGC.selectedFrequencyIndex.value == 1
         ? Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 30,
-              ),
-              Text(
-                "Select days",
-                style: GoogleFonts.roboto(
-                  color: Colors.grey.shade700,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              GetBuilder<GoalsController>(
-                  init: goalsController,
-                  builder: (value) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ...goalsController.selectWeeklyDays.map((e) {
-                          return InkWell(
-                            onTap: () {
-                              goalsController.updateWeeklyDays(e["index"]);
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 5),
-                              decoration: BoxDecoration(
-                                  color: e["isSelected"]
-                                      ? Colors.red
-                                      : Colors.grey.shade300,
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Text(
-                                e["name"],
-                                style: GoogleFonts.roboto(
-                                    color: e["isSelected"]
-                                        ? Colors.white
-                                        : Colors.black),
-                              ),
-                            ),
-                          );
-                        })
-                      ],
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(
+          height: 30,
+        ),
+        Text(
+          "Select days",
+          style: GoogleFonts.roboto(
+            color: Colors.grey.shade700,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        GetBuilder<GoalController>(
+            init: activityGC,
+            builder: (value) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ...activityGC.selectWeeklyDays.map((e) {
+                    return InkWell(
+                      onTap: () {
+                        activityGC.updateWeeklyDays(e["index"]);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 5),
+                        decoration: BoxDecoration(
+                            color: e["isSelected"]
+                                ? Colors.red
+                                : Colors.grey.shade300,
+                            borderRadius: BorderRadius.circular(15)),
+                        child: Text(
+                          e["name"],
+                          style: GoogleFonts.roboto(
+                              color: e["isSelected"]
+                                  ? Colors.white
+                                  : Colors.black),
+                        ),
+                      ),
                     );
-                  }),
-            ],
-          )
+                  })
+                ],
+              );
+            }),
+      ],
+    )
         : Container();
   }
 }

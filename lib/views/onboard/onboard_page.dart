@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
 import 'package:teamup/utils/app_strings.dart';
-import 'package:teamup/views/home_base/home_base_page.dart';
+import 'package:teamup/views/HomeView.dart';
 import '../../mixins/baseClass.dart';
 import '../../models/slider_model.dart';
 import '../../utils/app_colors.dart';
@@ -37,7 +37,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with BaseClass {
 
   void moveToHomePage() {
     pushReplaceAndClearStack(
-        context: context, destination: const HomeBasePage());
+        context: context, destination: const HomeView());
   }
 
   void animatePage() {

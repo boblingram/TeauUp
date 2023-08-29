@@ -17,7 +17,7 @@ class AppStrings {
   static const String trackProgressDescription = "Complete goal activities on time\nand compete with your friends";
   static const String activeGoals = "Active Goals";
   static const String endedGoals = "Ended Goals";
-  static const String yourGoals = "Your goals";
+  static const String yourGoals = "Your Goals";
   static const String sortBy = "Sort by";
   static const String view = "View";
   static const String practiceMaths = "Practice Math";

@@ -1,31 +1,60 @@
+import 'dart:collection';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:table_calendar/table_calendar.dart';
 
-class GoalsController extends GetxController {
+import '../utils/Constants.dart';
+
+class GoalController extends GetxController {
+
+  ///Describe Goal
+  var newGoalName = "";
+  var newGoalDescription = "";
+  var newSelectedGoalType = "";
+
+  void updateNameAndDescription(String name, String description, String selectedGoalType) {
+    newGoalName = name;
+    newGoalDescription = description;
+    newSelectedGoalType = selectedGoalType;
+  }
+
+
+  ///Describe Activity
+  //Activity Controller
+  TextEditingController activityNameController = TextEditingController(text: "");
+  List<String> _activityName = [];
+
+  void addActivityName(String activityName){
+    _activityName.add(activityName);
+  }
+
+  List<String> get getActivityNames => _activityName;
+
   @override
   void onInit() {
     super.onInit();
   }
 
-
-final List<String> months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+  final List<String> months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
   String selectedMonth = "January";
-  void updateMonthDropDown(String month){
-    selectedMonth =month ;
+
+  void updateMonthDropDown(String month) {
+    selectedMonth = month;
     update();
   }
 
@@ -53,8 +82,11 @@ final List<String> months = [
     "2042",
   ];
   String selectedYears = "2021";
-  void updateYearDropDown(String month){
-    selectedYears =month ;
+
+  String selectedDaysText = "";
+
+  void updateYearDropDown(String month) {
+    selectedYears = month;
     update();
   }
 
@@ -88,15 +120,88 @@ final List<String> months = [
   List<String> get getTimeList => _timeList;
 
   String _selectedDate = "";
-  DateTime ?selectedCalendarDay =DateTime.now();
-  DateTime selectedCalendarFocusedDay =DateTime.now();
+  DateTime? selectedCalendarDay = DateTime.now();
+  DateTime selectedCalendarFocusedDay = DateTime.now();
 
-  void updateCalendarDays (DateTime current , DateTime focused){
-    selectedCalendarDay =current ;
-    selectedCalendarFocusedDay =focused ;
+  //Multiple Days Selected
+  // Using a `LinkedHashSet` is recommended due to equality comparison override
+  final Set<DateTime> selectedDays = LinkedHashSet<DateTime>(
+    equals: isSameDay,
+    hashCode: getHashCode,
+  );
+
+  void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    selectedCalendarFocusedDay = focusedDay;
+    // Update values in a Set
+    if (selectedDays.contains(selectedDay)) {
+      selectedDays.remove(selectedDay);
+    } else {
+      selectedDays.add(selectedDay);
+    }
+    updateTextStrings();
     update();
   }
 
+  void updateTextStrings(){
+    if(selectedDays.isNotEmpty){
+      if(selectedFrequencyIndex == 2){
+        selectedDaysText = "Selected dates: ${formatMonthToString()} of every month";
+      }else if(selectedFrequencyIndex == 3){
+        selectedDaysText = "Selected dates: ${formatCustomDatesToString()}";
+      }
+    }else{
+      selectedDaysText = "";
+    }
+  }
+
+  String formatMonthToString(){
+    Set<String> days = {};
+
+    for (DateTime date in selectedDays) {
+      String day = date.day.toString();
+      days.add("$day");
+    }
+
+    return days.join(",");
+  }
+
+  String formatCustomDatesToString() {
+    List<String> formattedDates = [];
+
+    for (DateTime date in selectedDays) {
+      String month = getMonthAbbreviation(date.month);
+      String day = date.day.toString();
+
+      formattedDates.add("$month $day");
+    }
+
+    return formattedDates.join(', ');
+  }
+
+  String getMonthAbbreviation(int month) {
+    switch (month) {
+      case 1: return "Jan";
+      case 2: return "Feb";
+      case 3: return "Mar";
+      case 4: return "Apr";
+      case 5: return "May";
+      case 6: return "Jun";
+      case 7: return "Jul";
+      case 8: return "Aug";
+      case 9: return "Sep";
+      case 10: return "Oct";
+      case 11: return "Nov";
+      case 12: return "Dec";
+      default: return "";
+    }
+  }
+
+  void updateCalendarDays(DateTime current, DateTime focused) {
+    print("Calendar Date is Updated");
+    selectedCalendarDay = current;
+    selectedCalendarFocusedDay = focused;
+    update();
+  }
 
   void updateSelectedDate(String date) {
     _selectedDate = date;
@@ -108,7 +213,7 @@ final List<String> months = [
   void resetData() {
     isReminderToggleOn = false;
     updateDailyFrequencyDuration(2);
-    selectedFrequencyIndex.value=0;
+    selectedFrequencyIndex.value = 0;
     updateSelection(0);
     updateWeeklyDays(0);
     updateMonthDropDown("January");
@@ -125,24 +230,26 @@ final List<String> months = [
     update();
   }
 
-  var selectedFrequencyIndex = 0.obs ;
+  var selectedFrequencyIndex = 0.obs;
 
-  RxInt radioGroupValue = 10.obs ;
+  RxInt radioGroupValue = 10.obs;
 
-  void updateRadioGroupValue(int val){
-    radioGroupValue.value =val ;
+  void updateRadioGroupValue(int val) {
+    radioGroupValue.value = val;
     update();
   }
 
   String selectedDropDownTime = "3:00";
 
-  void updateDropDownTime(String time){
-    selectedDropDownTime =time ;
+  void updateDropDownTime(String time) {
+    selectedDropDownTime = time;
     update();
   }
+
   bool isPmSelected = true;
-  void updateAmPM(bool val){
-    isPmSelected =val ;
+
+  void updateAmPM(bool val) {
+    isPmSelected = val;
     update();
   }
 
@@ -170,7 +277,6 @@ final List<String> months = [
     {"name": "F", "isSelected": false, "index": 5},
     {"name": "S", "isSelected": false, "index": 6}
   ];
-
 
   void updateDailyFrequencyDuration(int selectedIndex) {
     for (int i = 0; i < dailyFrequencyDuration.length; i++) {
@@ -205,6 +311,8 @@ final List<String> months = [
       } else {
         frequencies.elementAt(i)["isSelected"] = false;
       }
+
+      updateTextStrings();
 
       update();
     }

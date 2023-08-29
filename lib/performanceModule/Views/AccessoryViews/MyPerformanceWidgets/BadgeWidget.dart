@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../../Constants.dart';
+import '../../../PerformanceConstants.dart';
 import '../../../Controllers/PerformanceController.dart';
 
 class BadgeWidget extends StatelessWidget {

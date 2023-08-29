@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../../Constants.dart';
+import '../../../PerformanceConstants.dart';
 import '../../../Model/LeaderboardItemExpansionModel.dart';
 
 class ExpansionSevenLeaderView extends StatelessWidget {

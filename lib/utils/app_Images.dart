@@ -6,6 +6,9 @@ class AppImages {
   static String shareIcon = "${imagePath}share.png";
   static String splash = "${imagePath}splash.png";
 
+  //Performance Module
+  static String compareActivitiesImage = "${imagePath}compare_activities.png";
+
 
   //Goals Image
   static String cyclingIcon = "${imagePath}cycling_icon.png";

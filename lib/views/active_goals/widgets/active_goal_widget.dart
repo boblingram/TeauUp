@@ -8,7 +8,9 @@ import 'package:teamup/views/goal_detail/goal_detail_page.dart';
 import '../../../utils/app_colors.dart';
 
 class ActiveGoalWidget extends StatelessWidget with BaseClass {
-  const ActiveGoalWidget({Key? key}) : super(key: key);
+
+  final String goalId;
+  const ActiveGoalWidget({Key? key, required this.goalId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
       onTap: () {
         pushToNextScreen(
           context: context,
-          destination: const GoalDetailPage(),
+          destination: GoalDetailPage(goalId: goalId,),
         );
       },
       child: Container(

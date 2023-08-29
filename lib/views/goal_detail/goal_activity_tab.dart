@@ -1,37 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sizer/sizer.dart';
+import 'package:teamup/controllers/GoalDetailController.dart';
 
 import '../../utils/app_colors.dart';
 
 class GoalActivityTabPage extends StatelessWidget {
-  const GoalActivityTabPage({Key? key}) : super(key: key);
+  GoalActivityTabPage({Key? key}) : super(key: key);
+
+  GoalDetailController goalDetailController = Get.find();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar:  Container(
-        height: 45,
+        height: 5.h,
         width: double.infinity,
-        margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+        margin:  EdgeInsets.fromLTRB(5.w,2.w,5.w,3.h),
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(color: Colors.black),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Center(
-          child: Text(
-            "End Goal",
-            textAlign: TextAlign.center,
-            style: GoogleFonts.roboto(
-              color: AppColors.black,
-              fontWeight: FontWeight.w400,
-              fontSize: 18,
+        child: InkWell(
+          onTap: (){
+            goalDetailController.endGoalIsPressed();
+          },
+          child: Center(
+            child: Text(
+              "End Goal",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.roboto(
+                color: AppColors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 18,
+              ),
             ),
           ),
         ),
       ),
       body: ListView.builder(
+        padding: EdgeInsets.symmetric(vertical: 2.h,horizontal: 0),
           itemCount: 5,
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -61,13 +72,18 @@ class GoalActivityTabPage extends StatelessWidget {
                               fontSize: 16,
                             ),
                           ),
-                          Text(
-                            "Edit",
-                            style: GoogleFonts.roboto(
-                              color: AppColors.black,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                              decoration: TextDecoration.underline,
+                          InkWell(
+                            onTap: (){
+                              goalDetailController.editGoalActivitySheet("");
+                            },
+                            child: Text(
+                              "Edit",
+                              style: GoogleFonts.roboto(
+                                color: AppColors.black,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                                decoration: TextDecoration.underline,
+                              ),
                             ),
                           ),
                         ],
@@ -135,7 +151,7 @@ class GoalActivityTabPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 10,),
+                SizedBox(height: 4.h,),
               ],
             );
           }),

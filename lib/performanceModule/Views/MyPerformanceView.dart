@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:teamup/utils/app_Images.dart';
 import '../Controllers/PerformanceController.dart';
 import 'package:sizer/sizer.dart';
 
@@ -98,7 +99,7 @@ class _MyPerformanceViewState extends State<MyPerformanceView> {
             ),
             SeparatorSection(),
             Image.asset(
-              "assets/images/compare_activities.png",
+              AppImages.compareActivitiesImage,
               width: 100.w,
             ),
             SeparatorSection(),

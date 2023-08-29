@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:teamup/views/HomeView.dart';
 import 'package:teamup/views/onboard/onboard_page.dart';
 
 import '../../utils/app_Images.dart';
@@ -17,7 +18,8 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 1200), () {
-      Get.offAll(() => const OnBoardingPage());
+      //TODO - Add OnBoardingPage() -> Again
+      Get.offAll(() => const HomeView());
     });
   }
 

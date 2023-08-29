@@ -2,53 +2,56 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
-import 'package:teamup/controllers/goalController.dart';
+import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/performanceModule/Views/PerformanceView.dart';
 import 'package:teamup/utils/app_strings.dart';
-import 'package:teamup/views/home/home_page.dart';
+import 'package:teamup/views/GoalView.dart';
 import 'package:teamup/views/settings/settings_page.dart';
 
-import '../../utils/app_colors.dart';
-import '../add_goals/set_goals/set_goal_page.dart';
+import '../controllers/GoalController.dart';
+import '../utils/app_colors.dart';
+import 'add_goals/set_goals/set_goal_page.dart';
 
-class HomeBasePage extends StatefulWidget {
-  const HomeBasePage({Key? key}) : super(key: key);
+class HomeView extends StatefulWidget {
+  const HomeView({Key? key}) : super(key: key);
 
   @override
-  State<HomeBasePage> createState() => _HomeBasePageState();
+  State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeBasePageState extends State<HomeBasePage> with BaseClass {
+class _HomeViewState extends State<HomeView> with BaseClass {
   int _selectedIndex = 0;
-  String pageTitle = "Goals";
+  var pageTitle = "Goals".obs;
 
   GoalController goalController = Get.put(GoalController());
+  VEGoalController veGoalController = Get.put(VEGoalController());
 
   void _onItemTapped(int index) {
     print("Index is $index");
     if(index == 2){
       print("Navigate to Add new goals");
       Get.to(SetGoalPage());
+    }else{
+      setState(() {
+        _selectedIndex = index;
+      });
     }
-    setState(() {
-      _selectedIndex = index;
-    });
   }
 
   Widget getBodyHome() {
     switch (_selectedIndex) {
       case 0:
-        pageTitle = "Goals";
-        return HomePage();
+        pageTitle.value = "Goals";
+        return GoalView();
       case 1:
-        pageTitle = "Journey";
+        pageTitle.value = "Journey";
         return Container();
       case 3:
-        pageTitle = "Connect";
+        pageTitle.value = "Connect";
         return Container();
       case 4:
-        pageTitle = "Performance";
+        pageTitle.value = "Performance";
         return Sizer(
             builder: (context, orientation, deviceType) {
               return PerformanceView();
@@ -67,10 +70,10 @@ class _HomeBasePageState extends State<HomeBasePage> with BaseClass {
         backgroundColor: AppColors.white,
         elevation: 0,
         centerTitle: true,
-        title: Text(
-          pageTitle,
+        title: Obx(()=>Text(
+          pageTitle.value,
           style: GoogleFonts.roboto(color: AppColors.black),
-        ),
+        )),
         actions: [
           Icon(
             Icons.notifications,

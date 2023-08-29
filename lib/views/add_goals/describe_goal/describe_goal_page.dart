@@ -7,13 +7,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sizer/sizer.dart';
-import 'package:teamup/controllers/goalController.dart';
+
 import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/utils/app_colors.dart';
 import 'package:teamup/widgets/edittext_with_hint.dart';
 import 'package:teamup/widgets/rounded_edge_button.dart';
 
+import '../../../controllers/GoalController.dart';
 import '../../../utils/app_Images.dart';
+import '../../../widgets/CreateGoalMetaDataView.dart';
 import '../create_goal_activities/create_goal_activities_page.dart';
 
 class DescribeGoalPage extends StatefulWidget {
@@ -124,80 +126,14 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              color: HexColor(AppColors.describeGoalColor),
-              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 1.5.h,),
-                  InkWell(
-                    onTap: () {
-                      popToPreviousScreen(context: context);
-                    },
-                    child: Container(
-                      height: 5.w,
-                      width: 5.w,
-                      child: const Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 11.h,),
-                  Text(
-                    "2/4",
-                    style: GoogleFonts.roboto(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                      wordSpacing: 2,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Stack(
-                    children: [
-                      Container(
-                        width: 120,
-                        height: 5,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                      Container(
-                        width: 60,
-                        height: 5,
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 2.h,),
-                  Text(
-                    "Describe your Goal",
-                    style: GoogleFonts.roboto(
-                      color: Colors.white,
-                      fontSize: 23,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    "This goal helps participants to know\nwhat they can achieve by this goal. We\nhave prefilled a default description\nbased on your goal selection. You can\nedit this or create your own description",
-                    style: GoogleFonts.roboto(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
+            CreateGoalMetaDataView(onPressed: (){
+              popToPreviousScreen(context: context);
+            },
+              sliderText: "2/4",
+              sliderValue: 50,
+              sliderColor: HexColor(AppColors.sliderColor),
+              goalMetaTitle: "Describe your Goal",
+              goalMetaDescription: "This goal helps participants to know\nwhat they can achieve by this goal. We\nhave prefilled a default description\nbased on your goal selection. You can\nedit this or create your own description"),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Column(

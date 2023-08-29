@@ -14,8 +14,7 @@ class ActiveGoalsPage extends StatelessWidget {
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(AppStrings.activeGoals),
-              Text(AppStrings.sortBy),
+              Text(AppStrings.yourGoals, style: TextStyle(fontWeight: FontWeight.w400),),
             ],
           ),
           const SizedBox(
@@ -26,7 +25,7 @@ class ActiveGoalsPage extends StatelessWidget {
                 itemCount: 10,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
-                  return const ActiveGoalWidget();
+                  return ActiveGoalWidget(goalId: "",);
                 }),
           ),
         ],

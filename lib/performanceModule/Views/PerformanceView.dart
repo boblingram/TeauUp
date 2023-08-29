@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
 
-import '../Constants.dart';
+import '../PerformanceConstants.dart';
 import '../Controllers/PerformanceController.dart';
 import 'LeaderboardView.dart';
 import 'MyPerformanceView.dart';
@@ -59,7 +59,7 @@ class _PerformanceViewState extends State<PerformanceView> with TickerProviderSt
           children: [
             //Tab -> Leaderboard, My Performance
             SizedBox(
-              height: 8.h,
+              height: 10.h,
               child: Container(
                 padding: EdgeInsets.all(4),
                 decoration: BoxDecoration(
