@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/utils/app_strings.dart';
 
 import 'widgets/active_goal_widget.dart';
 
 class ActiveGoalsPage extends StatelessWidget {
-  const ActiveGoalsPage({Key? key}) : super(key: key);
+  ActiveGoalsPage({Key? key}) : super(key: key);
+
+  VEGoalController veGoalController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +25,13 @@ class ActiveGoalsPage extends StatelessWidget {
             height: 10,
           ),
           Expanded(
-            child: ListView.builder(
-                itemCount: 10,
+            child: Obx(()=>veGoalController.activeGoalList.isNotEmpty ? ListView.builder(
+                itemCount: veGoalController.activeGoalList.length,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
-                  return ActiveGoalWidget(goalId: "",);
-                }),
+                  var item = veGoalController.activeGoalList.elementAt(index);
+                  return ActiveGoalWidget(userGoalPerInfo: item,);
+                }) : Text("Active Goal List is Empty")),
           ),
         ],
       ),

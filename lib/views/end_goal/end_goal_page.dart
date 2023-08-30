@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../../controllers/VEGoalController.dart';
 import 'widgets/end_goal_widget.dart';
 
 class EndGoalPage extends StatelessWidget {
-  const EndGoalPage({Key? key}) : super(key: key);
+  EndGoalPage({Key? key}) : super(key: key);
+
+  VEGoalController veGoalController = Get.find();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-          itemCount: 10,
+      body: Obx(()=>veGoalController.endedGoalList.isNotEmpty ? ListView.builder(
+          itemCount: veGoalController.endedGoalList.length,
           itemBuilder: (BuildContext context, int index) {
-            return const EndGoalWidget();
-          }),
+            var item = veGoalController.endedGoalList.elementAt(index);
+            return EndGoalWidget(userGoalPerInfo: item,);
+          }) : Text("Ended Goal List is Empty")),
     );
   }
 }

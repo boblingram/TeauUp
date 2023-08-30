@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:teamup/models/GoalActivityModel.dart';
 
 import '../utils/Constants.dart';
 
@@ -10,6 +11,88 @@ import '../utils/Constants.dart';
 class VEGoalController extends GetxController{
 
   String userId = "1";
+
+  var activeGoalList = <UserGoalPerInfo>[].obs;
+  var endedGoalList = <UserGoalPerInfo>[].obs;
+
+  //Get Active or Ended Goal
+  void getAEGoal()async{
+    //Graphql
+    final HttpLink httpLink = HttpLink(Constants.BASEURL,
+      defaultHeaders: {
+        Constants.HEADER_API_KEY: Constants.API_KEY
+      },
+    );
+
+    final GraphQLClient graphqlClient = GraphQLClient(
+      cache: GraphQLCache(),
+      link: httpLink,
+    );
+
+    ///View Goal - Active
+    final query = gql('''query MyQuery {
+  userGoalsWithPerfInfo(userId: "$userId") {
+    goalInfo {
+      activities
+      backup
+      collabType
+      createdBy
+      createdDt
+      desc
+      endDate
+      id
+      members {
+        mentorId
+        userId
+      }
+      mentor
+      modifiedBy
+      modifiedDt
+      name
+      status
+      type
+    }
+    perfInfo {
+      mainStreak
+      totalXP
+      totalDays
+    }
+  }
+}
+''');
+
+    var result = await graphqlClient.query(QueryOptions(document: query));
+    //It can have exception or data
+    //log(result.data.toString());
+    //json.encode(result.data);
+    if(result.data == null && result.exception != null){
+      //No Data Received from Server;
+      parseError(result.exception,"FetchActiveEndedGoalList");
+      return;
+    }
+
+    try{
+      GoalActivityModel goalActivityModel = GoalActivityModel.fromJson(result.data!);
+      print("Length of List is ${goalActivityModel.userGoalPerList.length}");
+      parseIntoAEGoalList(goalActivityModel.userGoalPerList);
+    }catch(onError, stackTrace){
+      print("Error while parsing GoalActivityModel $onError");
+    }
+  }
+
+  void parseIntoAEGoalList(List<UserGoalPerInfo> goalActivityList) {
+    activeGoalList.clear();
+    endedGoalList.clear();
+
+    for (var item in goalActivityList){
+      if(item.goalInfo.status.toString().trim().toLowerCase() == "ended"){
+        endedGoalList.add(item);
+      }else{
+        activeGoalList.add(item);
+      }
+    }
+
+  }
 
   void tempFetchQuery()async{
     print("Query is Initiated");
@@ -27,21 +110,32 @@ class VEGoalController extends GetxController{
 
     ///View Goal - Active
     final query = gql('''query MyQuery {
-  userGoals(userId: "$userId") {
-    activities
-    backup
-    createdBy
-    createdDt
-    desc
-    id
-    members
-    mentor
-    modifiedBy
-    modifiedDt
-    name
-collabType
-type
-status
+  userGoalsWithPerfInfo(userId: "1") {
+    goalInfo {
+      activities
+      backup
+      collabType
+      createdBy
+      createdDt
+      desc
+      endDate
+      id
+      members {
+        mentorId
+        userId
+      }
+      mentor
+      modifiedBy
+      modifiedDt
+      name
+      status
+      type
+    }
+    perfInfo {
+      mainStreak
+      totalXP
+      totalDays
+    }
   }
 }
 ''');

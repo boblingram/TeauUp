@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:teamup/models/GoalActivityModel.dart';
 
 class EndGoalWidget extends StatelessWidget {
-  const EndGoalWidget({Key? key}) : super(key: key);
+  EndGoalWidget({Key? key, required this.userGoalPerInfo}) : super(key: key);
+
+  final UserGoalPerInfo userGoalPerInfo;
+
+  String getRequiredTime(var tempDate){
+    var updatedDate = DateTime.tryParse(tempDate) ?? DateTime.now();
+    return DateFormat('dd MMMM').format(updatedDate);
+  }
+
+  //TODO and Discuss EndGoalView Functionality
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +34,7 @@ class EndGoalWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Morning Cycling",
+                "${userGoalPerInfo.goalInfo.name ?? ""}",
                 style: GoogleFonts.roboto(
                     color: Colors.black,
                     fontWeight: FontWeight.w700,
@@ -33,7 +44,7 @@ class EndGoalWidget extends StatelessWidget {
                 height: 10,
               ),
               Text(
-                "Ended on 14 june",
+                "Ended on ${getRequiredTime(userGoalPerInfo.goalInfo.endDate)}",
                 style: GoogleFonts.roboto(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
@@ -58,3 +69,4 @@ class EndGoalWidget extends StatelessWidget {
     );
   }
 }
+

@@ -23,7 +23,7 @@ class _GoalViewState extends State<GoalView> {
   void initState() {
     super.initState();
     //veGoalController.createGoalMutation("Cycling", "Goal2", "Description1");
-    veGoalController.tempFetchQuery();
+    veGoalController.getAEGoal();
   }
 
   @override
@@ -78,7 +78,7 @@ class _GoalViewState extends State<GoalView> {
               const SizedBox(
                 height: 8,
               ),
-              const Expanded(
+              Expanded(
                 flex: 1,
                 child: TabBarView(
                   children: [

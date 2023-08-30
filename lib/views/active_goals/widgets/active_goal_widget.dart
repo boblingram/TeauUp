@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:sizer/sizer.dart';
 import 'package:teamup/mixins/baseClass.dart';
+import 'package:teamup/models/GoalActivityModel.dart';
 import 'package:teamup/utils/app_Images.dart';
 import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/views/goal_detail/goal_detail_page.dart';
@@ -9,8 +12,53 @@ import '../../../utils/app_colors.dart';
 
 class ActiveGoalWidget extends StatelessWidget with BaseClass {
 
-  final String goalId;
-  const ActiveGoalWidget({Key? key, required this.goalId}) : super(key: key);
+  final UserGoalPerInfo userGoalPerInfo;
+  const ActiveGoalWidget({Key? key, required this.userGoalPerInfo}) : super(key: key);
+
+  String getColorName(String selectedGoal) {
+    switch (selectedGoal) {
+      case "Wellness":
+        return AppColors.wellnessIconBG;
+      case "Yoga":
+        return AppColors.yogaIconBG;
+      case "Study":
+        return AppColors.studyIconBG;
+      case "Cycling":
+        return AppColors.cyclingIconBG;
+      case "Running":
+        return AppColors.runningIconBG;
+      case "Walking":
+        return AppColors.walkingIconBG;
+      case "Gym":
+        return AppColors.gymIconBG;
+      case "Introspection":
+        return AppColors.introspectionIconBG;
+      default:
+        return AppColors.customIconBG;
+    }
+  }
+
+  String getImageName(String elementAt) {
+    switch (elementAt){
+      case "Wellness":
+        return AppImages.wellnessIcon;
+      case "Walking":
+        return AppImages.walkingIcon;
+      case "Yoga":
+        return AppImages.yogaIcon;
+      case "Study":
+        return AppImages.studyIcon;
+      case "Running":
+        return AppImages.runningIcon;
+      case "Gym":
+        return AppImages.gymIcon;
+      case "Introspection":
+        return AppImages.introspectionIcon;
+      case "Cycling":
+      default:
+        return AppImages.cyclingIcon;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +66,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
       onTap: () {
         pushToNextScreen(
           context: context,
-          destination: GoalDetailPage(goalId: goalId,),
+          destination: GoalDetailPage(goalId: userGoalPerInfo.goalInfo.id.toString(),),
         );
       },
       child: Container(
@@ -35,10 +83,15 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
               child: Row(
                 children: [
                   Container(
-                    height: 40,
-                    width: 40,
-                    decoration: const BoxDecoration(
-                        color: AppColors.green, shape: BoxShape.circle),
+                    height: 11.w,
+                    width: 11.w,
+                    decoration: BoxDecoration(
+                      color: HexColor(getColorName(userGoalPerInfo.goalInfo.type ?? "Custom")),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Padding(
+                        padding: EdgeInsets.all(1.w),
+                        child: Image.asset(getImageName(userGoalPerInfo.goalInfo.type ?? "Custom"))),
                   ),
                   const SizedBox(
                     width: 10,
@@ -49,7 +102,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppStrings.practiceMaths,
+                          "${userGoalPerInfo.goalInfo.name}",
                           style: GoogleFonts.roboto(
                               color: AppColors.black,
                               fontSize: 16,
@@ -58,7 +111,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
                         const SizedBox(
                           height: 5,
                         ),
-                        Row(
+                        /*Row(
                           children: [
                             Container(
                               height: 8,
@@ -77,7 +130,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
                                   fontWeight: FontWeight.w300),
                             ),
                           ],
-                        ),
+                        ),*/
                       ],
                     ),
                   ),
@@ -120,7 +173,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
                             width: 5,
                           ),
                           Text(
-                            "10th Rank",
+                            "${userGoalPerInfo.perInfo.totalDays ?? "0"} Rank",
                             style: GoogleFonts.roboto(
                               color: AppColors.black,
                               fontSize: 12,
@@ -154,7 +207,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
                             width: 5,
                           ),
                           Text(
-                            "0 days streak",
+                            "${userGoalPerInfo.perInfo.mainStreak ?? "0"} days streak",
                             style: GoogleFonts.roboto(
                                 color: AppColors.black, fontSize: 12),
                           ),
@@ -186,7 +239,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
                             width: 5,
                           ),
                           Text(
-                            "143 xp points",
+                            "${userGoalPerInfo.perInfo.totalXP ?? "0"} xp points",
                             style: GoogleFonts.roboto(
                                 color: AppColors.black, fontSize: 12),
                           ),
@@ -197,7 +250,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
                 ],
               ),
             ),
-            Container(
+            /*Container(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
               decoration: BoxDecoration(
                 color: AppColors.prupleWithShade300,
@@ -217,7 +270,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
                   ),
                 ),
               ),
-            )
+            )*/
           ],
         ),
       ),
