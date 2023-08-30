@@ -1,10 +1,13 @@
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quds_popup_menu/quds_popup_menu.dart';
+import 'package:sizer/sizer.dart';
 import 'package:teamup/mixins/baseClass.dart';
 
+import '../../../widgets/MultipleSelectContactView.dart';
 import '../../../widgets/rounded_edge_button.dart';
 import '../goal_confirm_create/confirm_and_create_goal_page.dart';
 
@@ -19,7 +22,30 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
   final List<Contact?> _contact = [];
 
   Future<void> _pickContact() async {
-    try {
+
+          List<Contact> contactList = await ContactsService.getContacts(withThumbnails: false,photoHighResolution: false,iOSLocalizedLabels: false,androidLocalizedLabels: false);
+          showModalBottomSheet(
+              context: context,
+              backgroundColor: Colors.white,
+              barrierColor: Colors.black,
+              isScrollControlled: true,
+              isDismissible: true,
+              elevation: 15,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
+              ),
+              builder: (context) {
+                return Container(
+                    height: 80.h,
+                    child: MultiSelectContacts(contactsList: contactList,));
+              });
+    /*Get.bottomSheet(Container(
+        height: 40.h,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
+        ),
+        child: MultiSelectContacts(contactsList: contactList,)),backgroundColor: Colors.white);*/
+    /*try {
       final Contact? contact = await ContactsService.openDeviceContactPicker();
       _contact.add(contact);
       setState(() {});
@@ -27,7 +53,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
       if (kDebugMode) {
         print(e.toString());
       }
-    }
+    }*/
   }
 
   @override
