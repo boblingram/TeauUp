@@ -17,6 +17,12 @@ class AppColors {
   //FBC - Fall back Color
   static String performanceFBC = "#5B5B5B";
 
+  //Progress Bar Color
+  static String progressBarC = "#FF0000";
+  static String failedMessageC = "#EC268F";
+  static String successMessageC = "#a6ce39";
+  static String generalMessageC = "#00AFEF";
+
   //Goal Screen 1
   static String goalBackgroundColor = "#6B8D96";
   static String studyIconBG = "#94BFB6";
@@ -32,5 +38,8 @@ class AppColors {
   //Goal Screen 2
   static String describeGoalColor = "#429488";
   static String sliderColor = "#000000";
+
+  //Journey
+  static String journeyColor = "#F3F3F3";
 
 }

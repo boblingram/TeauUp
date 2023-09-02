@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
-import 'package:teamup/controllers/GoalDetailController.dart';
+import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/utils/app_colors.dart';
 import 'package:teamup/widgets/edittext_with_hint.dart';
 import 'package:teamup/widgets/rounded_edge_button.dart';
@@ -26,7 +26,7 @@ class _EditGoalNDViewState extends State<EditGoalNDView> {
 
   var isNextAllowed = true.obs;
 
-  GoalDetailController goalDetailController = Get.find();
+  VEGoalController veGoalController = Get.find();
 
   @override
   void initState() {
@@ -139,7 +139,7 @@ class _EditGoalNDViewState extends State<EditGoalNDView> {
                 //TODO Show Error
                 return;
               }
-              goalDetailController.updateGoalND(goalNTC.text.trim(),goalDTC.text.trim());
+              veGoalController.updateGoalND(goalNTC.text.trim(),goalDTC.text.trim());
             },
             context: context))
       ],

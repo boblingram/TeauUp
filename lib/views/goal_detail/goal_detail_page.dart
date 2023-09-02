@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
-import 'package:teamup/controllers/GoalDetailController.dart';
 import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
+import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/views/goal_detail/goal_participants_tab.dart';
 
+import '../../models/GoalMetaDataModel.dart';
 import '../../utils/app_Images.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/rounded_edge_button.dart';
 import 'goal_activity_tab.dart';
 
 class GoalDetailPage extends StatefulWidget {
-  final String goalId;
-  const GoalDetailPage({Key? key, required this.goalId}) : super(key: key);
+  final UserGoalPerInfo userGoalPerInfo;
+  final bool isEditingEnabled;
+  final int itemIndex;
+  const GoalDetailPage({Key? key, required this.userGoalPerInfo, this.isEditingEnabled = true, required this.itemIndex}) : super(key: key);
 
   @override
   State<GoalDetailPage> createState() => _GoalDetailPageState();
@@ -25,14 +29,70 @@ class _GoalDetailPageState extends State<GoalDetailPage>
   TabController? controller;
   int _selectedTabValue = 0;
 
-  GoalDetailController goalDetailController = Get.put(GoalDetailController());
+  VEGoalController veGoalController = Get.put(VEGoalController());
+
+  String getColorName(String selectedGoal) {
+    switch (selectedGoal) {
+      case "Wellness":
+        return AppColors.wellnessIconBG;
+      case "Yoga":
+        return AppColors.yogaIconBG;
+      case "Study":
+        return AppColors.studyIconBG;
+      case "Cycling":
+        return AppColors.cyclingIconBG;
+      case "Running":
+        return AppColors.runningIconBG;
+      case "Walking":
+        return AppColors.walkingIconBG;
+      case "Gym":
+        return AppColors.gymIconBG;
+      case "Introspection":
+        return AppColors.introspectionIconBG;
+      default:
+        return AppColors.customIconBG;
+    }
+  }
+
+  String getImageName(String elementAt) {
+    switch (elementAt){
+      case "Wellness":
+        return AppImages.wellnessIcon;
+      case "Walking":
+        return AppImages.walkingIcon;
+      case "Yoga":
+        return AppImages.yogaIcon;
+      case "Study":
+        return AppImages.studyIcon;
+      case "Running":
+        return AppImages.runningIcon;
+      case "Gym":
+        return AppImages.gymIcon;
+      case "Introspection":
+        return AppImages.introspectionIcon;
+      case "Cycling":
+      default:
+        return AppImages.cyclingIcon;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     controller = TabController(length: 3, vsync: this);
 
-    goalDetailController.updateGoalId(widget.goalId);
+    veGoalController.updateGoalId(widget.userGoalPerInfo.goalInfo.id.toString());
+    veGoalController.updateUserGoalPerInfo(widget.userGoalPerInfo);
+    veGoalController.updateSelectedItemIndex(widget.itemIndex);
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {fetchGoalDetailData();});
+  }
+
+  void fetchGoalDetailData(){
+    String goalId = "1";
+    //String goalId = veGoalController.goalId;
+    veGoalController.getGoalActivitiesData(goalId);
+    veGoalController.getGoalMembershipData(goalId);
   }
 
   @override
@@ -82,19 +142,15 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                             Row(
                               children: [
                                 Container(
-                                  height: 40,
-                                  width: 40,
+                                  height: 11.w,
+                                  width: 11.w,
                                   decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.white,
-                                      ),
-                                      shape: BoxShape.circle),
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.person,
-                                      color: Colors.white,
-                                    ),
+                                    color: HexColor(getColorName(widget.userGoalPerInfo.goalInfo.type ?? AppStrings.defaultType)),
+                                    shape: BoxShape.circle,
                                   ),
+                                  child: Padding(
+                                      padding: EdgeInsets.all(1.w),
+                                      child: Image.asset(getImageName(widget.userGoalPerInfo.goalInfo.type ?? AppStrings.defaultType))),
                                 ),
                                 const SizedBox(
                                   width: 10,
@@ -110,7 +166,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                               height: 10,
                             ),
                             Text(
-                              "Study",
+                              "${widget.userGoalPerInfo.goalInfo.type ?? AppStrings.defaultType}",
                               style: GoogleFonts.roboto(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
@@ -123,16 +179,16 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Practice Maths",
+                                  "${widget.userGoalPerInfo.goalInfo.name ?? AppStrings.defaultName}",
                                   style: GoogleFonts.roboto(
                                     color: Colors.white,
                                     fontSize: 23,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                InkWell(
+                                widget.isEditingEnabled ? InkWell(
                                   onTap: (){
-                                    goalDetailController.editGoalNDSheet();
+                                    veGoalController.editGoalNDSheet();
                                   },
                                   child: Text(
                                     "Edit",
@@ -143,7 +199,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                                       decoration: TextDecoration.underline,
                                     ),
                                   ),
-                                ),
+                                ) : Container(),
                               ],
                             ),
                             Text(
@@ -158,7 +214,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                               height: 15,
                             ),
                             Text(
-                              "This goal helps participants to know\nwhat they can achieve by this goal. We\nhave prefilled a default description\nbased on your goal selection. You can\nedit this or create your own description",
+                              "${widget.userGoalPerInfo.goalInfo.desc ?? AppStrings.defaultDescription}",
                               style: GoogleFonts.roboto(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,
@@ -224,10 +280,10 @@ class _GoalDetailPageState extends State<GoalDetailPage>
             ];
           },
           body: _selectedTabValue == 0
-              ? GoalActivityTabPage()
+              ? GoalActivityTabPage(isEditingEnabled: widget.isEditingEnabled,)
               : _selectedTabValue == 1
-                  ? const GoalParticipantsTabPage()
-                  : Container()),
+              ? GoalParticipantsTabPage()
+              : Container()),
     );
   }
 }

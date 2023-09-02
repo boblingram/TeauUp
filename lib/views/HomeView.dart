@@ -7,6 +7,7 @@ import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/performanceModule/Views/PerformanceView.dart';
 import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/views/GoalView.dart';
+import 'package:teamup/views/journey_views/journey_view.dart';
 import 'package:teamup/views/settings/settings_page.dart';
 
 import '../controllers/GoalController.dart';
@@ -46,7 +47,7 @@ class _HomeViewState extends State<HomeView> with BaseClass {
         return GoalView();
       case 1:
         pageTitle.value = "Journey";
-        return Container();
+        return Journey_View();
       case 3:
         pageTitle.value = "Connect";
         return Container();

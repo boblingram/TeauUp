@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/mixins/baseClass.dart';
-import 'package:teamup/models/GoalActivityModel.dart';
+import 'package:teamup/models/GoalMetaDataModel.dart';
 import 'package:teamup/utils/app_Images.dart';
 import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/views/goal_detail/goal_detail_page.dart';
@@ -13,7 +13,8 @@ import '../../../utils/app_colors.dart';
 class ActiveGoalWidget extends StatelessWidget with BaseClass {
 
   final UserGoalPerInfo userGoalPerInfo;
-  const ActiveGoalWidget({Key? key, required this.userGoalPerInfo}) : super(key: key);
+  final int itemIndex;
+  const ActiveGoalWidget({Key? key, required this.userGoalPerInfo, required this.itemIndex}) : super(key: key);
 
   String getColorName(String selectedGoal) {
     switch (selectedGoal) {
@@ -66,7 +67,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
       onTap: () {
         pushToNextScreen(
           context: context,
-          destination: GoalDetailPage(goalId: userGoalPerInfo.goalInfo.id.toString(),),
+          destination: GoalDetailPage(userGoalPerInfo: userGoalPerInfo, itemIndex: itemIndex,),
         );
       },
       child: Container(
@@ -173,7 +174,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
                             width: 5,
                           ),
                           Text(
-                            "${userGoalPerInfo.perInfo.totalDays ?? "0"} Rank",
+                            "Days Spent ${userGoalPerInfo.perInfo.totalDays ?? "0"}",
                             style: GoogleFonts.roboto(
                               color: AppColors.black,
                               fontSize: 12,

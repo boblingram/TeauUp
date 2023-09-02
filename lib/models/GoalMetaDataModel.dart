@@ -1,15 +1,15 @@
 
 
-class GoalActivityModel{
+class GoalMetaDataModel{
   String typename;
   List<UserGoalPerInfo> userGoalPerList;
 
-  GoalActivityModel({
+  GoalMetaDataModel({
     required this.typename,
     required this.userGoalPerList,
   });
 
-  factory GoalActivityModel.fromJson(Map<String, dynamic> json) => GoalActivityModel(
+  factory GoalMetaDataModel.fromJson(Map<String, dynamic> json) => GoalMetaDataModel(
     typename: json["__typename"] ?? "",
     userGoalPerList: List<UserGoalPerInfo>.from(json["userGoalsWithPerfInfo"].map((x) => UserGoalPerInfo.fromJson(x))),
   );
@@ -66,13 +66,15 @@ class UserGoalInfo{
   var name;
   var status;
   var type;
+  var desc;
 
   UserGoalInfo({
     this.id,
     this.status,
     this.name,
     this.endDate,
-    this.type
+    this.type,
+    this.desc
 });
 
   factory UserGoalInfo.fromJson(Map<String, dynamic> json) => UserGoalInfo(
@@ -81,6 +83,7 @@ class UserGoalInfo{
     name: json["name"],
     endDate: json["endDate"],
     type: json["type"],
+    desc: json["desc"]
   );
 
 }

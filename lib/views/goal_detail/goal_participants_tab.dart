@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:teamup/controllers/VEGoalController.dart';
+import 'package:teamup/models/IndividualGoalMemberModel.dart';
 
 import '../../utils/app_colors.dart';
 
 class GoalParticipantsTabPage extends StatelessWidget {
-  const GoalParticipantsTabPage({Key? key}) : super(key: key);
+  GoalParticipantsTabPage({Key? key}) : super(key: key);
+
+  final VEGoalController veGoalController = Get.find();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
+      body: Container(
+        color: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: ListView(
           shrinkWrap: true,
@@ -18,14 +24,26 @@ class GoalParticipantsTabPage extends StatelessWidget {
           children: [
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                "Participants: 6",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.roboto(
-                  color: AppColors.black,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18,
-                ),
+              child: Row(
+                children: [
+                  Text(
+                    "Participants:",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.roboto(
+                      color: AppColors.black,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                    ),
+                  ),
+                  Text(
+                    " 6",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.roboto(
+                      color: AppColors.black,
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(
@@ -37,15 +55,20 @@ class GoalParticipantsTabPage extends StatelessWidget {
                 border: Border.all(color: Colors.grey.shade400),
               ),
               margin: const EdgeInsets.only(bottom: 5),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-              child: ListView.builder(
-                  itemCount: 7,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (BuildContext context, int index) {
-                    return index==6?addMoreWidget():getInvitedMembers(index);
-                  }),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+              child:
+                  Obx(() => veGoalController.selectedGoalMemberList.isNotEmpty
+                      ? ListView.builder(
+                          itemCount: veGoalController.selectedGoalMemberList.length,
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            var item = veGoalController.selectedGoalMemberList.elementAt(index);
+                            return index == veGoalController.selectedGoalMemberList.length
+                                ? addMoreWidget()
+                                : getInvitedMembers(item, index);
+                          })
+                      : Container()),
             )
           ],
         ),
@@ -53,28 +76,30 @@ class GoalParticipantsTabPage extends StatelessWidget {
     );
   }
 
-  Widget addMoreWidget(){
+  Widget addMoreWidget() {
     return Container(
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       child: Row(
         children: [
-          const Icon(Icons.add_circle,color: Colors.black,),
-          const SizedBox(width: 10,),
+          const Icon(
+            Icons.add_circle,
+            color: Colors.black,
+          ),
+          const SizedBox(
+            width: 10,
+          ),
           Text(
             "Add more participants",
             style: GoogleFonts.roboto(
-                color: Colors.black,
-                fontSize:  14 ,
-                fontWeight:
-                FontWeight.w600 ),
+                color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600),
           ),
         ],
       ),
     );
   }
 
-  Widget getInvitedMembers(int index) {
+  Widget getInvitedMembers(IndividualGoalMemberModel item, int index) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Row(
@@ -99,20 +124,16 @@ class GoalParticipantsTabPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  index == 0 ? "Saradhi (You)" : "Tarun",
+                  "${item.fullname}",
                   style: GoogleFonts.roboto(
                       color: Colors.black,
-                      fontSize: index == 0 ? 16 : 12,
                       fontWeight:
                           index == 0 ? FontWeight.w700 : FontWeight.w400),
                 ),
                 Text(
-                  index == 0
-                      ? "Your mentor is Tanvi - You are mentoring Tarun,Srikar, Tanvi, and Rishab"
-                      : "Mentored by Saradhi",
+                    veGoalController.convertStringToNotNull(item.mentor).isEmpty ? "" :"You are mentored by ${veGoalController.convertStringToNotNull(item.mentor)}",
                   style: GoogleFonts.roboto(
                       color: Colors.black,
-                      fontSize: index == 0 ? 14 : 12,
                       fontWeight:
                           index == 0 ? FontWeight.w600 : FontWeight.w400),
                 ),

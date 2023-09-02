@@ -17,9 +17,26 @@ class AppStrings {
   static const String trackProgressDescription = "Complete goal activities on time\nand compete with your friends";
   static const String activeGoals = "Active Goals";
   static const String endedGoals = "Ended Goals";
+  static const String archiveGoals = "Archived Goals";
   static const String yourGoals = "Your Goals";
   static const String sortBy = "Sort by";
   static const String view = "View";
   static const String practiceMaths = "Practice Math";
   static const String nextActivityInOneHour = "Next activity in 1 hour";
+
+
+  ///Default Strings
+  static const String defaultName = "";
+  static const String defaultDescription = "";
+  static const String defaultType = "Custom";
+  static const String defaultNullString = "";
+  static const String defaultEndDate = "No end date set";
+  static const String defaultTimeValue = "Anytime of day";
+  static const String defaultDurationValue = "30";
+  static const String defaultFrequencyValue = "Daily";
+
+  //Journey
+  static const String defaultMarkasComplete = "Mark as Complete";
+  static const String defaultSkipText = "Skipped It";
+
 }

@@ -52,7 +52,7 @@ class _GoalViewState extends State<GoalView> {
                       text: AppStrings.activeGoals,
                     ),
                     Tab(
-                      text: AppStrings.endedGoals,
+                      text: AppStrings.archiveGoals,
                     ),
                     //  Tab(icon: Icon(Icons.directions_bike)),
                   ],
