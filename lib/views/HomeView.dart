@@ -12,6 +12,7 @@ import 'package:teamup/views/settings/settings_page.dart';
 
 import '../controllers/GoalController.dart';
 import '../utils/app_colors.dart';
+import 'NotificationView.dart';
 import 'add_goals/set_goals/set_goal_page.dart';
 
 class HomeView extends StatefulWidget {
@@ -76,8 +77,11 @@ class _HomeViewState extends State<HomeView> with BaseClass {
           style: GoogleFonts.roboto(color: AppColors.black),
         )),
         actions: [
-          Icon(
-            Icons.notifications,
+          IconButton(
+            onPressed: (){
+              Get.to(()=>NotificationView());
+            },
+            icon: Icon(Icons.notifications),
             color: AppColors.greyWithShade900,
           ),
           const SizedBox(

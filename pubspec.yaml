@@ -49,6 +49,7 @@ dependencies:
   permission_handler: ^6.1.1
   popover: ^0.2.8+2
   quds_popup_menu: ^0.0.1+1
+  timeago: ^3.3.0
 
   #Performance _ Module
   sizer: ^2.0.15

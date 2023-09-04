@@ -9,3 +9,8 @@ enum JourneyMutationEnum{
   MarkasComplete,
   SkipIt
 }
+
+enum NotificationMutationEnum{
+  MarkasRead,
+  Delete
+}

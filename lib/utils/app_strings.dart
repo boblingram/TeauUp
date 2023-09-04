@@ -39,4 +39,9 @@ class AppStrings {
   static const String defaultMarkasComplete = "Mark as Complete";
   static const String defaultSkipText = "Skipped It";
 
+  //Notification
+  static const String notificationText = "Notifications";
+  static const String defaultMarkasRead = "Mark as Read";
+  static const String defaultDelete = "Delete";
+
 }

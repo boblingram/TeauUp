@@ -42,4 +42,7 @@ class AppColors {
   //Journey
   static String journeyColor = "#F3F3F3";
 
+  //Notification
+  static String notificationColor = "#39394A";
+
 }

@@ -427,6 +427,7 @@ class CustomButton extends StatelessWidget {
             ),
         child: Text(
           text,
+          textAlign: TextAlign.center,
           style: textStyle ?? TextStyle(fontSize: 12, color: Colors.green),
         ),
       ),

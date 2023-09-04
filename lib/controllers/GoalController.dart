@@ -1,13 +1,98 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:teamup/models/IndividualNotificationModel.dart';
+import 'package:teamup/utils/Enums.dart';
+import 'package:teamup/utils/GraphQLService.dart';
 
 import '../utils/Constants.dart';
 
 class GoalController extends GetxController {
+
+  var userId = "1";
+  ///Notification Controller
+  var notificationList = <IndividualNotificationModel>[].obs;
+
+  var currentTime = DateTime.now();
+
+  void fetchNotificationData()async{
+    String query = '''query MyQuery {
+  toUserNotifications(userId: "$userId") {
+    id
+    msg 
+    status
+    type
+    createdDt
+  }
+}
+''';
+
+    var result = await GraphQLService.tempClient.query(QueryOptions(document: gql(query)));
+    log(result.data.toString());
+    //json.encode(result.data);
+    if (result.data == null && result.exception != null) {
+      //No Data Received from Server;
+      GraphQLService.parseError(result.exception, "Fetch Notification List");
+      return;
+    }
+
+    try {
+      NotificationDataModel notificationDataModel =
+      NotificationDataModel.fromJson(result.data!);
+      print("Length of List is ${notificationDataModel.notificationDataList.length}");
+      notificationList.clear();
+      notificationList.value = notificationDataModel.notificationDataList;
+      notificationList.sort((a, b) => a.createdDt.compareTo(b.createdDt));
+    } catch (onError, stackTrace) {
+      print("Error while parsing Notification Data Model $onError");
+    }
+  }
+
+  void notificationMutationQuery(NotificationMutationEnum tempEnum, String notificationId) async{
+    print("Notification Mutation is ${tempEnum}");
+    String mutation = '';
+    if(tempEnum == NotificationMutationEnum.MarkasRead){
+      mutation = '''mutation MyMutation {
+  completeTask(taskId: "$notificationId") {
+    id
+    name
+    status
+    time
+    date
+    activityId
+  }
+}
+''';
+    }else if(tempEnum == NotificationMutationEnum.Delete){
+      mutation = '''mutation MyMutation {
+  skipTask(taskId: "$notificationId") {
+    id
+    name
+    status
+    time
+    date
+    activityId
+  }
+}
+''';
+    }
+
+    showLoader();
+    var result = await GraphQLService.tempClient.mutate(MutationOptions(document: gql(mutation)));
+    log(result.toString());
+    hidePLoader();
+    if (!GraphQLService.shouldContinueFurther("Mutate Notification ${tempEnum}", result)) {
+      showError("Failed to update notification status");
+      return;
+    }
+    //TODO Update UI
+  }
+
 
   ///Describe Goal
   var newGoalName = "";
