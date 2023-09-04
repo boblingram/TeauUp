@@ -1,35 +1,152 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/utils/Enums.dart';
 import 'package:teamup/utils/app_strings.dart';
+import 'package:teamup/widgets/ErrorListWidget.dart';
 
+import '../../controllers/VEGoalController.dart';
 import '../../utils/app_colors.dart';
 
 class Journey_View extends StatefulWidget {
-  const Journey_View({super.key});
+  final bool isGoalTab;
+  const Journey_View({super.key, this.isGoalTab = false});
 
   @override
   State<Journey_View> createState() => _Journey_ViewState();
 }
 
 class _Journey_ViewState extends State<Journey_View> {
+  VEGoalController veGoalController = Get.find();
+  bool showJourneyDate = false;
+
+  /*Map<String, bool> journeyDateSorted = {
+    "Yesterday": false,
+    "Today": false,
+    "Upcoming": false
+  };*/
+
+  @override
+  void initState() {
+    super.initState();
+    print("New Class is Initiated");
+    //veGoalController.getJourneyData();
+    veGoalController.getFromJourneyJson(localIsJourney: widget.isGoalTab);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(child: ListView.builder(itemBuilder: (context, index) {
-      return IndividualJourneyItemWidget(
-        showButtons: index % 2 != 0,
-        showDate: index % 2 == 0,
-        timeText: "6 - 6:15 am",
-        dateText: "19 Jun",
-        weekDayText: "Sun",
-        nameText: "Slow Breathing Excercise",
-        descText: "Meditation",
-        journeyStatus: index % 2 == 0 ? JourneyStatus.Failed : JourneyStatus.Success,
-        showAbove: index % 9 == 0 ,
-        showAboveText: "Yesterday",
-      );
-    }));
+    String currentSection = "";
+    DateTime? upcomingDate;
+    bool hasUpcomingDateAssigned = false;
+
+    return Container(
+        child: Obx(() => veGoalController.journeyGoalList.isNotEmpty
+            ? ListView.builder(
+                itemCount: veGoalController.journeyGoalList.length,
+                itemBuilder: (context, index) {
+                  var item = veGoalController.journeyGoalList.elementAt(index);
+                  DateTime newDate = DateTime.tryParse(item.date) ??
+                      veGoalController.currentDateTime;
+                  if (index == 0) {
+                    showJourneyDate = true;
+                  } else {
+                    DateTime oldDate = DateTime.tryParse(veGoalController
+                            .journeyGoalList
+                            .elementAt(index - 1)
+                            .date) ??
+                        veGoalController.currentDateTime;
+                    showJourneyDate =
+                        !veGoalController.checkJDate(oldDate, newDate);
+                  }
+
+                  String section =
+                      ""; // Initialize section for the current item.
+
+                  if (veGoalController.checkJDate(
+                      veGoalController.currentDateTime, newDate)) {
+                    //This is Today
+                    section = "Today";
+                  } else if (newDate.isAfter(veGoalController.currentDateTime)) {
+                    //This is Upcoming
+                    section = "Upcoming";
+                    if(!hasUpcomingDateAssigned){
+                      upcomingDate = newDate;
+                      hasUpcomingDateAssigned = true;
+                    }
+                  } else if (veGoalController.checkJDate(
+                      veGoalController.currentDateTime
+                          .subtract(Duration(days: 1)),
+                      newDate)) {
+                    //This is Yesterday
+                    section = "Yesterday";
+                  }
+
+                  // Check if the section has changed, and update currentSection accordingly.
+                  if (section != currentSection) {
+                    currentSection = section;
+                    //showJourneyDate = true;
+                  } else {
+                    //showJourneyDate = false;
+                  }
+
+                  // Determine if the section text should be displayed.
+                  bool showSectionText = showJourneyDate && section.isNotEmpty;
+
+                  if(showSectionText && section == "Upcoming"){
+                    if(upcomingDate != null && veGoalController.checkJDate(upcomingDate!, newDate)){
+
+                    }else{
+                      showSectionText = false;
+                    }
+                  }
+                  /*var showSortedText = false;
+      var sortedTextValue = "";
+      if(newDate.isAfter(veGoalController.currentDateTime)){
+        //This is Upcoming
+        var tempItem = journeyDateSorted["Upcoming"] ?? false;
+        if(!tempItem){
+          showSortedText = true;
+          sortedTextValue = "Upcoming";
+          journeyDateSorted["Upcoming"] = true;
+        }
+      }else if(veGoalController.checkJDate(veGoalController.currentDateTime, newDate)){
+        //This is Today
+        var tempItem = journeyDateSorted["Today"] ?? false;
+        if(!tempItem){
+          showSortedText = true;
+          sortedTextValue = "Today";
+          journeyDateSorted["Today"] = true;
+        }
+      }else if(veGoalController.checkJDate(veGoalController.currentDateTime.subtract(Duration(days: 1)), newDate)){
+        //This is Yesterday
+        var tempItem = journeyDateSorted["Yesterday"] ?? false;
+        if(!tempItem){
+          showSortedText = true;
+          sortedTextValue = "Yesterday";
+          journeyDateSorted["Yesterday"] = true;
+        }
+      }*/
+
+                  return IndividualJourneyItemWidget(
+                      showButtons: index % 2 != 0,
+                      showDate: showJourneyDate,
+                      timeText:
+                          veGoalController.convertJTimeToTimeText(item.time),
+                      dateText:
+                          veGoalController.convertJDatetoDateText(item.date),
+                      weekDayText:
+                          veGoalController.convertJDateToDayText(item.date),
+                      nameText:
+                          veGoalController.convertStringToNotNull(item.name),
+                      descText:
+                          veGoalController.convertStringToNotNull(item.desc),
+                      journeyStatus: veGoalController.convertJStatusToJourney(item.status, item.date),
+                      showDateSorted: showSectionText,
+                      dateSortedText: section);
+                })
+            : ErrorListWidget(text: "Empty Journey Data")));
   }
 }
 
@@ -41,11 +158,11 @@ class IndividualJourneyItemWidget extends StatelessWidget {
   final String timeText;
   final bool showButtons;
   final bool showDate;
-  final bool showAbove;
-  final String showAboveText;
+  final bool showDateSorted;
+  final String dateSortedText;
   final JourneyStatus journeyStatus;
 
-  const IndividualJourneyItemWidget(
+  IndividualJourneyItemWidget(
       {super.key,
       this.showButtons = false,
       this.showDate = false,
@@ -55,8 +172,10 @@ class IndividualJourneyItemWidget extends StatelessWidget {
       this.descText = "",
       this.timeText = "",
       this.journeyStatus = JourneyStatus.Success,
-      this.showAbove = false,
-      this.showAboveText = ""});
+      this.showDateSorted = false,
+      this.dateSortedText = ""});
+
+  final VEGoalController veGoalController = Get.find();
 
   Widget getJourneyStatus() {
     switch (journeyStatus) {
@@ -81,14 +200,18 @@ class IndividualJourneyItemWidget extends StatelessWidget {
         );
       case JourneyStatus.Upcoming:
         return Icon(
-          Icons.timelapse,
-          color: Colors.red,
+          Icons.circle_outlined,
+          color: Colors.grey,
         );
       case JourneyStatus.Success:
-      default:
         return Icon(
           Icons.check_circle_outlined,
           color: Colors.green,
+        );
+      default:
+        return Icon(
+          Icons.timelapse,
+          color: Colors.red,
         );
     }
   }
@@ -100,48 +223,51 @@ class IndividualJourneyItemWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          showAbove ? Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(flex: 2,child: Container()),
-                  Expanded(
-                    flex: 18,
-                    child: Wrap(
-                      children: [Container(
-                        padding: EdgeInsets.symmetric(vertical: 2,horizontal: 5),
-
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                          borderRadius: BorderRadius.circular(5)
+          showDateSorted
+              ? Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(flex: 2, child: Container()),
+                        Expanded(
+                          flex: 18,
+                          child: Wrap(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 2, horizontal: 5),
+                                decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Text(
+                                  dateSortedText,
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                        child: Text(
-                          showAboveText,style: TextStyle(color: Colors.white),
-                        ),
-                      )],
+                      ],
                     ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(flex: 2,child: Container()),
-                  Expanded(
-                    flex: 9,
-                    child: Wrap(
-
-                        children: [Container(
-                          width: 2,
-                          height: 20,
-                          margin: EdgeInsets.symmetric(vertical: 3),
-                          color: Colors.grey.shade300,
-                        )]),
-                  ),
-                ],
-              ),
-
-            ],
-          ) : Container(),
+                    Row(
+                      children: [
+                        Expanded(flex: 2, child: Container()),
+                        Expanded(
+                          flex: 9,
+                          child: Wrap(children: [
+                            Container(
+                              width: 2,
+                              height: 20,
+                              margin: EdgeInsets.symmetric(vertical: 3),
+                              color: Colors.grey.shade300,
+                            )
+                          ]),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              : Container(),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -198,8 +324,8 @@ class IndividualJourneyItemWidget extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(5),
                                 color: HexColor(AppColors.journeyColor),
                               ),
-                              padding:
-                                  EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 2, vertical: 2),
                               child: ClipRRect(
                                 child: Row(
                                   children: [
@@ -239,7 +365,9 @@ class IndividualJourneyItemWidget extends StatelessWidget {
                           ? Row(
                               children: [
                                 CustomButton(
-                                  text: AppStrings.defaultMarkasComplete,
+                                  text: AppStrings.defaultMarkasComplete, onTap: (){
+                                    veGoalController.updateJourneyMutation(JourneyMutationEnum.MarkasComplete);
+                                },
                                 ),
                                 SizedBox(
                                   width: 5,
@@ -251,8 +379,10 @@ class IndividualJourneyItemWidget extends StatelessWidget {
                                         color: Colors.red,
                                       ),
                                       borderRadius: BorderRadius.circular(3)),
-                                  textStyle:
-                                      TextStyle(fontSize: 12, color: Colors.red),
+                                  textStyle: TextStyle(
+                                      fontSize: 12, color: Colors.red), onTap: (){
+                                  veGoalController.updateJourneyMutation(JourneyMutationEnum.SkipIt);
+                                },
                                 )
                               ],
                             )
@@ -268,13 +398,14 @@ class IndividualJourneyItemWidget extends StatelessWidget {
 }
 
 class CustomButton extends StatelessWidget {
+  final Function onTap;
   final String text;
   final EdgeInsets? paddingButton;
   final BoxDecoration? boxDecoration;
   final TextStyle? textStyle;
 
   CustomButton(
-      {super.key,
+      {super.key,required this.onTap,
       this.paddingButton,
       this.text = AppStrings.defaultMarkasComplete,
       this.boxDecoration,
@@ -282,18 +413,40 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding:
-          paddingButton ?? EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-      decoration: boxDecoration ??
-          BoxDecoration(
-            border: Border.all(color: Colors.green),
-            borderRadius: BorderRadius.circular(3),
-          ),
-      child: Text(
-        text,
-        style: textStyle ?? TextStyle(fontSize: 12, color: Colors.green),
+    return InkWell(
+      onTap: (){
+        onTap();
+      },
+      child: Container(
+        padding:
+            paddingButton ?? EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+        decoration: boxDecoration ??
+            BoxDecoration(
+              border: Border.all(color: Colors.green),
+              borderRadius: BorderRadius.circular(3),
+            ),
+        child: Text(
+          text,
+          style: textStyle ?? TextStyle(fontSize: 12, color: Colors.green),
+        ),
       ),
     );
   }
 }
+
+/*
+Container(child: ListView.builder(itemBuilder: (context, index) {
+      return IndividualJourneyItemWidget(
+        showButtons: index % 2 != 0,
+        showDate: index % 2 == 0,
+        timeText: "6 - 6:15 am",
+        dateText: "19 Jun",
+        weekDayText: "Sun",
+        nameText: "Slow Breathing Excercise",
+        descText: "Meditation",
+        journeyStatus: index % 2 == 0 ? JourneyStatus.Failed : JourneyStatus.Success,
+        showAbove: index % 9 == 0 ,
+        showAboveText: "Yesterday",
+      );
+    }))
+ */

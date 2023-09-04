@@ -1,5 +1,11 @@
 enum JourneyStatus {
   Success,
   Failed,
-  Upcoming
+  Upcoming,
+  Overdue
+}
+
+enum JourneyMutationEnum{
+  MarkasComplete,
+  SkipIt
 }

@@ -8,8 +8,12 @@ import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/models/GoalMetaDataModel.dart';
 import 'package:teamup/models/IndividualGoalMemberModel.dart';
+import 'package:teamup/models/JourneyGoalModel.dart';
 import 'package:teamup/models/SucessGoalMetaDataModel.dart';
+import 'package:teamup/utils/Enums.dart';
+import 'package:teamup/utils/GraphQLService.dart';
 import 'package:teamup/utils/app_strings.dart';
+import 'package:teamup/utils/json_constants.dart';
 
 import '../models/IndividualGoalActivityModel.dart';
 import '../utils/Constants.dart';
@@ -31,6 +35,9 @@ class VEGoalController extends GetxController {
 
   var currentDateTime = DateTime.now();
 
+  var journeyGoalList = <JourneyGoalDataModel>[].obs;
+  var individualGoalJourneyList = <JourneyGoalDataModel>[].obs;
+
   void updateGoalId(String tempId) {
     goalId = tempId;
   }
@@ -42,7 +49,9 @@ class VEGoalController extends GetxController {
   }
 
   String convertFrequencyToAppropriate(var tempValue) {
-    if (tempValue == null || tempValue.toString().isEmpty) {
+    if (tempValue == null || tempValue
+        .toString()
+        .isEmpty) {
       return AppStrings.defaultFrequencyValue;
     }
     switch (tempValue.toString().trim().toLowerCase()) {
@@ -60,7 +69,9 @@ class VEGoalController extends GetxController {
   }
 
   String convertTimeToAppropriate(var tempValue) {
-    if (tempValue == null || tempValue.toString().isEmpty) {
+    if (tempValue == null || tempValue
+        .toString()
+        .isEmpty) {
       return AppStrings.defaultTimeValue;
     }
     try {
@@ -74,22 +85,26 @@ class VEGoalController extends GetxController {
 
   String convertDurationToAppropriate(var tempValue) {
     var newValue = "";
-    if (tempValue == null || tempValue.toString().isEmpty) {
+    if (tempValue == null || tempValue
+        .toString()
+        .isEmpty) {
       newValue = AppStrings.defaultDurationValue;
     }
-    if(int.tryParse(tempValue.toString()) == null){
+    if (int.tryParse(tempValue.toString()) == null) {
       newValue = AppStrings.defaultDurationValue;
-    }else{
+    } else {
       newValue = int.tryParse(tempValue.toString()).toString();
     }
-    if(newValue == "60"){
+    if (newValue == "60") {
       return "1 hour";
     }
     return "$newValue min";
   }
 
   String convertEndDateToAppropriate(var tempValue) {
-    if (tempValue == null || tempValue.toString().isEmpty) {
+    if (tempValue == null || tempValue
+        .toString()
+        .isEmpty) {
       return AppStrings.defaultEndDate;
     }
 
@@ -103,12 +118,135 @@ class VEGoalController extends GetxController {
   }
 
   bool showReminderDate(var tempValue) {
-    if (tempValue == null || tempValue.toString().isEmpty) {
+    if (tempValue == null || tempValue
+        .toString()
+        .isEmpty) {
       return false;
     } else {
       return true;
     }
   }
+
+  String convertJDatetoDateText(var tempValue) {
+    if (tempValue == null || tempValue
+        .toString()
+        .isEmpty) {
+      return AppStrings.defaultEndDate;
+    }
+
+    try {
+      var updateTime = DateTime.tryParse(tempValue) ?? currentDateTime;
+      return DateFormat('dd MMM').format(updateTime);
+    } catch (onError) {
+      print("VEC - Convert JDate - Date Failed $onError");
+      return AppStrings.defaultEndDate;
+    }
+  }
+
+  String convertJDateToDayText(var tempValue) {
+    if (tempValue == null || tempValue
+        .toString()
+        .isEmpty) {
+      return AppStrings.defaultEndDate;
+    }
+
+    try {
+      var updateTime = DateTime.tryParse(tempValue) ?? currentDateTime;
+      return DateFormat('EEE').format(updateTime);
+    } catch (onError) {
+      print("VEC - Convert JDate - Day Failed $onError");
+      return AppStrings.defaultEndDate;
+    }
+  }
+
+  String convertJTimeToTimeText(var tempValue) {
+    if (tempValue == null || tempValue
+        .toString()
+        .isEmpty) {
+      return AppStrings.defaultTimeValue;
+    }
+    try {
+      var updateTime = DateTime.tryParse(tempValue) ?? currentDateTime;
+      return DateFormat('h:mm a').format(updateTime);
+    } catch (onError) {
+      print("VEC - Convert JTime - Time Failed $onError");
+      return AppStrings.defaultTimeValue;
+    }
+  }
+
+  /*[{"date":"2023-06-01T10:15:55.469427Z","id":"1","time":"2023-06-01T10:15:55.469427Z","name":"One","status":"COMPLETED"},{"date":"2023-06-01T10:15:55.469427Z","id":"1","time":"2023-06-01T10:15:55.469427Z","name":"One","status":"COMPLETED"}]*/
+  /*[{"date":,"id":,"time":,"name":,"status":}]*/
+
+
+  void getJourneyData({String localGoalId = ""}) async {
+    String query = "";
+
+    if (localGoalId.isEmpty) {
+      query = '''query MyQuery {
+  userJourney(userId: "$userId") {
+    date
+    id
+    name
+    status
+    time
+  }
+}
+''';
+    } else {
+      print("Goal Id is Called");
+      query = '''query MyQuery {
+  userJourneyByGoal(goalId: "$localGoalId", userId: "$userId") {
+    date
+    id
+    name
+    status
+    time
+  }
+}
+''';
+    }
+
+    var result = await GraphQLService.tempClient.query(
+        QueryOptions(document: gql(query)));
+    //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
+    //It can have exception or data
+    log(result.data.toString());
+    //json.encode(result.data);
+    //Hide Progress Bar
+    hidePLoader();
+    if (!shouldContinueFurther("GetJourneyData", result)) {
+      showError("Failed to Get Journey Data");
+      return;
+    }
+
+    try {
+      JourneyGoalModel journeyGoalModel =
+      JourneyGoalModel.fromJson(result.data!);
+      print("Length of List is ${journeyGoalModel.journeyModelList.length}");
+    } catch (onError, stackTrace) {
+      print("Error while parsing Journey Goal Model $onError");
+    }
+  }
+
+  void getFromJourneyJson({bool localIsJourney = false}) {
+    var tempResult = json.decode(journeyJson);
+    if (localIsJourney) {
+      print("Journey Goal is shown");
+      tempResult = json.decode(journeyGJson);
+    }
+    try {
+      JourneyGoalModel journeyGoalModel =
+      JourneyGoalModel.fromJson(tempResult);
+      print("Length of List is ${journeyGoalModel.journeyModelList.length}");
+      journeyGoalList.clear();
+      journeyGoalList.value = journeyGoalModel.journeyModelList;
+      // Sort the list based on the 'date' attribute in ascending order.
+      journeyGoalList.sort((a, b) => a.date.compareTo(b.date));
+    } catch (onError, stackTrace) {
+      print("Error while parsing Journey Goal Model $onError");
+    }
+  }
+
 
   //Show Bottom Sheet for editing of Goal name and Description
   void editGoalNDSheet() {
@@ -133,16 +271,6 @@ class VEGoalController extends GetxController {
     print("Initiate Mutation for tempName, TempDesc");
     //Show Progress Bar
     showLoader();
-    //Graphql
-    final HttpLink httpLink = HttpLink(
-      Constants.BASEURL,
-      defaultHeaders: {Constants.HEADER_API_KEY: Constants.API_KEY},
-    );
-
-    final GraphQLClient graphqlClient = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
 
     String mutation = """
   mutation MyMutation {
@@ -155,7 +283,8 @@ class VEGoalController extends GetxController {
 """;
 
     var result =
-        await graphqlClient.mutate(MutationOptions(document: gql(mutation)));
+    await GraphQLService.tempClient.mutate(
+        MutationOptions(document: gql(mutation)));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
     //It can have exception or data
     log(result.data.toString());
@@ -169,13 +298,11 @@ class VEGoalController extends GetxController {
 
     //TODO Make Current List and Current Item Reactive in nature
     SuccessGoalMetaDataModel successGoalMetaDataModel =
-        SuccessGoalMetaDataModel.fromJson(result.data!);
+    SuccessGoalMetaDataModel.fromJson(result.data!);
   }
 
-  bool shouldContinueFurther(
-    String? tempName,
-    QueryResult<Object?> result,
-  ) {
+  bool shouldContinueFurther(String? tempName,
+      QueryResult<Object?> result,) {
     if (result.data == null || result.exception != null) {
       //No Data Received from Server;
       parseError(result.exception, "$tempName");
@@ -195,16 +322,6 @@ class VEGoalController extends GetxController {
     print("End Goal is pressed");
     //Show Progress Bar
     showLoader();
-    //Graphql
-    final HttpLink httpLink = HttpLink(
-      Constants.BASEURL,
-      defaultHeaders: {Constants.HEADER_API_KEY: Constants.API_KEY},
-    );
-
-    final GraphQLClient graphqlClient = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
 
     String mutation = """mutation MyMutation {
   endGoal(goalId: "$goalId") {
@@ -217,7 +334,8 @@ class VEGoalController extends GetxController {
 """;
 
     var result =
-        await graphqlClient.mutate(MutationOptions(document: gql(mutation)));
+    await GraphQLService.tempClient.mutate(
+        MutationOptions(document: gql(mutation)));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
     //It can have exception or data
     log(result.data.toString());
@@ -242,16 +360,6 @@ class VEGoalController extends GetxController {
 
   //Get Active or Ended Goal
   void getAEGoal() async {
-    //Graphql
-    final HttpLink httpLink = HttpLink(
-      Constants.BASEURL,
-      defaultHeaders: {Constants.HEADER_API_KEY: Constants.API_KEY},
-    );
-
-    final GraphQLClient graphqlClient = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
 
     ///View Goal - Active
     final query = gql('''query MyQuery {
@@ -285,9 +393,10 @@ class VEGoalController extends GetxController {
 }
 ''');
 
-    var result = await graphqlClient.query(QueryOptions(document: query));
+    var result = await GraphQLService.tempClient.query(
+        QueryOptions(document: query));
     //It can have exception or data
-    log(result.data.toString());
+    //log(result.data.toString());
     //json.encode(result.data);
     if (result.data == null && result.exception != null) {
       //No Data Received from Server;
@@ -297,7 +406,7 @@ class VEGoalController extends GetxController {
 
     try {
       GoalMetaDataModel goalActivityModel =
-          GoalMetaDataModel.fromJson(result.data!);
+      GoalMetaDataModel.fromJson(result.data!);
       print("Length of List is ${goalActivityModel.userGoalPerList.length}");
       parseIntoAEGoalList(goalActivityModel.userGoalPerList);
     } catch (onError, stackTrace) {
@@ -308,16 +417,6 @@ class VEGoalController extends GetxController {
   //Get Individual Goal Activities
   void getGoalActivitiesData(String goalId) async {
     print("Goal Activity Data $goalId");
-    //Graphql
-    final HttpLink httpLink = HttpLink(
-      Constants.BASEURL,
-      defaultHeaders: {Constants.HEADER_API_KEY: Constants.API_KEY},
-    );
-
-    final GraphQLClient graphqlClient = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
 
     //TO Check place goalID = 1
     ///View Goal - Active
@@ -338,7 +437,8 @@ class VEGoalController extends GetxController {
 }
 ''');
 
-    var result = await graphqlClient.query(QueryOptions(document: query));
+    var result = await GraphQLService.tempClient.query(
+        QueryOptions(document: query));
     //It can have exception or data
     //log(result.data.toString());
     //json.encode(result.data);
@@ -349,7 +449,7 @@ class VEGoalController extends GetxController {
 
     try {
       GoalActivityModel goalActivityModel =
-          GoalActivityModel.fromJson(result.data!);
+      GoalActivityModel.fromJson(result.data!);
       print("Length of List is ${goalActivityModel.goalActivityList.length}");
       selectedGoalActivityList.value.clear();
       selectedGoalActivityList.value = goalActivityModel.goalActivityList;
@@ -360,18 +460,6 @@ class VEGoalController extends GetxController {
 
   //Get Membership Goal Data
   void getGoalMembershipData(String goalId) async {
-    print("Goal Membership Data $goalId");
-    //Graphql
-    final HttpLink httpLink = HttpLink(
-      Constants.BASEURL,
-      defaultHeaders: {Constants.HEADER_API_KEY: Constants.API_KEY},
-    );
-
-    final GraphQLClient graphqlClient = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
-
     //TO Check place goalID = 1
     ///View Goal - Active
     final query = gql('''query MyQuery {
@@ -398,7 +486,9 @@ class VEGoalController extends GetxController {
 }
 ''');
 
-    var result = await graphqlClient.query(QueryOptions(document: query));
+
+    var result = await GraphQLService.tempClient.query(
+        QueryOptions(document: query));
     //It can have exception or data
     //log(result.data.toString());
     //json.encode(result.data);
@@ -432,16 +522,6 @@ class VEGoalController extends GetxController {
 
   void tempFetchQuery() async {
     print("Query is Initiated");
-    //Graphql
-    final HttpLink httpLink = HttpLink(
-      Constants.BASEURL,
-      defaultHeaders: {Constants.HEADER_API_KEY: Constants.API_KEY},
-    );
-
-    final GraphQLClient graphqlClient = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
 
     ///View Goal - Active
     final query = gql('''query MyQuery {
@@ -517,7 +597,8 @@ class VEGoalController extends GetxController {
 }
 ''');*/
 
-    var result = await graphqlClient.query(QueryOptions(document: query));
+    var result = await GraphQLService.tempClient.query(
+        QueryOptions(document: query));
     //It can have exception or data
     log(result.data.toString());
     //json.encode(result.data);
@@ -528,25 +609,17 @@ class VEGoalController extends GetxController {
     }
   }
 
-  void createGoalMutation(
-      String status, String goalName, String goalDescription) async {
+  void createGoalMutation(String status, String goalName,
+      String goalDescription) async {
     print("Mutation is Initiated");
-    //Graphql
-    final HttpLink httpLink = HttpLink(
-      Constants.BASEURL,
-      defaultHeaders: {Constants.HEADER_API_KEY: Constants.API_KEY},
-    );
-
-    final GraphQLClient graphqlClient = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
 
     String currentDate = DateTime.now().toIso8601String();
 
     String mutation = """
   mutation MyMutation(\$activities: [ActivityIP] = [], \$members: [UserIP] = []) {
-  postGoal(goal: {collabType: "", createdBy: "1", createdDt: "$currentDate", desc: "${goalDescription.trim()}", modifiedBy:"$userId", modifiedDt: "$currentDate", name: "${goalName.trim()}", type: "$status", members: \$members, activities: \$activities, mentor: "", backup: "",status:"ACTIVE"}) {
+  postGoal(goal: {collabType: "", createdBy: "1", createdDt: "$currentDate", desc: "${goalDescription
+        .trim()}", modifiedBy:"$userId", modifiedDt: "$currentDate", name: "${goalName
+        .trim()}", type: "$status", members: \$members, activities: \$activities, mentor: "", backup: "",status:"ACTIVE"}) {
     id
     name
     desc
@@ -560,7 +633,8 @@ class VEGoalController extends GetxController {
 """;
 
     var result =
-        await graphqlClient.mutate(MutationOptions(document: gql(mutation)));
+    await GraphQLService.tempClient.mutate(
+        MutationOptions(document: gql(mutation)));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
     //It can have exception or data
     log(result.data.toString());
@@ -578,6 +652,94 @@ class VEGoalController extends GetxController {
       print("Error is ${responseToShow.graphqlErrors[0].message}");
     } else {
       log("Exception is $responseToShow");
+    }
+  }
+
+  bool checkJDate(DateTime oldDate, DateTime newDate) {
+    //print("Check J Date old Date and New Date ${oldDate} ${newDate}");
+    if (oldDate.year == newDate.year &&
+        oldDate.month == newDate.month &&
+        oldDate.day == newDate.day) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /*
+  {__typename: Mutation, completeTask: null}
+   */
+  void updateJourneyMutation(JourneyMutationEnum tempJEnum,
+      {String taskId = ""}) async {
+    print("Mutation Called is ${tempJEnum}");
+
+    showLoader();
+
+    String mutation = '';
+    switch (tempJEnum) {
+      case JourneyMutationEnum.SkipIt:
+        mutation = '''mutation MyMutation {
+  skipTask(taskId: "$taskId") {
+    id
+    name
+    status
+    time
+    date
+    activityId
+  }
+}
+''';
+        break;
+      case JourneyMutationEnum.MarkasComplete:
+        mutation = '''mutation MyMutation {
+  completeTask(taskId: "$taskId") {
+    id
+    name
+    status
+    time
+    date
+    activityId
+  }
+}
+''';
+        break;
+    }
+
+
+    //TODO Update The UI Accordingly
+    var result = await GraphQLService.tempClient.mutate(
+        MutationOptions(document: gql(mutation)));
+    //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
+    //It can have exception or data
+    log(result.data.toString());
+    //json.encode(result.data);
+    //Hide Progress Bar
+    hidePLoader();
+    if (!shouldContinueFurther("Journey Mutation Failed", result)) {
+      showError("Failed to Mutate Journey Mark as complete");
+      return;
+    }
+  }
+
+  JourneyStatus convertJStatusToJourney(var tempStatus, var tempDate) {
+    if(tempStatus == null){
+      return JourneyStatus.Failed;
+    }
+
+    DateTime updateTempDate = DateTime.tryParse(tempDate) ?? currentDateTime;
+    if(updateTempDate.isAfter(currentDateTime)){
+      return JourneyStatus.Upcoming;
+    }
+
+    var tempString = tempStatus.toString().trim().toLowerCase();
+    if(tempString == "completed"){
+      return JourneyStatus.Success;
+    }else if(tempString == "skipped"){
+      return JourneyStatus.Failed;
+    }else if(tempString != "completed" && updateTempDate.isBefore(currentDateTime)){
+      return JourneyStatus.Overdue;
+    }else{
+      return JourneyStatus.Failed;
     }
   }
 }

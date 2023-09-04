@@ -7,6 +7,7 @@ import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/views/goal_detail/goal_participants_tab.dart';
+import 'package:teamup/views/journey_views/journey_view.dart';
 
 import '../../models/GoalMetaDataModel.dart';
 import '../../utils/app_Images.dart';
@@ -283,7 +284,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
               ? GoalActivityTabPage(isEditingEnabled: widget.isEditingEnabled,)
               : _selectedTabValue == 1
               ? GoalParticipantsTabPage()
-              : Container()),
+              : Journey_View(isGoalTab: true,)),
     );
   }
 }
