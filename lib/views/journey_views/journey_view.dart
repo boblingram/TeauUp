@@ -11,6 +11,7 @@ import '../../utils/app_colors.dart';
 
 class Journey_View extends StatefulWidget {
   final bool isGoalTab;
+
   const Journey_View({super.key, this.isGoalTab = false});
 
   @override
@@ -68,10 +69,11 @@ class _Journey_ViewState extends State<Journey_View> {
                       veGoalController.currentDateTime, newDate)) {
                     //This is Today
                     section = "Today";
-                  } else if (newDate.isAfter(veGoalController.currentDateTime)) {
+                  } else if (newDate
+                      .isAfter(veGoalController.currentDateTime)) {
                     //This is Upcoming
                     section = "Upcoming";
-                    if(!hasUpcomingDateAssigned){
+                    if (!hasUpcomingDateAssigned) {
                       upcomingDate = newDate;
                       hasUpcomingDateAssigned = true;
                     }
@@ -94,10 +96,10 @@ class _Journey_ViewState extends State<Journey_View> {
                   // Determine if the section text should be displayed.
                   bool showSectionText = showJourneyDate && section.isNotEmpty;
 
-                  if(showSectionText && section == "Upcoming"){
-                    if(upcomingDate != null && veGoalController.checkJDate(upcomingDate!, newDate)){
-
-                    }else{
+                  if (showSectionText && section == "Upcoming") {
+                    if (upcomingDate != null &&
+                        veGoalController.checkJDate(upcomingDate!, newDate)) {
+                    } else {
                       showSectionText = false;
                     }
                   }
@@ -142,7 +144,8 @@ class _Journey_ViewState extends State<Journey_View> {
                           veGoalController.convertStringToNotNull(item.name),
                       descText:
                           veGoalController.convertStringToNotNull(item.desc),
-                      journeyStatus: veGoalController.convertJStatusToJourney(item.status, item.date),
+                      journeyStatus: veGoalController.convertJStatusToJourney(
+                          item.status, item.date),
                       showDateSorted: showSectionText,
                       dateSortedText: section);
                 })
@@ -241,7 +244,9 @@ class IndividualJourneyItemWidget extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Text(
                                   dateSortedText,
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
                                 ),
                               )
                             ],
@@ -278,7 +283,20 @@ class IndividualJourneyItemWidget extends StatelessWidget {
                   child: showDate
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [Text(dateText), Text(weekDayText)],
+                          children: [
+                            Text(
+                              dateText,
+                              maxLines: 1,
+                              textAlign: TextAlign.end,
+                              style: TextStyle(fontSize: 10.sp),
+                            ),
+                            Text(
+                              weekDayText,
+                              maxLines: 1,
+                              textAlign: TextAlign.end,
+                              style: TextStyle(fontSize: 10.sp),
+                            )
+                          ],
                         )
                       : Container()),
               //Activity Tick with Vertical
@@ -365,9 +383,11 @@ class IndividualJourneyItemWidget extends StatelessWidget {
                           ? Row(
                               children: [
                                 CustomButton(
-                                  text: AppStrings.defaultMarkasComplete, onTap: (){
-                                    veGoalController.updateJourneyMutation(JourneyMutationEnum.MarkasComplete);
-                                },
+                                  text: AppStrings.defaultMarkasComplete,
+                                  onTap: () {
+                                    veGoalController.updateJourneyMutation(
+                                        JourneyMutationEnum.MarkasComplete);
+                                  },
                                 ),
                                 SizedBox(
                                   width: 5,
@@ -380,9 +400,11 @@ class IndividualJourneyItemWidget extends StatelessWidget {
                                       ),
                                       borderRadius: BorderRadius.circular(3)),
                                   textStyle: TextStyle(
-                                      fontSize: 12, color: Colors.red), onTap: (){
-                                  veGoalController.updateJourneyMutation(JourneyMutationEnum.SkipIt);
-                                },
+                                      fontSize: 12, color: Colors.red),
+                                  onTap: () {
+                                    veGoalController.updateJourneyMutation(
+                                        JourneyMutationEnum.SkipIt);
+                                  },
                                 )
                               ],
                             )
@@ -405,7 +427,8 @@ class CustomButton extends StatelessWidget {
   final TextStyle? textStyle;
 
   CustomButton(
-      {super.key,required this.onTap,
+      {super.key,
+      required this.onTap,
       this.paddingButton,
       this.text = AppStrings.defaultMarkasComplete,
       this.boxDecoration,
@@ -414,7 +437,7 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         onTap();
       },
       child: Container(

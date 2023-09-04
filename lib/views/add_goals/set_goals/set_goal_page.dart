@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/mixins/baseClass.dart';
+import 'package:teamup/utils/GoalIconandColorStatic.dart';
 import 'package:teamup/utils/app_Images.dart';
 import 'package:teamup/utils/app_colors.dart';
 import 'package:teamup/widgets/CreateGoalMetaDataView.dart';
@@ -11,29 +12,7 @@ import '../describe_goal/describe_goal_page.dart';
 
 class SetGoalPage extends StatelessWidget with BaseClass {
   SetGoalPage({Key? key}) : super(key: key);
-  final List<String> goalList = [
-    "Wellness",
-    "Yoga",
-    "Study",
-    "Cycling",
-    "Running",
-    "Walking",
-    "Gym",
-    "Introspection",
-    "Custom"
-  ];
 
-  final List<String> goalColorList = [
-    AppColors.wellnessIconBG,
-    AppColors.yogaIconBG,
-    AppColors.studyIconBG,
-    AppColors.cyclingIconBG,
-    AppColors.runningIconBG,
-    AppColors.walkingIconBG,
-    AppColors.gymIconBG,
-    AppColors.introspectionIconBG,
-    AppColors.customIconBG
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +34,7 @@ class SetGoalPage extends StatelessWidget with BaseClass {
             child: Container(
               child: GridView.builder(
                 padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 5.w),
-                itemCount: goalList.length,
+                itemCount: GoalIconandColorStatic.goalList.length,
                 shrinkWrap: true,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
@@ -67,7 +46,7 @@ class SetGoalPage extends StatelessWidget with BaseClass {
                       pushToNextScreen(
                         context: context,
                         destination: DescribeGoalPage(
-                          selectedGoal: goalList.elementAt(index),
+                          selectedGoal: GoalIconandColorStatic.goalList.elementAt(index),
                         ),
                       );
                     },
@@ -79,10 +58,10 @@ class SetGoalPage extends StatelessWidget with BaseClass {
                           height: 9.h,
                           width: 9.h,
                           decoration: BoxDecoration(
-                            color: HexColor(goalColorList.elementAt(index)),
+                            color: HexColor(GoalIconandColorStatic.goalColorList.elementAt(index)),
                             shape: BoxShape.circle,
                           ),
-                          child: goalList.elementAt(index) == "Custom"
+                          child: GoalIconandColorStatic.goalList.elementAt(index) == "Custom"
                               ? Icon(
                                   Icons.add,
                                   size: 12.w,
@@ -91,15 +70,15 @@ class SetGoalPage extends StatelessWidget with BaseClass {
                               : Padding(
                                   padding: EdgeInsets.all(4.w),
                                   child: Image.asset(
-                                      getImageName(goalList.elementAt(index)))),
+                                      GoalIconandColorStatic.getImageName(GoalIconandColorStatic.goalList.elementAt(index)))),
                         ),
                         const SizedBox(
                           height: 10,
                         ),
                         Text(
-                          goalList.elementAt(index),
+                          GoalIconandColorStatic.goalList.elementAt(index),
                           style: GoogleFonts.roboto(
-                            color: HexColor(goalColorList.elementAt(index)),
+                            color: HexColor(GoalIconandColorStatic.goalColorList.elementAt(index)),
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
@@ -114,27 +93,5 @@ class SetGoalPage extends StatelessWidget with BaseClass {
         ],
       ),
     );
-  }
-
-  String getImageName(String elementAt) {
-    switch (elementAt) {
-      case "Wellness":
-        return AppImages.wellnessIcon;
-      case "Walking":
-        return AppImages.walkingIcon;
-      case "Yoga":
-        return AppImages.yogaIcon;
-      case "Study":
-        return AppImages.studyIcon;
-      case "Running":
-        return AppImages.runningIcon;
-      case "Gym":
-        return AppImages.gymIcon;
-      case "Introspection":
-        return AppImages.introspectionIcon;
-      case "Cycling":
-      default:
-        return AppImages.cyclingIcon;
-    }
   }
 }

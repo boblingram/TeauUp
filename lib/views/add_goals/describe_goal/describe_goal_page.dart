@@ -14,6 +14,7 @@ import 'package:teamup/widgets/edittext_with_hint.dart';
 import 'package:teamup/widgets/rounded_edge_button.dart';
 
 import '../../../controllers/GoalController.dart';
+import '../../../utils/GoalIconandColorStatic.dart';
 import '../../../utils/app_Images.dart';
 import '../../../widgets/CreateGoalMetaDataView.dart';
 import '../create_goal_activities/create_goal_activities_page.dart';
@@ -75,51 +76,6 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
     }
   }
 
-  String getColorName(String selectedGoal) {
-    switch (selectedGoal) {
-      case "Wellness":
-        return AppColors.wellnessIconBG;
-      case "Yoga":
-        return AppColors.yogaIconBG;
-      case "Study":
-        return AppColors.studyIconBG;
-      case "Cycling":
-        return AppColors.cyclingIconBG;
-      case "Running":
-        return AppColors.runningIconBG;
-      case "Walking":
-        return AppColors.walkingIconBG;
-      case "Gym":
-        return AppColors.gymIconBG;
-      case "Introspection":
-        return AppColors.introspectionIconBG;
-      default:
-        return AppColors.customIconBG;
-    }
-  }
-
-  String getImageName(String elementAt) {
-    switch (elementAt){
-      case "Wellness":
-        return AppImages.wellnessIcon;
-      case "Walking":
-        return AppImages.walkingIcon;
-      case "Yoga":
-        return AppImages.yogaIcon;
-      case "Study":
-        return AppImages.studyIcon;
-      case "Running":
-        return AppImages.runningIcon;
-      case "Gym":
-        return AppImages.gymIcon;
-      case "Introspection":
-        return AppImages.introspectionIcon;
-      case "Cycling":
-      default:
-        return AppImages.cyclingIcon;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,12 +116,12 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                                   height: 6.w,
                                   width: 6.w,
                                   decoration: BoxDecoration(
-                                    color: HexColor(getColorName(widget.selectedGoal)),
+                                    color: HexColor(GoalIconandColorStatic.getColorName(widget.selectedGoal)),
                                     shape: BoxShape.circle,
                                   ),
                                   child: Padding(
                                       padding: EdgeInsets.all(0.9.w),
-                                      child: Image.asset(getImageName(widget.selectedGoal))),
+                                      child: Image.asset(GoalIconandColorStatic.getImageName(widget.selectedGoal))),
                                 ),
                           const SizedBox(
                             width: 10,
@@ -298,11 +254,11 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                                     height: 6.w,
                                     width: 6.w,
                                     decoration: BoxDecoration(
-                                        color: HexColor(getColorName(widget.selectedGoal)),
+                                        color: HexColor(GoalIconandColorStatic.getColorName(widget.selectedGoal)),
                                         shape: BoxShape.circle),
                               child: Padding(
                                   padding: EdgeInsets.all(0.9.w),
-                                  child: Image.asset(getImageName(widget.selectedGoal))),
+                                  child: Image.asset(GoalIconandColorStatic.getImageName(widget.selectedGoal))),
                                   ),
                             const SizedBox(
                               width: 5,

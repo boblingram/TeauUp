@@ -5,6 +5,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
+import 'package:teamup/utils/GoalIconandColorStatic.dart';
 import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/views/goal_detail/goal_participants_tab.dart';
 import 'package:teamup/views/journey_views/journey_view.dart';
@@ -31,51 +32,6 @@ class _GoalDetailPageState extends State<GoalDetailPage>
   int _selectedTabValue = 0;
 
   VEGoalController veGoalController = Get.put(VEGoalController());
-
-  String getColorName(String selectedGoal) {
-    switch (selectedGoal) {
-      case "Wellness":
-        return AppColors.wellnessIconBG;
-      case "Yoga":
-        return AppColors.yogaIconBG;
-      case "Study":
-        return AppColors.studyIconBG;
-      case "Cycling":
-        return AppColors.cyclingIconBG;
-      case "Running":
-        return AppColors.runningIconBG;
-      case "Walking":
-        return AppColors.walkingIconBG;
-      case "Gym":
-        return AppColors.gymIconBG;
-      case "Introspection":
-        return AppColors.introspectionIconBG;
-      default:
-        return AppColors.customIconBG;
-    }
-  }
-
-  String getImageName(String elementAt) {
-    switch (elementAt){
-      case "Wellness":
-        return AppImages.wellnessIcon;
-      case "Walking":
-        return AppImages.walkingIcon;
-      case "Yoga":
-        return AppImages.yogaIcon;
-      case "Study":
-        return AppImages.studyIcon;
-      case "Running":
-        return AppImages.runningIcon;
-      case "Gym":
-        return AppImages.gymIcon;
-      case "Introspection":
-        return AppImages.introspectionIcon;
-      case "Cycling":
-      default:
-        return AppImages.cyclingIcon;
-    }
-  }
 
   @override
   void initState() {
@@ -146,12 +102,12 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                                   height: 11.w,
                                   width: 11.w,
                                   decoration: BoxDecoration(
-                                    color: HexColor(getColorName(widget.userGoalPerInfo.goalInfo.type ?? AppStrings.defaultType)),
+                                    color: HexColor(GoalIconandColorStatic.getColorName(widget.userGoalPerInfo.goalInfo.type ?? AppStrings.defaultType)),
                                     shape: BoxShape.circle,
                                   ),
                                   child: Padding(
                                       padding: EdgeInsets.all(1.w),
-                                      child: Image.asset(getImageName(widget.userGoalPerInfo.goalInfo.type ?? AppStrings.defaultType))),
+                                      child: Image.asset(GoalIconandColorStatic.getImageName(widget.userGoalPerInfo.goalInfo.type ?? AppStrings.defaultType))),
                                 ),
                                 const SizedBox(
                                   width: 10,
