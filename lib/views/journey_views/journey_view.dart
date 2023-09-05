@@ -130,9 +130,11 @@ class _Journey_ViewState extends State<Journey_View> {
           journeyDateSorted["Yesterday"] = true;
         }
       }*/
+                  var journeyStatus = veGoalController.convertJStatusToJourney(
+                      item.status, item.date);
 
                   return IndividualJourneyItemWidget(
-                      showButtons: index % 2 != 0,
+                      showButtons: journeyStatus != JourneyStatus.Failed && journeyStatus != JourneyStatus.Success,
                       showDate: showJourneyDate,
                       timeText:
                           veGoalController.convertJTimeToTimeText(item.time),
@@ -144,8 +146,7 @@ class _Journey_ViewState extends State<Journey_View> {
                           veGoalController.convertStringToNotNull(item.name),
                       descText:
                           veGoalController.convertStringToNotNull(item.desc),
-                      journeyStatus: veGoalController.convertJStatusToJourney(
-                          item.status, item.date),
+                      journeyStatus: journeyStatus,
                       showDateSorted: showSectionText,
                       dateSortedText: section);
                 })
@@ -376,9 +377,6 @@ class IndividualJourneyItemWidget extends StatelessWidget {
                         height: 0.5.h,
                       ),
                       Text(descText),
-                      SizedBox(
-                        height: 0.5.h,
-                      ),
                       showButtons
                           ? Row(
                               children: [

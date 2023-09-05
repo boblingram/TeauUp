@@ -131,7 +131,7 @@ class GoalParticipantsTabPage extends StatelessWidget {
                           index == 0 ? FontWeight.w700 : FontWeight.w400),
                 ),
                 Text(
-                    veGoalController.convertStringToNotNull(item.mentor).isEmpty ? "" :"You are mentored by ${veGoalController.convertStringToNotNull(item.mentor)}",
+                    veGoalController.convertStringToNotNull(item.mentor).isEmpty ? "" :"You are mentored by ${veGoalController.convertStringToNotNull(item.mentor?.fullname)}",
                   style: GoogleFonts.roboto(
                       color: Colors.black,
                       fontWeight:

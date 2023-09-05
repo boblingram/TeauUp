@@ -18,25 +18,27 @@ class GoalMemberModel{
   };*/
 }
 
-//TODO Update the IndividualGoal Comment
 class IndividualGoalMemberModel{
-  //List of ISO String Dates
+  //String
   var createdBy;
-  // String
+  // ISO Date String
   var createdDt;
-  // It is value entered in daily tab - It is String but need to convert to int and append min at end
+  //String
   var deviceId;
-  // ISO String
+  //String
   var fullname;
-  //Activity ID
+  //String
   var id;
-  //List of days [n1,n2….nz] where 1>=n<=31 selected in Monthly days
-  var mentor;
+
+  // In Mentor.mentor would always be null
+  IndividualGoalMemberModel? mentor;
+
   //String
   var modifiedBy;
-  //ISO String time
+
+  //ISO String
   var modifiedDt;
-  //ISO String time
+  //String
   var ph;
 
   IndividualGoalMemberModel({
@@ -59,7 +61,7 @@ class IndividualGoalMemberModel{
     fullname: json["fullname"],
     modifiedDt: json["modifiedDt"],
     modifiedBy: json["modifiedBy"],
-    mentor: json["mentor"],
+    mentor: json["mentor"] == null ? null : IndividualGoalMemberModel.fromJson(json["mentor"]),
     deviceId: json["deviceId"]
   );
 
