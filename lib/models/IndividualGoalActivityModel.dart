@@ -1,4 +1,4 @@
-class GoalActivityModel{
+class GoalActivityModel {
   String typename;
   List<IndividualGoalActivityModel> goalActivityList;
 
@@ -7,68 +7,91 @@ class GoalActivityModel{
     required this.goalActivityList,
   });
 
-  factory GoalActivityModel.fromJson(Map<String, dynamic> json) => GoalActivityModel(
-    typename: json["__typename"] ?? "",
-    goalActivityList: List<IndividualGoalActivityModel>.from(json["goalActivities"].map((x) => IndividualGoalActivityModel.fromJson(x))),
-  );
+  factory GoalActivityModel.fromJson(Map<String, dynamic> json) =>
+      GoalActivityModel(
+        typename: json["__typename"] ?? "",
+        goalActivityList: List<IndividualGoalActivityModel>.from(
+            json["goalActivities"]
+                .map((x) => IndividualGoalActivityModel.fromJson(x))),
+      );
 
 /*Map<String, dynamic> toJson() => {
     "__typename": typename,
     "goalDetailModel": List<dynamic>.from(goalDetailList.map((x) => x.toJson())),
   };*/
 }
-class IndividualGoalActivityModel{
+
+class IndividualGoalActivityModel {
   //List of ISO String Dates
   var customDay;
+
   // String
   var desc;
+
   // It is value entered in daily tab - It is String but need to convert to int and append min at end
   var duration;
+
   // ISO String
   var endDt;
+
   //Daily|Weekly|Monthly|Custom -> It is String out of these
   var freq;
+
   //Activity ID
   var id;
+
   //List of days [n1,n2….nz] where 1>=n<=31 selected in Monthly days
   var monthDay;
+
   //String
   var name;
+
   //ISO String time
   var reminder;
+
   //ISO String time
   var time;
+
   //List of days [n1,n2….nz] where 1>=n<=7 selected in Weekly days
   var weekDay;
 
-  IndividualGoalActivityModel({
-    this.id,
-    this.customDay,
-    this.name,
-    this.duration,
-    this.endDt,
-    this.desc,
-    this.freq,
-    this.monthDay,
-    this.reminder,
-    this.time,
-    this.weekDay
-  });
+  IndividualGoalActivityModel(
+      {this.id,
+      this.customDay,
+      this.name,
+      this.duration,
+      this.endDt,
+      this.desc,
+      this.freq,
+      this.monthDay,
+      this.reminder,
+      this.time,
+      this.weekDay});
 
-  factory IndividualGoalActivityModel.fromJson(Map<String, dynamic> json) => IndividualGoalActivityModel(
-      id: json["id"],
-      customDay: json["customDay"],
-      name: json["name"],
-      duration: json["duration"],
-      endDt: json["endDt"],
-      desc: json["desc"],
-      freq: json["freq"],
-      monthDay: json["monthDay"],
-      reminder: json["reminder"],
-      time: json["time"],
-      weekDay: json["weekDay"],
-  );
+  factory IndividualGoalActivityModel.fromJson(Map<String, dynamic> json) =>
+      IndividualGoalActivityModel(
+        id: json["id"],
+        customDay: json["customDay"],
+        name: json["name"],
+        duration: json["duration"],
+        endDt: json["endDt"],
+        desc: json["desc"],
+        freq: json["freq"],
+        monthDay: json["monthDay"],
+        reminder: json["reminder"],
+        time: json["time"],
+        weekDay: json["weekDay"],
+      );
 
+  @override
+  String toString() {
+    return "Id is $id, custom day is ${customDay.toString()}, "
+        "name is ${name.toString()}, duration is ${duration.toString()}, "
+        "endDt is ${endDt.toString()}, desc is ${desc.toString()}, "
+        "freq is ${freq.toString()}, monthDay is ${monthDay.toString()}, "
+        "reminder is ${reminder.toString()}, time is ${time.toString()}"
+        "week day is ${weekDay.toString()}";
+  }
 }
 //Sample
 /*

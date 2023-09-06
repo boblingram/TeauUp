@@ -4,25 +4,24 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/controllers/VEGoalController.dart';
+import 'package:teamup/models/IndividualGoalActivityModel.dart';
 import 'package:teamup/utils/app_colors.dart';
 import 'package:teamup/widgets/edittext_with_hint.dart';
 import 'package:teamup/widgets/rounded_edge_button.dart';
 
-class EditGoalNDView extends StatefulWidget {
-  final String name;
-  final String description;
+class EditGoalActivityView extends StatefulWidget {
+  final IndividualGoalActivityModel activityModel;
 
-  const EditGoalNDView(
-      {super.key, required this.name, required this.description});
+  const EditGoalActivityView(
+      {super.key, required this.activityModel});
 
   @override
-  State<EditGoalNDView> createState() => _EditGoalNDViewState();
+  State<EditGoalActivityView> createState() => _EditGoalNDViewState();
 }
 
-class _EditGoalNDViewState extends State<EditGoalNDView> {
+class _EditGoalNDViewState extends State<EditGoalActivityView> {
 
-  late TextEditingController goalNTC;
-  late TextEditingController goalDTC;
+  late TextEditingController activityNC;
 
   var isNextAllowed = true.obs;
 
@@ -30,32 +29,20 @@ class _EditGoalNDViewState extends State<EditGoalNDView> {
 
   @override
   void initState() {
-    goalNTC = TextEditingController(text: widget.name);
-    goalDTC = TextEditingController(text: widget.description);
+    activityNC = TextEditingController(text: widget.activityModel.name ?? "");
     super.initState();
 
-    goalNTC.addListener(_handleTextChanged);
-    goalDTC.addListener(_handleTextChanged);
   }
 
 
   @override
   void dispose() {
-    goalNTC.removeListener(_handleTextChanged);
-    goalDTC.removeListener(_handleTextChanged);
-    goalNTC.dispose();
-    goalDTC.dispose();
+    activityNC.dispose();
     super.dispose();
   }
 
-  void _handleTextChanged() {
-    isNextAllowed.value = goalNTC.text
-        .trim()
-        .isNotEmpty &&
-        goalDTC.text
-            .trim()
-            .isNotEmpty;
-  }
+  var selectedFrequencyIndex = 0.obs;
+
 
 
   @override
@@ -78,7 +65,7 @@ class _EditGoalNDViewState extends State<EditGoalNDView> {
           ),
         ),
         Text(
-          "Goal Name",
+          "Activity Name",
           style: GoogleFonts.roboto(
             color: Colors.black,
             fontSize: 16,
@@ -91,48 +78,38 @@ class _EditGoalNDViewState extends State<EditGoalNDView> {
               border: Border.all(color: Colors.grey),
               borderRadius: BorderRadius.circular(5)),
           child: EditTextWithHint(
-              hintText: "Enter Goal Name",
+              hintText: "Enter Activity Name",
               context: context,
               leftMargin: 0,
               rightMargin: 0,
               radius: 5,
               textEditingController:
-              goalNTC,
+              activityNC,
               inputAction: TextInputAction.done,
               inputType: TextInputType.text),
         ),
+
+        const SizedBox(
+          height: 15,
+        ),
+        ///Frequency
         Text(
-          "Goal Description",
+          "Frequency",
           style: GoogleFonts.roboto(
-            color: Colors.black,
+            color: Colors.grey.shade900,
             fontSize: 16,
             fontWeight: FontWeight.w400,
           ),
         ),
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(5)),
-          child: EditTextWithHint(
-              hintText: "",
-              maxLines: 6,
-              context: context,
-              leftMargin: 0,
-              rightMargin: 0,
-              textEditingController:
-              goalDTC,
-              inputAction: TextInputAction.done,
-              inputType: TextInputType.text),
-        ),
         const SizedBox(
-          height: 15,
+          height: 10,
         ),
+        SizedBox(height: 1.h,),
         Obx(()=>RoundedEdgeButton(
             backgroundColor: isNextAllowed.value
                 ? Colors.red
                 : Colors.grey,
-            text: "Next",
+            text: "Done",
             leftMargin: 0,
             rightMargin: 0,
             topMargin: 20,
@@ -142,7 +119,7 @@ class _EditGoalNDViewState extends State<EditGoalNDView> {
                 //TODO Show Error
                 return;
               }
-              veGoalController.updateGoalND(goalNTC.text.trim(),goalDTC.text.trim());
+              veGoalController.updateActivityModel(widget.activityModel);
             },
             context: context))
       ],

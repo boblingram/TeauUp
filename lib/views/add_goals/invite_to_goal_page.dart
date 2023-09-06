@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:teamup/controllers/GoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
 
 import '../../utils/app_colors.dart';
@@ -19,6 +21,8 @@ class _InviteToGoalPageState extends State<InviteToGoalPage>
     with BaseClass, SingleTickerProviderStateMixin {
   TabController? controller;
   int _selectedTabValue = 0;
+
+  final GoalController goalController = Get.find();
 
   @override
   void initState() {
@@ -69,7 +73,7 @@ class _InviteToGoalPageState extends State<InviteToGoalPage>
               SliverAppBar(
                 pinned: true,
                 elevation: 0,
-                automaticallyImplyLeading: true,
+                automaticallyImplyLeading: false,
                 backgroundColor: AppColors.goalAppBarColor,
                 flexibleSpace: FlexibleSpaceBar(
                   collapseMode: CollapseMode.pin,
@@ -77,8 +81,10 @@ class _InviteToGoalPageState extends State<InviteToGoalPage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       CreateGoalMetaDataView(
-                          showBack: false,
-                          onPressed: () {},
+                        showBack: true,
+                          onPressed: () {
+                            Get.back();
+                          },
                           sliderText: "4/4",
                           sliderValue: 120,
                           goalMetaTitle: "Invite",

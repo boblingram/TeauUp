@@ -14,3 +14,8 @@ enum NotificationMutationEnum{
   MarkasRead,
   Delete
 }
+
+enum GoalCreatedSuccessPageEnum{
+  GoalSuccessPage,
+  GoalCreateActivityPage
+}

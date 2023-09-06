@@ -14,6 +14,7 @@ import 'package:teamup/utils/Enums.dart';
 import 'package:teamup/utils/GraphQLService.dart';
 import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/utils/json_constants.dart';
+import 'package:teamup/widgets/EditGoalActivityView.dart';
 
 import '../models/IndividualGoalActivityModel.dart';
 import '../utils/Constants.dart';
@@ -264,6 +265,18 @@ class VEGoalController extends GetxController {
         backgroundColor: Colors.white);
   }
 
+  void editGoalActivitySheet(IndividualGoalActivityModel activityId) {
+    print("Edit Individual Activity Sheet");
+    Get.bottomSheet(
+        Padding(
+          padding: EdgeInsets.fromLTRB(4.w, 1.h, 4.w, 5.h),
+          child: EditGoalActivityView(
+            activityModel: activityId,
+          ),
+        ),
+        backgroundColor: Colors.white);
+  }
+
   /*
   {__typename: Mutation, updateGoalMeta: {__typename: Goal, id: f9f004da-d869-4a6b-b530-ff15956d1f8b, name: Goal - Cycling, desc: This goal will help us to focus on improving health. Focus would be on the topic such as stamina.}}
    */
@@ -309,10 +322,6 @@ class VEGoalController extends GetxController {
       return false;
     }
     return true;
-  }
-
-  void editGoalActivitySheet(String activityId) {
-    print("Edit Individual Activity Sheet");
   }
 
   /*
@@ -520,132 +529,6 @@ class VEGoalController extends GetxController {
     }
   }
 
-  void tempFetchQuery() async {
-    print("Query is Initiated");
-
-    ///View Goal - Active
-    final query = gql('''query MyQuery {
-  userGoalsWithPerfInfo(userId: "1") {
-    goalInfo {
-      activities
-      backup
-      collabType
-      createdBy
-      createdDt
-      desc
-      endDate
-      id
-      members {
-        mentorId
-        userId
-      }
-      mentor
-      modifiedBy
-      modifiedDt
-      name
-      status
-      type
-    }
-    perfInfo {
-      mainStreak
-      totalXP
-      totalDays
-    }
-  }
-}
-''');
-
-    ///View Goal - Inside Active
-    /*final query = gql('''query MyQuery {
-  goalActivities(goalId: "1") {
-    customDay
-    desc
-    duration
-    endDt
-    freq
-    id
-    monthDay
-    name
-    reminder
-    time
-    weekDay
-  }
-}
-''');*/
-
-    ///View Goal - Participants
-    /*final query = gql('''query MyQuery {
-  goalMembers(goalId: "1") {
-    createdDt
-    deviceId
-    fullname
-    id
-    ph
-  }
-}
-''');*/
-
-    /*///View Journey
-    final query = gql('''query viewJourney {
-  userJourney(userId: "1") {
-    date
-    id
-    name
-    status
-    time
-  }
-}
-''');*/
-
-    var result = await GraphQLService.tempClient.query(
-        QueryOptions(document: query));
-    //It can have exception or data
-    log(result.data.toString());
-    //json.encode(result.data);
-    if (result.data == null && result.exception != null) {
-      //No Data Received from Server;
-      parseError(result.exception, "FetchLeaderboardList");
-      return;
-    }
-  }
-
-  void createGoalMutation(String status, String goalName,
-      String goalDescription) async {
-    print("Mutation is Initiated");
-
-    String currentDate = DateTime.now().toIso8601String();
-
-    String mutation = """
-  mutation MyMutation(\$activities: [ActivityIP] = [], \$members: [UserIP] = []) {
-  postGoal(goal: {collabType: "", createdBy: "1", createdDt: "$currentDate", desc: "${goalDescription
-        .trim()}", modifiedBy:"$userId", modifiedDt: "$currentDate", name: "${goalName
-        .trim()}", type: "$status", members: \$members, activities: \$activities, mentor: "", backup: "",status:"ACTIVE"}) {
-    id
-    name
-    desc
-    createdDt
-    activities
-    members
-    mentor
-    backup
-  }
-}
-""";
-
-    var result =
-    await GraphQLService.tempClient.mutate(
-        MutationOptions(document: gql(mutation)));
-    //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
-    //It can have exception or data
-    log(result.data.toString());
-    //json.encode(result.data);
-    if (result.data == null && result.exception != null) {
-      //No Data Received from Server;
-      parseError(result.exception, "FetchLeaderboardList");
-      return;
-    }
-  }
-
   void parseError(OperationException? responseToShow, String apiCallFrom) {
     print("Error in $apiCallFrom");
     if (responseToShow != null && responseToShow.graphqlErrors.isNotEmpty) {
@@ -741,5 +624,14 @@ class VEGoalController extends GetxController {
     }else{
       return JourneyStatus.Failed;
     }
+  }
+
+  void updateActivityModel(IndividualGoalActivityModel activityModel) {
+    print("Updated Activity Model is ${activityModel.toString()}");
+  }
+
+  void refreshGoalActivityList() {
+    GraphQLService.tempClient.resetStore(refetchQueries: false);
+    getGoalActivitiesData(goalId);
   }
 }

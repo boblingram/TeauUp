@@ -46,8 +46,8 @@ class _GoalDetailPageState extends State<GoalDetailPage>
   }
 
   void fetchGoalDetailData(){
-    String goalId = "1";
-    //String goalId = veGoalController.goalId;
+    //String goalId = "1";
+    String goalId = veGoalController.goalId;
     veGoalController.getGoalActivitiesData(goalId);
     veGoalController.getGoalMembershipData(goalId);
   }

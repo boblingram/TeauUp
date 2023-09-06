@@ -282,15 +282,20 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                       rightMargin: 0,
                       topMargin: 20,
                       buttonRadius: 5,
-                      onPressed: () {
+                      onPressed: ()async {
                         if(!isNextAllowed.value){
                           //TODO Show Error
                           return;
                         }
-                        _goalController.updateNameAndDescription(goalNTC.text.trim(),goalDTC.text.trim(),widget.selectedGoal);
-                        pushToNextScreen(
-                            context: context,
-                            destination: CreateGoalActivities());
+                        bool shouldProceed = await _goalController.updateNameAndDescription(goalNTC.text.trim(),goalDTC.text.trim(),widget.selectedGoal);
+                        if(shouldProceed){
+                          pushToNextScreen(
+                              context: context,
+                              destination: CreateGoalActivities());
+                        }else{
+                          showError(title: "Failed", message: "Please try again!");
+                        }
+
                       },
                       context: context)),
                 ],

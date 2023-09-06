@@ -26,7 +26,7 @@ class CreateGoalMetaDataView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 1.5.h,),
+          SizedBox(height: 3.h,),
           showBack ? InkWell(
             onTap: () {
               onPressed();

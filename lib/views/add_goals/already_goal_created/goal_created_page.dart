@@ -3,19 +3,24 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:teamup/mixins/baseClass.dart';
+import 'package:teamup/utils/Enums.dart';
 import 'package:teamup/views/HomeView.dart';
 
+import '../../../controllers/GoalController.dart';
 import '../../../utils/app_colors.dart';
 
 class GoalCreatedPage extends StatelessWidget with BaseClass{
-  const GoalCreatedPage({Key? key}) : super(key: key);
+  GoalCreatedPage({Key? key}) : super(key: key);
+
+  final GoalController goalController = Get.find();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: InkWell(
         onTap: (){
-          pushReplaceAndClearStack(context: context, destination: HomeView());
+          //pushReplaceAndClearStack(context: context, destination: HomeView());
+          goalController.resetCreateGoalAndActivity(GoalCreatedSuccessPageEnum.GoalSuccessPage);
         },
         child: Container(
           height: 45,

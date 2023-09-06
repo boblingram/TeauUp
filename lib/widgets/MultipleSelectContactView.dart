@@ -144,7 +144,7 @@ class _MultiSelectContactsState extends State<MultiSelectContacts> {
               bottomMargin: 20,
               onPressed: () {
                 //Close
-                Get.back();
+                Get.back(result: selectedContactList.value);
               },
               context: context),
         )
