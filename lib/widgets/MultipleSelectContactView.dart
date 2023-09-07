@@ -130,7 +130,7 @@ class _MultiSelectContactsState extends State<MultiSelectContacts> {
                   ),
                 )),
             Expanded(
-                child: searchContacts.isEmpty ? getSearchList(widget.contactsList) : getSearchList(searchContacts)),
+                child: Obx(()=>searchContacts.isEmpty ? getSearchList(widget.contactsList) : getSearchList(searchContacts))),
           ],
         ),
         Align(
@@ -165,14 +165,11 @@ class _MultiSelectContactsState extends State<MultiSelectContacts> {
             itemCount: phoneList.length ?? 0 ,
               itemBuilder: (context, position2){
               var phoneDetail = phoneList.elementAt(position2);
-              print("Label and Phone is ${phoneDetail?.label} & ${phoneDetail?.value}");
             return Container(
               margin: EdgeInsets.fromLTRB(10, 5, 10, 5),
               padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
               child: InkWell(
                 onTap: () {
-                  print("on Tap");
-                  //TODO Add or Remove the contact on tap
                   if (selectedContactList
                       .contains(individualContact)) {
                     selectedContactList.remove(individualContact);
