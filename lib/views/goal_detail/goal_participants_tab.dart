@@ -35,14 +35,14 @@ class GoalParticipantsTabPage extends StatelessWidget {
                       fontSize: 18,
                     ),
                   ),
-                  Text(
-                    " 6",
+                  Obx(()=>Text(
+                    " ${veGoalController.selectedGoalMemberList.length}",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.roboto(
                       color: AppColors.black,
                       fontSize: 18,
                     ),
-                  ),
+                  ),)
                 ],
               ),
             ),
@@ -59,16 +59,19 @@ class GoalParticipantsTabPage extends StatelessWidget {
               child:
                   Obx(() => veGoalController.selectedGoalMemberList.isNotEmpty
                       ? ListView.builder(
-                          itemCount: veGoalController.selectedGoalMemberList.length,
+                          itemCount: veGoalController.selectedGoalMemberList.length + 1,
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemBuilder: (BuildContext context, int index) {
-                            var item = veGoalController.selectedGoalMemberList.elementAt(index);
+                            var item;
+                            if(index < veGoalController.selectedGoalMemberList.length){
+                              item = veGoalController.selectedGoalMemberList.elementAt(index);
+                            }
                             return index == veGoalController.selectedGoalMemberList.length
                                 ? addMoreWidget()
                                 : getInvitedMembers(item, index);
                           })
-                      : Container()),
+                      : addMoreWidget()),
             )
           ],
         ),
@@ -77,24 +80,29 @@ class GoalParticipantsTabPage extends StatelessWidget {
   }
 
   Widget addMoreWidget() {
-    return Container(
-      height: 45,
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      child: Row(
-        children: [
-          const Icon(
-            Icons.add_circle,
-            color: Colors.black,
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Text(
-            "Add more participants",
-            style: GoogleFonts.roboto(
-                color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600),
-          ),
-        ],
+    return InkWell(
+      onTap: (){
+        veGoalController.addMoreParticipants();
+      },
+      child: Container(
+        height: 45,
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.add_circle,
+              color: Colors.black,
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Text(
+              "Add more participants",
+              style: GoogleFonts.roboto(
+                  color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
       ),
     );
   }

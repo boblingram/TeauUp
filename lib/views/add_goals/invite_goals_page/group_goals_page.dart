@@ -9,6 +9,7 @@ import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/views/add_goals/already_goal_created/goal_created_page.dart';
 
 import '../../../controllers/GoalController.dart';
+import '../../../utils/PermissionManager.dart';
 import '../../../widgets/MultipleSelectContactView.dart';
 import '../../../widgets/rounded_edge_button.dart';
 import '../goal_confirm_create/confirm_and_create_goal_page.dart';
@@ -27,33 +28,46 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
 
   Future<void> _pickContact() async {
 
-          List<Contact> contactList = await ContactsService.getContacts(withThumbnails: false,photoHighResolution: false,iOSLocalizedLabels: false,androidLocalizedLabels: false);
-          var result = await showModalBottomSheet(
-              context: context,
-              backgroundColor: Colors.transparent,
-              isScrollControlled: true,
-              isDismissible: true,
-              elevation: 15,
-              builder: (context) {
-                return Container(
-                    height: 80.h,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
-                    ),
-                    child: MultiSelectContacts(contactsList: contactList,));
-              });
-          print("Multi Select contact result ${result.runtimeType}");
-          if(result != null){
-            _contact = result;
-            var response = await goalController.createGroupGoalMemberMutation(_contact);
-            if(!response){
-              _contact = [];
-            }
-            setState(() {
+    final permissionManager = PermissionManager(context);
 
-            });
-          }
+    var response = await permissionManager.askForPermissionAndNavigate(null);
+    if(!response){
+      return;
+    }
+
+    List<Contact> contactList = await ContactsService.getContacts(
+        withThumbnails: false,
+        photoHighResolution: false,
+        iOSLocalizedLabels: false,
+        androidLocalizedLabels: false);
+    var result = await showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        isDismissible: true,
+        elevation: 15,
+        builder: (context) {
+          return Container(
+              height: 80.h,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20))),
+              child: MultiSelectContacts(
+                contactsList: contactList,
+              ));
+        });
+    print("Multi Select contact result ${result.runtimeType}");
+    if (result != null) {
+      _contact = result;
+      var response =
+          await goalController.createGroupGoalMemberMutation(_contact);
+      if (!response) {
+        _contact = [];
+      }
+      setState(() {});
+    }
   }
 
   @override
@@ -71,7 +85,8 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                     },
                     child: Container(
                       height: 45,
-                      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
                       width: double.infinity,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
@@ -102,14 +117,14 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                     ),
                   ),
             RoundedEdgeButton(
-                backgroundColor: _contact.isEmpty ?  Colors.grey : Colors.red,
+                backgroundColor: _contact.isEmpty ? Colors.grey : Colors.red,
                 text: "Next",
                 leftMargin: 20,
                 buttonRadius: 10,
                 rightMargin: 20,
                 bottomMargin: 20,
                 onPressed: () {
-                  if( _contact.isEmpty){
+                  if (_contact.isEmpty) {
                     showError(title: "Error", message: "Please Select Members");
                     return;
                   }
@@ -153,7 +168,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                 ? Container()
                 : Expanded(
                     child: ListView.builder(
-                      padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                        padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                         itemCount: _contact.length,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -204,17 +219,17 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                                     ],
                                   ),
                                 ),
-                            QudsPopupButton(
-                              // backgroundColor: Colors.red,
-                              tooltip: 'T',
-                              items: getMenuItems(),
-                              child: const Icon(
-                                Icons.keyboard_arrow_down_sharp,
-                                color: Colors.grey,
-                                size: 20,
-                              ),
-                            ),
-                             /*   IconButton(
+                                QudsPopupButton(
+                                  // backgroundColor: Colors.red,
+                                  tooltip: 'T',
+                                  items: getMenuItems(),
+                                  child: const Icon(
+                                    Icons.keyboard_arrow_down_sharp,
+                                    color: Colors.grey,
+                                    size: 20,
+                                  ),
+                                ),
+                                /*   IconButton(
                                   onPressed: () {
 
                                     );
@@ -328,7 +343,6 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
           onPressed: () {
             //   showToast('Feedback Pressed!');
           }),
-
       QudsPopupMenuDivider(),
       QudsPopupMenuItem(
           leading: Icon(Icons.person),

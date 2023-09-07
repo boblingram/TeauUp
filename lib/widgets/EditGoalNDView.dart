@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/controllers/VEGoalController.dart';
+import 'package:teamup/utils/Constants.dart';
 import 'package:teamup/utils/app_colors.dart';
 import 'package:teamup/widgets/edittext_with_hint.dart';
 import 'package:teamup/widgets/rounded_edge_button.dart';
@@ -139,7 +140,7 @@ class _EditGoalNDViewState extends State<EditGoalNDView> {
             buttonRadius: 5,
             onPressed: () {
               if(!isNextAllowed.value){
-                //TODO Show Error
+                showErrorWOTitle("Please enter name and description");
                 return;
               }
               veGoalController.updateGoalND(goalNTC.text.trim(),goalDTC.text.trim());

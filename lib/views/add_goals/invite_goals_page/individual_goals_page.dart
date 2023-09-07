@@ -8,6 +8,7 @@ import 'package:sizer/sizer.dart';
 import 'package:teamup/controllers/GoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
 
+import '../../../utils/PermissionManager.dart';
 import '../../../widgets/rounded_edge_button.dart';
 import '../already_goal_created/goal_created_page.dart';
 import '../goal_confirm_create/confirm_and_create_goal_page.dart';
@@ -25,6 +26,14 @@ class _IndividualGoalPageState extends State<IndividualGoalPage> with BaseClass 
   final GoalController goalController = Get.find();
 
   Future<void> _pickContact() async {
+
+    final permissionManager = PermissionManager(context);
+
+    var response = await permissionManager.askForPermissionAndNavigate(null);
+    if(!response){
+      return;
+    }
+
     try {
       final Contact? contact = await ContactsService.openDeviceContactPicker();
       print("Contact Selected is $contact");

@@ -4,6 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:teamup/controllers/GoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
 
+import '../../utils/PermissionManager.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/CreateGoalMetaDataView.dart';
 import 'invite_goals_page/group_goals_page.dart';
@@ -28,40 +29,6 @@ class _InviteToGoalPageState extends State<InviteToGoalPage>
   void initState() {
     super.initState();
     controller = TabController(length: 2, vsync: this);
-    _askPermissions(null);
-  }
-
-  Future<void> _askPermissions(String? routeName) async {
-    PermissionStatus permissionStatus = await _getContactPermission();
-    if (permissionStatus == PermissionStatus.granted) {
-      if (routeName != null) {
-        Navigator.of(context).pushNamed(routeName);
-      }
-    } else {
-      _handleInvalidPermissions(permissionStatus);
-    }
-  }
-
-  Future<PermissionStatus> _getContactPermission() async {
-    PermissionStatus permission = await Permission.contacts.status;
-    if (permission != PermissionStatus.granted &&
-        permission != PermissionStatus.permanentlyDenied) {
-      PermissionStatus permissionStatus = await Permission.contacts.request();
-      return permissionStatus;
-    } else {
-      return permission;
-    }
-  }
-
-  void _handleInvalidPermissions(PermissionStatus permissionStatus) {
-    if (permissionStatus == PermissionStatus.denied) {
-      const snackBar = SnackBar(content: Text('Access to contact data denied'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    } else if (permissionStatus == PermissionStatus.permanentlyDenied) {
-      const snackBar =
-          SnackBar(content: Text('Contact data not available on device'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
   }
 
   @override

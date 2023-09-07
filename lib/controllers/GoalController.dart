@@ -100,7 +100,7 @@ class GoalController extends GetxController {
     hidePLoader();
     if (!GraphQLService.shouldContinueFurther(
         "Mutate Notification ${tempEnum}", result)) {
-      showError("Failed to update notification status");
+      showErrorWOTitle("Failed to update notification status");
       return;
     }
     //TODO Update UI
@@ -192,15 +192,6 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
       TextEditingController(text: "");
   List<IndividualGoalActivityModel> successfullyCreatedActivityList = [];
 
-  //Multi List
-/*
-  void addActivityName(String activityName) {
-    _activityName.add(activityName);
-    updateActivityName(activityName);
-  }
-
-  List<String> get getActivityNames => _activityName;*/
-
   void updateActivityName(String activityName) {
     initialActivityModel.name = activityName;
   }
@@ -224,6 +215,9 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     activityNameController.clear();
     _selectedDate = "";
     selectedDaysText = "";
+    for (var item in selectWeeklyDays){
+      item["isSelected"] = false;
+    }
   }
 
   final List<String> months = [
@@ -279,34 +273,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     update();
   }
 
-  final List<String> _timeList = [
-    "1:00",
-    "1:30",
-    "2:00",
-    "2:30",
-    "3:00",
-    "3:30",
-    "4:00",
-    "4:30",
-    "5:00",
-    "5:30",
-    "6:00",
-    "6:30",
-    "7:00",
-    "7:30",
-    "8:00",
-    "8:30",
-    "9:00",
-    "9:30",
-    "10:00",
-    "10:30",
-    "11:00",
-    "11:30",
-    "12:00",
-    "12:30",
-  ];
-
-  List<String> get getTimeList => _timeList;
+  List<String> get getTimeList => activityTimeList;
 
   String _selectedDate = "";
   DateTime? selectedCalendarDay = DateTime.now();
@@ -683,10 +650,10 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
       errorText = "";
     }
 
-    return await initiateActivityMutation();
+    return await initiateCreateActivityMutation();
   }
 
-  Future<bool> initiateActivityMutation() async {
+  Future<bool> initiateCreateActivityMutation() async {
     String mutation =
         '''mutation MyMutation( \$customDay: [String] = ${json.encode(initialActivityModel.customDay)}, \$monthDay: [String] = ${json.encode(initialActivityModel.monthDay)}, \$weekDay: [String] = ${json.encode(initialActivityModel.weekDay)}) {
   addGoalActivity(activity: {customDay: \$customDay, desc: "${initialActivityModel.desc}", 
@@ -725,26 +692,103 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
       return false;
     }
     showSuccess("Activity created Successfully");
-    initialActivityModel.id = result.data?["addGoalActivity"]["id"];
-    print("Activity ID is ${initialActivityModel.toString()}");
-    successfullyCreatedActivityList.add(initialActivityModel);
+    IndividualGoalActivityModel tempNewModel = IndividualGoalActivityModel();
+    tempNewModel.id = result.data?["addGoalActivity"]["id"];
+    tempNewModel.name = result.data?["addGoalActivity"]["name"];
+    tempNewModel.duration = result.data?["addGoalActivity"]["duration"];
+    tempNewModel.reminder = result.data?["addGoalActivity"]["reminder"];
+    tempNewModel.monthDay = result.data?["addGoalActivity"]["monthDay"];
+    tempNewModel.weekDay = result.data?["addGoalActivity"]["weekDay"];
+    tempNewModel.customDay = result.data?["addGoalActivity"]["customDay"];
+    tempNewModel.time = result.data?["addGoalActivity"]["time"];
+    tempNewModel.desc = result.data?["addGoalActivity"]["desc"];
+    tempNewModel.endDt = result.data?["addGoalActivity"]["endDt"];
+    tempNewModel.freq = result.data?["addGoalActivity"]["freq"];
+    print("Activity ID is ${tempNewModel.toString()}");
+    successfullyCreatedActivityList.add(tempNewModel);
     resetData();
     initializeActivityModel();
     update();
     return true;
   }
 
-  void editGoalActivitySheet(IndividualGoalActivityModel activityId) {
-    print("Edit Individual Activity Sheet");
-    Get.bottomSheet(
-        Padding(
-          padding: EdgeInsets.fromLTRB(4.w, 1.h, 4.w, 5.h),
-          child: EditGoalActivityView(
-            activityModel: activityId,
-          ),
-        ),
-        backgroundColor: Colors.white);
+  void editGoalActivitySheet(IndividualGoalActivityModel activityModel) async {
+    print("Edit Individual Activity Sheet ${activityModel.toString()}");
+    if (Get.context == null) {
+      return;
+    }
+    var result = await showModalBottomSheet(
+        context: Get.context!,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        isDismissible: true,
+        elevation: 15,
+        builder: (context) {
+          return Container(
+              height: 80.h,
+              color: Colors.white,
+              /*decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
+          ),*/
+              child: EditGoalActivityView(
+                activityModel: activityModel,
+              ));
+        });
+
+    print("Initiated Edited Activity is ${result.toString()}");
+    if(result == null){
+      return;
+    }
+    try{
+      var errorResponse = await mutateActivityCreated(result as IndividualGoalActivityModel);
+      if(errorResponse != null){
+        showErrorWOTitle(errorResponse);
+        return;
+      }
+      showSuccess("Activity Edited Successfully");
+    }catch(onError, Stacktrace){
+      print("Failed to Edit Activity this is response $onError Error Stack Trace $Stacktrace");
+    }
   }
+
+  Future<String?> mutateActivityCreated(IndividualGoalActivityModel tempModel) async{
+    String mutation = '''mutation MyMutation( \$customDay: [String] = ${json.encode(tempModel.customDay)}, \$monthDay: [String] = ${json.encode(tempModel.monthDay)}, \$weekDay: [String] = ${json.encode(tempModel.weekDay)}) {
+  updateActivity(activity: {customDay: \$customDay, desc: "${tempModel.desc}", 
+  duration: "${tempModel.duration.toString()}", endDt: "${tempModel.endDt}", 
+  freq: "${tempModel.freq}", monthDay: \$monthDay, 
+  name: "${tempModel.name}", reminder: "${tempModel.reminder}", 
+  time: "${tempModel.time}", weekDay: \$weekDay, id: "${tempModel.id}"}) {
+    customDay
+    desc
+    duration
+    endDt
+    freq
+    id
+    monthDay
+    name
+    reminder
+    time
+    weekDay
+  }
+}''';
+
+    var result = await GraphQLService.tempClient
+        .mutate(MutationOptions(document: gql(mutation)));
+    //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
+    //It can have exception or data
+    log(result.data.toString());
+    //json.encode(result.data);
+    //Hide Progress Bar
+    hidePLoader();
+    if (!GraphQLService.shouldContinueFurther("EditGoalActivityData", result)) {
+      return "Failed to Edit Goal Activity";
+    }
+
+    //TODO Make Current List and Current Item Reactive in nature
+    return null;
+  }
+
 
   void initializeActivityModel() {
     initialActivityModel.customDay = [];
@@ -914,6 +958,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     resetData();
     //TODO Enable Reset Goal Id
     //tempGoalId = "";
+    successfullyCreatedActivityList = [];
 
     switch (tempEnum) {
       case GoalCreatedSuccessPageEnum.GoalSuccessPage:
