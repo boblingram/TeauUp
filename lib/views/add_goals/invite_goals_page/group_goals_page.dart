@@ -30,17 +30,17 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
           List<Contact> contactList = await ContactsService.getContacts(withThumbnails: false,photoHighResolution: false,iOSLocalizedLabels: false,androidLocalizedLabels: false);
           var result = await showModalBottomSheet(
               context: context,
-              backgroundColor: Colors.white,
-              barrierColor: Colors.black,
+              backgroundColor: Colors.transparent,
               isScrollControlled: true,
               isDismissible: true,
               elevation: 15,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
-              ),
               builder: (context) {
                 return Container(
                     height: 80.h,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
+                    ),
                     child: MultiSelectContacts(contactsList: contactList,));
               });
           print("Multi Select contact result ${result.runtimeType}");
