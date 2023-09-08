@@ -11,8 +11,8 @@ import '../../utils/app_colors.dart';
 
 class Journey_View extends StatefulWidget {
   final bool isGoalTab;
-
-  const Journey_View({super.key, this.isGoalTab = false});
+  final String goalId;
+  const Journey_View({super.key, this.isGoalTab = false, this.goalId = ""});
 
   @override
   State<Journey_View> createState() => _Journey_ViewState();
@@ -31,9 +31,8 @@ class _Journey_ViewState extends State<Journey_View> {
   @override
   void initState() {
     super.initState();
-    print("New Class is Initiated");
-    //veGoalController.getJourneyData();
-    veGoalController.getFromJourneyJson(localIsJourney: widget.isGoalTab);
+    veGoalController.getJourneyData(localGoalId: widget.goalId);
+    //veGoalController.getFromJourneyJson(localIsJourney: widget.isGoalTab);
   }
 
   @override
@@ -43,8 +42,10 @@ class _Journey_ViewState extends State<Journey_View> {
     bool hasUpcomingDateAssigned = false;
 
     return Container(
-        child: Obx(() => veGoalController.journeyGoalList.isNotEmpty
-            ? ListView.builder(
+        child: GetBuilder<VEGoalController>(
+          builder: (veGoalController){
+            return veGoalController.journeyGoalList.isNotEmpty
+                ? ListView.builder(
                 itemCount: veGoalController.journeyGoalList.length,
                 itemBuilder: (context, index) {
                   var item = veGoalController.journeyGoalList.elementAt(index);
@@ -54,12 +55,12 @@ class _Journey_ViewState extends State<Journey_View> {
                     showJourneyDate = true;
                   } else {
                     DateTime oldDate = DateTime.tryParse(veGoalController
-                            .journeyGoalList
-                            .elementAt(index - 1)
-                            .date) ??
+                        .journeyGoalList
+                        .elementAt(index - 1)
+                        .date) ??
                         veGoalController.currentDateTime;
                     showJourneyDate =
-                        !veGoalController.checkJDate(oldDate, newDate);
+                    !veGoalController.checkJDate(oldDate, newDate);
                   }
 
                   String section =
@@ -134,23 +135,29 @@ class _Journey_ViewState extends State<Journey_View> {
                       item.status, item.date);
 
                   return IndividualJourneyItemWidget(
-                      showButtons: journeyStatus != JourneyStatus.Failed && journeyStatus != JourneyStatus.Success,
-                      showDate: showJourneyDate,
-                      timeText:
-                          veGoalController.convertJTimeToTimeText(item.time),
-                      dateText:
-                          veGoalController.convertJDatetoDateText(item.date),
-                      weekDayText:
-                          veGoalController.convertJDateToDayText(item.date),
-                      nameText:
-                          veGoalController.convertStringToNotNull(item.name),
-                      descText:
-                          veGoalController.convertStringToNotNull(item.desc),
-                      journeyStatus: journeyStatus,
-                      showDateSorted: showSectionText,
-                      dateSortedText: section);
+                    rowIndex: index,
+                    showButtons: journeyStatus != JourneyStatus.Failed &&
+                        journeyStatus != JourneyStatus.Success,
+                    showDate: showJourneyDate,
+                    timeText:
+                    veGoalController.convertJTimeToTimeText(item.time),
+                    dateText:
+                    veGoalController.convertJDatetoDateText(item.date),
+                    weekDayText:
+                    veGoalController.convertJDateToDayText(item.date),
+                    nameText:
+                    veGoalController.convertStringToNotNull(item.name),
+                    descText:
+                    veGoalController.convertStringToNotNull(item.desc),
+                    journeyStatus: journeyStatus,
+                    showDateSorted: showSectionText,
+                    dateSortedText: section,
+                    taskId: item.id.toString() ?? "",
+                  );
                 })
-            : ErrorListWidget(text: "Empty Journey Data")));
+                : ErrorListWidget(text: "Empty Journey Data");
+          })
+    );
   }
 }
 
@@ -165,6 +172,8 @@ class IndividualJourneyItemWidget extends StatelessWidget {
   final bool showDateSorted;
   final String dateSortedText;
   final JourneyStatus journeyStatus;
+  final String taskId;
+  final int rowIndex;
 
   IndividualJourneyItemWidget(
       {super.key,
@@ -177,7 +186,9 @@ class IndividualJourneyItemWidget extends StatelessWidget {
       this.timeText = "",
       this.journeyStatus = JourneyStatus.Success,
       this.showDateSorted = false,
-      this.dateSortedText = ""});
+      this.dateSortedText = "",
+      this.taskId = "",
+      required this.rowIndex});
 
   final VEGoalController veGoalController = Get.find();
 
@@ -384,7 +395,8 @@ class IndividualJourneyItemWidget extends StatelessWidget {
                                   text: AppStrings.defaultMarkasComplete,
                                   onTap: () {
                                     veGoalController.updateJourneyMutation(
-                                        JourneyMutationEnum.MarkasComplete);
+                                        JourneyMutationEnum.MarkasComplete, rowIndex,
+                                        taskId: taskId,);
                                   },
                                 ),
                                 SizedBox(
@@ -401,7 +413,7 @@ class IndividualJourneyItemWidget extends StatelessWidget {
                                       fontSize: 12, color: Colors.red),
                                   onTap: () {
                                     veGoalController.updateJourneyMutation(
-                                        JourneyMutationEnum.SkipIt);
+                                        JourneyMutationEnum.SkipIt,rowIndex,taskId: taskId);
                                   },
                                 )
                               ],

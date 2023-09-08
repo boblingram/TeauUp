@@ -39,8 +39,7 @@ class VEGoalController extends GetxController {
 
   var currentDateTime = DateTime.now();
 
-  var journeyGoalList = <JourneyGoalDataModel>[].obs;
-  var individualGoalJourneyList = <JourneyGoalDataModel>[].obs;
+  var journeyGoalList = <JourneyGoalDataModel>[];
 
   var goalName = "".obs;
   var goalDesc = "".obs;
@@ -213,6 +212,11 @@ class VEGoalController extends GetxController {
       JourneyGoalModel journeyGoalModel =
           JourneyGoalModel.fromJson(result.data!);
       print("Length of List is ${journeyGoalModel.journeyModelList.length}");
+      journeyGoalList.clear();
+      journeyGoalList = journeyGoalModel.journeyModelList;
+      // Sort the list based on the 'date' attribute in ascending order.
+      journeyGoalList.sort((a, b) => a.date.compareTo(b.date));
+      update();
     } catch (onError, stackTrace) {
       print("Error while parsing Journey Goal Model $onError");
     }
@@ -228,9 +232,10 @@ class VEGoalController extends GetxController {
       JourneyGoalModel journeyGoalModel = JourneyGoalModel.fromJson(tempResult);
       print("Length of List is ${journeyGoalModel.journeyModelList.length}");
       journeyGoalList.clear();
-      journeyGoalList.value = journeyGoalModel.journeyModelList;
+      journeyGoalList = journeyGoalModel.journeyModelList;
       // Sort the list based on the 'date' attribute in ascending order.
       journeyGoalList.sort((a, b) => a.date.compareTo(b.date));
+      update();
     } catch (onError, stackTrace) {
       print("Error while parsing Journey Goal Model $onError");
     }
@@ -633,11 +638,9 @@ class VEGoalController extends GetxController {
   /*
   {__typename: Mutation, completeTask: null}
    */
-  void updateJourneyMutation(JourneyMutationEnum tempJEnum,
-      {String taskId = ""}) async {
+  void updateJourneyMutation(JourneyMutationEnum tempJEnum, int index,
+      {String taskId = "",}) async {
     print("Mutation Called is ${tempJEnum}");
-
-    showLoader();
 
     String mutation = '';
     switch (tempJEnum) {
@@ -669,7 +672,8 @@ class VEGoalController extends GetxController {
         break;
     }
 
-    //TODO Update The UI Accordingly
+
+    showLoader();
     var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: gql(mutation)));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
@@ -679,9 +683,20 @@ class VEGoalController extends GetxController {
     //Hide Progress Bar
     hidePLoader();
     if (!shouldContinueFurther("Journey Mutation Failed", result)) {
-      showErrorWOTitle("Failed to Mutate Journey Mark as complete");
+      showErrorWOTitle("Failed to update journey Status");
       return;
     }
+
+    switch(tempJEnum){
+      case JourneyMutationEnum.SkipIt:
+        journeyGoalList.elementAt(index).status = "skipped";
+        break;
+      case JourneyMutationEnum.MarkasComplete:
+        journeyGoalList.elementAt(index).status = "completed";
+        break;
+    }
+    update();
+
   }
 
   JourneyStatus convertJStatusToJourney(var tempStatus, var tempDate) {

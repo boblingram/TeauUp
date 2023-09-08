@@ -240,7 +240,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
               ? GoalActivityTabPage(isEditingEnabled: widget.isEditingEnabled,)
               : _selectedTabValue == 1
               ? GoalParticipantsTabPage()
-              : Journey_View(isGoalTab: true,)),
+              : Journey_View(isGoalTab: true,goalId: veGoalController.goalId,)),
     );
   }
 }
