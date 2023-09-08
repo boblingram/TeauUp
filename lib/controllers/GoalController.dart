@@ -177,6 +177,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
   void reloadGoalHomeList() {
     try {
       VEGoalController tempController = Get.find();
+      GraphQLService.tempClient.resetStore(refetchQueries: false);
       tempController.getAEGoal();
     } catch (onError) {
       print("Failed to reload Goal List $onError");

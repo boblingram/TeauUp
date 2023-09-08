@@ -28,13 +28,17 @@ class ActiveGoalsPage extends StatelessWidget {
               height: 10,
             ),
             Expanded(
-              child: Obx(()=>veGoalController.activeGoalList.isNotEmpty ? ListView.builder(
-                  itemCount: veGoalController.activeGoalList.length,
-                  shrinkWrap: true,
-                  itemBuilder: (BuildContext context, int index) {
-                    var item = veGoalController.activeGoalList.elementAt(index);
-                    return ActiveGoalWidget(userGoalPerInfo: item,itemIndex: index,);
-                  }) : ErrorListWidget(text: "Active Goal List is Empty")),
+              child: GetBuilder<VEGoalController>(
+                builder: (veGoalController){
+                  return veGoalController.activeGoalList.isNotEmpty ? ListView.builder(
+                      itemCount: veGoalController.activeGoalList.length,
+                      shrinkWrap: true,
+                      itemBuilder: (BuildContext context, int index) {
+                        var item = veGoalController.activeGoalList.elementAt(index);
+                        return ActiveGoalWidget(userGoalPerInfo: item,itemIndex: index,);
+                      }) : ErrorListWidget(text: "Active Goal List is Empty");
+                },
+              ),
             ),
           ],
         ),

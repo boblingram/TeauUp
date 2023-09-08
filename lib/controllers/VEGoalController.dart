@@ -27,7 +27,7 @@ import '../widgets/MultipleSelectContactView.dart';
 class VEGoalController extends GetxController {
   String userId = "1";
 
-  var activeGoalList = <UserGoalPerInfo>[].obs;
+  var activeGoalList = <UserGoalPerInfo>[];
   var endedGoalList = <UserGoalPerInfo>[].obs;
 
   String goalId = "";
@@ -41,6 +41,9 @@ class VEGoalController extends GetxController {
 
   var journeyGoalList = <JourneyGoalDataModel>[].obs;
   var individualGoalJourneyList = <JourneyGoalDataModel>[].obs;
+
+  var goalName = "".obs;
+  var goalDesc = "".obs;
 
   void updateGoalId(String tempId) {
     goalId = tempId;
@@ -357,12 +360,25 @@ class VEGoalController extends GetxController {
     hidePLoader();
     if (!shouldContinueFurther("EditGoalMetaData", result)) {
       showErrorWOTitle("Failed to Update Goal Name and Desc");
+      Get.back();
       return;
     }
 
-    //TODO Make Current List and Current Item Reactive in nature
     SuccessGoalMetaDataModel successGoalMetaDataModel =
         SuccessGoalMetaDataModel.fromJson(result.data!);
+
+    goalName.value = successGoalMetaDataModel.goalMetaDataModel.name;
+    goalDesc.value = successGoalMetaDataModel.goalMetaDataModel.desc;
+    Get.back();
+
+    try{
+      print("Selected Index item ${activeGoalList.elementAt(selectedGoalListIndex)}");
+      activeGoalList.elementAt(selectedGoalListIndex).goalInfo = successGoalMetaDataModel.goalMetaDataModel;
+      update();
+    }catch(onError, stackTrace){
+      print("Failed Updating the Goal Active List $onError and StackTrace is $stackTrace");
+    }
+
   }
 
   bool shouldContinueFurther(
@@ -413,6 +429,8 @@ class VEGoalController extends GetxController {
 
   void updateUserGoalPerInfo(UserGoalPerInfo tempUserInfo) {
     userGoalPerInfo = tempUserInfo;
+    goalName.value = userGoalPerInfo?.goalInfo.name ?? AppStrings.defaultDescription;
+    goalDesc.value = userGoalPerInfo?.goalInfo.desc ?? AppStrings.defaultDescription;
   }
 
   void updateSelectedItemIndex(int itemIndex) {
@@ -577,6 +595,7 @@ class VEGoalController extends GetxController {
         activeGoalList.add(item);
       }
     }
+    update();
   }
 
   void parseError(OperationException? responseToShow, String apiCallFrom) {

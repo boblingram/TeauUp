@@ -135,14 +135,14 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  "${widget.userGoalPerInfo.goalInfo.name ?? AppStrings.defaultName}",
+                                Obx(()=>Text(
+                                  veGoalController.goalName.value,
                                   style: GoogleFonts.roboto(
                                     color: Colors.white,
                                     fontSize: 23,
                                     fontWeight: FontWeight.w500,
                                   ),
-                                ),
+                                ),),
                                 widget.isEditingEnabled ? InkWell(
                                   onTap: (){
                                     veGoalController.editGoalNDSheet();
@@ -170,13 +170,13 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                             const SizedBox(
                               height: 15,
                             ),
-                            Text(
-                              "${widget.userGoalPerInfo.goalInfo.desc ?? AppStrings.defaultDescription}",
+                            Obx(()=>Text(
+                              veGoalController.goalDesc.value,
                               style: GoogleFonts.roboto(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,
                                   fontSize: 16),
-                            ),
+                            ),)
                           ],
                         ),
                       ),
