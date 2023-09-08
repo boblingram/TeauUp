@@ -424,7 +424,17 @@ class VEGoalController extends GetxController {
       return;
     }
 
-    //TODO Update UI on Tap on Archive Goal
+    try{
+      var item = activeGoalList.removeAt(selectedGoalListIndex);
+      print("Item is ${item.goalInfo.name}");
+      endedGoalList.add(item);
+      selectedGoalListIndex = 0;
+      update();
+      Get.back();
+      showSuccess("${item.goalInfo.name ?? ""} Successfully Archived");
+    }catch(onError, stackTrace){
+      print("Failed Updating active goal to end goal $onError, StackTrace is $stackTrace");
+    }
   }
 
   void updateUserGoalPerInfo(UserGoalPerInfo tempUserInfo) {

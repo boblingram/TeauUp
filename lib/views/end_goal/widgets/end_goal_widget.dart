@@ -13,7 +13,12 @@ class EndGoalWidget extends StatelessWidget with BaseClass {
   final UserGoalPerInfo userGoalPerInfo;
 
   String getRequiredTime(var tempDate){
-    var updatedDate = DateTime.tryParse(tempDate) ?? DateTime.now();
+    var updatedDate;
+    if(tempDate == null){
+      updatedDate = DateTime.now();
+    }else{
+      updatedDate = DateTime.tryParse(tempDate) ?? DateTime.now();
+    }
     return DateFormat('dd MMMM').format(updatedDate);
   }
 
