@@ -139,7 +139,6 @@ class GoalController extends GetxController {
       String status, String goalName, String goalDescription) async {
     print("Mutation is Initiated");
 
-    showLoader();
     String currentDate = DateTime.now().toIso8601String();
 
     //May be UserIP has been changed to GoalMemberIP
@@ -168,6 +167,8 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 }
 
 """;
+
+    showLoader();
     var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: gql(mutation)));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));

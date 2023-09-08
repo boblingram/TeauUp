@@ -343,8 +343,6 @@ class VEGoalController extends GetxController {
    */
   void updateGoalND(String tempName, String tempDesc) async {
     print("Initiate Mutation for tempName, TempDesc");
-    //Show Progress Bar
-    showLoader();
 
     String mutation = """
   mutation MyMutation {
@@ -356,6 +354,8 @@ class VEGoalController extends GetxController {
 }
 """;
 
+    //Show Progress Bar
+    showLoader();
     var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: gql(mutation)));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
@@ -404,8 +404,6 @@ class VEGoalController extends GetxController {
    */
   void endGoalIsPressed() async {
     print("End Goal is pressed");
-    //Show Progress Bar
-    showLoader();
 
     String mutation = """mutation MyMutation {
   endGoal(goalId: "$goalId") {
@@ -417,6 +415,7 @@ class VEGoalController extends GetxController {
 
 """;
 
+    showLoader();
     var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: gql(mutation)));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
