@@ -34,7 +34,7 @@ class VEGoalController extends GetxController {
   UserGoalPerInfo? userGoalPerInfo;
   var selectedGoalListIndex = 0;
 
-  var selectedGoalActivityList = <IndividualGoalActivityModel>[].obs;
+  var selectedGoalActivityList = <IndividualGoalActivityModel>[];
   var selectedGoalMemberList = <IndividualGoalMemberModel>[].obs;
 
   var currentDateTime = DateTime.now();
@@ -252,7 +252,7 @@ class VEGoalController extends GetxController {
         backgroundColor: Colors.white);
   }
 
-  void editGoalActivitySheet(IndividualGoalActivityModel activityModel) async {
+  void editGoalActivitySheet(IndividualGoalActivityModel activityModel, int listIndex) async {
     print("Edit Individual Activity Sheet");
     if (Get.context == null) {
       return;
@@ -288,6 +288,8 @@ class VEGoalController extends GetxController {
         showErrorWOTitle(errorResponse);
         return;
       }
+      selectedGoalActivityList[listIndex] = result;
+      update();
       showSuccess("Activity Edited Successfully");
     }catch(onError, Stacktrace){
       print("Failed to UpdateActivity this is response $onError Error Stack Trace $Stacktrace");
@@ -315,6 +317,7 @@ class VEGoalController extends GetxController {
   }
 }''';
 
+    showLoader();
     var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: gql(mutation)));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
@@ -326,8 +329,6 @@ class VEGoalController extends GetxController {
     if (!shouldContinueFurther("EditGoalActivityData", result)) {
       return "Failed to Update Goal Activity";
     }
-
-    //TODO Make Current List and Current Item Reactive in nature
     return null;
   }
 
@@ -539,8 +540,9 @@ class VEGoalController extends GetxController {
       GoalActivityModel goalActivityModel =
           GoalActivityModel.fromJson(result.data!);
       print("Length of List is ${goalActivityModel.goalActivityList.length}");
-      selectedGoalActivityList.value.clear();
-      selectedGoalActivityList.value = goalActivityModel.goalActivityList;
+      selectedGoalActivityList.clear();
+      selectedGoalActivityList = goalActivityModel.goalActivityList;
+      update();
     } catch (onError, stackTrace) {
       print("Error while parsing FetchGoalActivitiesData $onError");
     }

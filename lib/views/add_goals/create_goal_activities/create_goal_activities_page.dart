@@ -118,7 +118,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                         ),
                                         InkWell(
                                           onTap: () {
-                                            activityGC.editGoalActivitySheet(item);
+                                            activityGC.editGoalActivitySheet(item, index);
                                           },
                                           child: Text(
                                             "Edit",

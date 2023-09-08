@@ -45,126 +45,130 @@ class GoalActivityTabPage extends StatelessWidget {
       ) : Container(),
       body: Container(
         color: Colors.white,
-        child: Obx(()=>veGoalController.selectedGoalActivityList.isNotEmpty ? RefreshIndicator(
-          onRefresh: ()async{
-            veGoalController.refreshGoalActivityList();
-          },
-          child: ListView.builder(
-              padding: EdgeInsets.symmetric(vertical: 2.h,horizontal: 0),
-              itemCount: veGoalController.selectedGoalActivityList.length,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (BuildContext context, int index) {
-                var item = veGoalController.selectedGoalActivityList.elementAt(index);
-                return Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey.shade400),
-                      ),
-                      margin: const EdgeInsets.symmetric(horizontal: 20),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: GetBuilder<VEGoalController>(
+          builder: (veGoalController){
+            return veGoalController.selectedGoalActivityList.isNotEmpty ? RefreshIndicator(
+              onRefresh: ()async{
+                veGoalController.refreshGoalActivityList();
+              },
+              child: ListView.builder(
+                  padding: EdgeInsets.symmetric(vertical: 2.h,horizontal: 0),
+                  itemCount: veGoalController.selectedGoalActivityList.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    var item = veGoalController.selectedGoalActivityList.elementAt(index);
+                    return Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.grey.shade400),
+                          ),
+                          margin: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "${index+1}. ${veGoalController.convertStringToNotNull(item.name)}",
-                                style: GoogleFonts.roboto(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              isEditingEnabled ? InkWell(
-                                onTap: (){
-                                  veGoalController.editGoalActivitySheet(item);
-                                },
-                                child: Text(
-                                  "Edit",
-                                  style: GoogleFonts.roboto(
-                                    color: AppColors.black,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 16,
-                                    decoration: TextDecoration.underline,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "${index+1}. ${veGoalController.convertStringToNotNull(item.name)}",
+                                    style: GoogleFonts.roboto(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 16,
+                                    ),
                                   ),
+                                  isEditingEnabled ? InkWell(
+                                    onTap: (){
+                                      veGoalController.editGoalActivitySheet(item,index);
+                                    },
+                                    child: Text(
+                                      "Edit",
+                                      style: GoogleFonts.roboto(
+                                        color: AppColors.black,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ) : Container(),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    flex: 2,
+                                    child: getActivityDetails(Icons.calendar_month, veGoalController.convertFrequencyToAppropriate(item.freq)),
+                                  ),
+                                  Flexible(
+                                    flex: 2,
+                                    child:
+                                    getActivityDetails(Icons.lock_clock, veGoalController.convertTimeToAppropriate(item.time)),
+                                  ),
+                                  Flexible(
+                                    flex: 1,
+                                    child: getActivityDetails(
+                                        Icons.timelapse_outlined, veGoalController.convertDurationToAppropriate(item.duration)),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "End date: ",
+                                    style: GoogleFonts.roboto(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  Text(
+                                    veGoalController.convertEndDateToAppropriate(item.endDt),
+                                    style: GoogleFonts.roboto(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              veGoalController.showReminderDate(item.reminder) ? const Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(text: 'Set to remind '),
+                                    TextSpan(
+                                      text: '10 min ',
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    TextSpan(text: 'before that task starts'),
+                                  ],
                                 ),
                               ) : Container(),
                             ],
                           ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Flexible(
-                                flex: 2,
-                                child: getActivityDetails(Icons.calendar_month, veGoalController.convertFrequencyToAppropriate(item.freq)),
-                              ),
-                              Flexible(
-                                flex: 2,
-                                child:
-                                getActivityDetails(Icons.lock_clock, veGoalController.convertTimeToAppropriate(item.time)),
-                              ),
-                              Flexible(
-                                flex: 1,
-                                child: getActivityDetails(
-                                    Icons.timelapse_outlined, veGoalController.convertDurationToAppropriate(item.duration)),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                "End date: ",
-                                style: GoogleFonts.roboto(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Text(
-                                veGoalController.convertEndDateToAppropriate(item.endDt),
-                                style: GoogleFonts.roboto(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          veGoalController.showReminderDate(item.reminder) ? const Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(text: 'Set to remind '),
-                                TextSpan(
-                                  text: '10 min ',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                TextSpan(text: 'before that task starts'),
-                              ],
-                            ),
-                          ) : Container(),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 4.h,),
-                  ],
-                );
-              }),
-        ) : ErrorListWidget(text: "Goal Activity List is Empty")),
+                        ),
+                        SizedBox(height: 4.h,),
+                      ],
+                    );
+                  }),
+            ) : ErrorListWidget(text: "Goal Activity List is Empty");
+          },
+        ),
       ),
     );
   }

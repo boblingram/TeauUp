@@ -717,7 +717,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     return true;
   }
 
-  void editGoalActivitySheet(IndividualGoalActivityModel activityModel) async {
+  void editGoalActivitySheet(IndividualGoalActivityModel activityModel, int selectedIndex) async {
     print("Edit Individual Activity Sheet ${activityModel.toString()}");
     if (Get.context == null) {
       return;
@@ -751,6 +751,8 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
         showErrorWOTitle(errorResponse);
         return;
       }
+      successfullyCreatedActivityList[selectedIndex] = result;
+      update();
       showSuccess("Activity Edited Successfully");
     }catch(onError, Stacktrace){
       print("Failed to Edit Activity this is response $onError Error Stack Trace $Stacktrace");
@@ -778,6 +780,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
   }
 }''';
 
+    showLoader();
     var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: gql(mutation)));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
@@ -789,8 +792,6 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     if (!GraphQLService.shouldContinueFurther("EditGoalActivityData", result)) {
       return "Failed to Edit Goal Activity";
     }
-
-    //TODO Make Current List and Current Item Reactive in nature
     return null;
   }
 
