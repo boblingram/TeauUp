@@ -119,10 +119,8 @@ class GoalController extends GetxController {
     newGoalDescription = description;
     newSelectedGoalType = selectedGoalType;
 
-    //TODO Enable Mutation
-    /*var result = await createGoalMutation(selectedGoalType, name, description);
-    return result;*/
-    return true;
+    var result = await createGoalMutation(selectedGoalType, name, description);
+    return result;
   }
 
   Future<bool> createGoalMutation(
@@ -170,6 +168,12 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
       GraphQLService.parseError(result.exception, "CreateGoalMutation");
       return false;
     }
+    var localGoalId = result.data?["postGoal"]["id"];
+    if(localGoalId == null){
+      print("There is Error in parsing Goal ID");
+      return false;
+    }
+    tempGoalId = localGoalId ?? "";
     reloadGoalHomeList();
     return true;
   }
@@ -957,8 +961,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 
   void resetCreateGoalAndActivity(GoalCreatedSuccessPageEnum tempEnum) {
     resetData();
-    //TODO Enable Reset Goal Id
-    //tempGoalId = "";
+    tempGoalId = "";
     successfullyCreatedActivityList = [];
 
     switch (tempEnum) {
