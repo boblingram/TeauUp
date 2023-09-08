@@ -169,7 +169,6 @@ class VEGoalController extends GetxController {
 
   void getJourneyData({String localGoalId = ""}) async {
     String query = "";
-
     if (localGoalId.isEmpty) {
       query = '''query MyQuery {
   userJourney(userId: "$userId") {
@@ -195,6 +194,7 @@ class VEGoalController extends GetxController {
 ''';
     }
 
+    showLoader();
     var result = await GraphQLService.tempClient
         .query(QueryOptions(document: gql(query)));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));

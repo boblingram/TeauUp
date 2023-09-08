@@ -24,7 +24,7 @@ class GoalController extends GetxController {
   var userId = "1";
 
   ///Notification Controller
-  var notificationList = <IndividualNotificationModel>[].obs;
+  var notificationList = <IndividualNotificationModel>[];
 
   var currentTime = DateTime.now();
 
@@ -56,15 +56,16 @@ class GoalController extends GetxController {
       print(
           "Length of List is ${notificationDataModel.notificationDataList.length}");
       notificationList.clear();
-      notificationList.value = notificationDataModel.notificationDataList;
+      notificationList = notificationDataModel.notificationDataList;
       notificationList.sort((a, b) => a.createdDt.compareTo(b.createdDt));
+      update();
     } catch (onError, stackTrace) {
       print("Error while parsing Notification Data Model $onError");
     }
   }
 
   void notificationMutationQuery(
-      NotificationMutationEnum tempEnum, String notificationId) async {
+      NotificationMutationEnum tempEnum, String notificationId, int rowIndex) async {
     print("Notification Mutation is ${tempEnum}");
     String mutation = '';
     if (tempEnum == NotificationMutationEnum.MarkasRead) {
@@ -103,7 +104,18 @@ class GoalController extends GetxController {
       showErrorWOTitle("Failed to update notification status");
       return;
     }
-    //TODO Update UI
+
+    switch(tempEnum){
+      case NotificationMutationEnum.Delete:
+        notificationList.removeAt(rowIndex);
+        update();
+        break;
+      case NotificationMutationEnum.MarkasRead:
+        notificationList.elementAt(rowIndex).status = "read";
+        update();
+        break;
+    }
+
   }
 
   ///Describe Goal

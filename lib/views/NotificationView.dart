@@ -60,16 +60,21 @@ class _NotificationViewState extends State<NotificationView> {
         ),
       ),
       body: Container(
-        child: Obx(() => goalController.notificationList.isEmpty
-            ? ErrorListWidget(text: "No Notification Found")
-            : ListView.builder(
+        child: GetBuilder<GoalController>(
+          builder: (goalController){
+            return goalController.notificationList.isEmpty
+                ? ErrorListWidget(text: "No Notification Found")
+                : ListView.builder(
                 itemCount: goalController.notificationList.length,
                 itemBuilder: (context, index) {
                   var item = goalController.notificationList.elementAt(index);
                   return IndividualNotificationView(
-                    item: item,
+                    item: item, selectedIndex: index,
+
                   );
-                })),
+                });
+          },
+        ),
       ),
     );
   }
@@ -77,8 +82,9 @@ class _NotificationViewState extends State<NotificationView> {
 
 class IndividualNotificationView extends StatelessWidget {
   final IndividualNotificationModel item;
+  final int selectedIndex;
 
-  IndividualNotificationView({super.key, required this.item});
+  IndividualNotificationView({super.key, required this.item, required this.selectedIndex});
 
   final GoalController goalController = Get.find();
 
@@ -129,7 +135,7 @@ class IndividualNotificationView extends StatelessWidget {
                             Expanded(
                               child: CustomButton(
                                 onTap: () {
-                                  goalController.notificationMutationQuery(NotificationMutationEnum.MarkasRead, item.id);
+                                  goalController.notificationMutationQuery(NotificationMutationEnum.MarkasRead, item.id, selectedIndex);
                                 },
                                 paddingButton: EdgeInsets.symmetric(
                                     horizontal: 3, vertical: 6),
@@ -147,7 +153,7 @@ class IndividualNotificationView extends StatelessWidget {
                             Expanded(
                               child: CustomButton(
                                 onTap: () {
-                                  goalController.notificationMutationQuery(NotificationMutationEnum.Delete, item.id);
+                                  goalController.notificationMutationQuery(NotificationMutationEnum.Delete, item.id, selectedIndex);
                                 },
                                 paddingButton: EdgeInsets.symmetric(
                                     horizontal: 3, vertical: 6),
