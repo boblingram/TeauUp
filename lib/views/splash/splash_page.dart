@@ -18,8 +18,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 1200), () {
-      //TODO - Add OnBoardingPage() -> Again
-      Get.offAll(() => const HomeView());
+      Get.offAll(() => const OnBoardingPage());
     });
   }
 

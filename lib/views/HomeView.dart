@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -61,6 +62,39 @@ class _HomeViewState extends State<HomeView> with BaseClass {
         );
       default:
         return Container();
+    }
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {postUIBuild();});
+  }
+
+  void postUIBuild(){
+    firebaseNotification();
+  }
+
+  Future<void> firebaseNotification() async {
+    print("FirebaseInitialization");
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+      //await Notification_Service().init();
+      messaging.getToken().then((value) {
+        print("FCM Token is $value");
+        goalController.mutationNotificationServer(value);
+      }).catchError((error) {
+        print("GetFCMTokenFunctionError is $error");
+      });
     }
   }
 

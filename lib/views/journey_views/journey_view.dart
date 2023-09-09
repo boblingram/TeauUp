@@ -31,6 +31,10 @@ class _Journey_ViewState extends State<Journey_View> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {postUIBuild();});
+  }
+
+  void postUIBuild(){
     veGoalController.getJourneyData(localGoalId: widget.goalId);
     //veGoalController.getFromJourneyJson(localIsJourney: widget.isGoalTab);
   }

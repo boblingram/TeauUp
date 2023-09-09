@@ -50,6 +50,8 @@ dependencies:
   popover: ^0.2.8+2
   quds_popup_menu: ^0.0.1+1
   timeago: ^3.3.0
+  firebase_messaging: ^14.6.2
+  flutter_local_notifications: ^14.0.0+1
 
   #Performance _ Module
   sizer: ^2.0.15
