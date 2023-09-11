@@ -1066,6 +1066,45 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     return true;
   }
 
+  Future<bool> mutationGoalMemberMentor(String memberID, String mentorID) async{
+    print("Member Mentor Mutation is $memberID $mentorID");
+
+    String mutation = '''mutation MyMutation {
+setMemberMentor(goalId: "$tempGoalId", memberId: "$memberID", mentorId: "$mentorID") {
+    collabType
+    id
+    members {
+      mentorId
+      userId
+    }
+  }
+}
+''';
+
+    showLoader();
+    try {
+      var result = await GraphQLService.tempClient
+          .mutate(MutationOptions(document: gql(mutation)));
+      //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
+      //It can have exception or data
+      log(result.data.toString());
+      //json.encode(result.data);
+      hidePLoader();
+      if (result.data == null && result.exception != null) {
+        //No Data Received from Server;
+        GraphQLService.parseError(result.exception, "Mentor Group Member Mutation");
+        return false;
+      }
+      return true;
+    } catch (onError, stacktrace) {
+      print("Mentor Group Member Mutation is $onError");
+      print("Failed at $stacktrace");
+      hidePLoader();
+      return false;
+    }
+
+  }
+
   void mutationNotificationServer(String? value) async{
     print("Member FCM Update is $value");
 

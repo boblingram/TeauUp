@@ -14,7 +14,6 @@ import '../../../controllers/GoalController.dart';
 import '../../../utils/PermissionManager.dart';
 import '../../../widgets/MultipleSelectContactView.dart';
 import '../../../widgets/rounded_edge_button.dart';
-import '../goal_confirm_create/confirm_and_create_goal_page.dart';
 
 class GroupGoalPage extends StatefulWidget {
   GroupGoalPage({Key? key}) : super(key: key);
@@ -29,7 +28,8 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
   final GoalController goalController = Get.find();
 
   Map<String, bool> backupMemberMap = {};
-  GlobalKey popupKey = GlobalKey();
+
+  Map<String, String> memberMentorMap = {};
 
   Future<void> _pickContact() async {
     final permissionManager = PermissionManager(context);
@@ -221,7 +221,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                                           memberItem?.mentor == null
                                               ? Container()
                                               : Text(
-                                                  "Mentored by Saradhi",
+                                                  "Mentored by ${memberItem?.mentor?.fullname ?? ""}",
                                                   style: GoogleFonts.roboto(
                                                       color: Colors.black,
                                                       fontSize: 12,
@@ -233,7 +233,6 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                                     ),
                                     QudsPopupButton(
                                       // backgroundColor: Colors.red,
-                                      key: popupKey,
                                       tooltip: 'T',
                                       items: getMenuItems(index),
                                       child: const Icon(
@@ -317,7 +316,6 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
   }
 
   List<QudsPopupMenuBase> getMenuItems(int index) {
-
     var userId = memberList.elementAt(index)?.id ?? "";
     var backupValue = backupMemberMap[userId ?? ""] ?? false;
 
@@ -329,22 +327,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
           title: Text('Assign Mentor'),
           onPressed: () {
             //   showToast('Feedback Pressed!');
-          }),
-      QudsPopupMenuItem(
-          leading: SizedBox(
-            width: 50,
-          ),
-          title: Text('None'),
-          onPressed: () {
-            //   showToast('Feedback Pressed!');
-          }),
-      QudsPopupMenuItem(
-          leading: SizedBox(
-            width: 50,
-          ),
-          title: Text('Tarun'),
-          onPressed: () {
-            //   showToast('Feedback Pressed!');
+            showMentorDialog(userId.toString(), index);
           }),
       QudsPopupMenuDivider(),
       QudsPopupMenuItem(
@@ -354,35 +337,36 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
             children: [
               Text('Backup'),
               FlutterSwitch(
-                activeColor: Colors.red,
+                  activeColor: Colors.red,
                   value: backupValue,
                   height: 20,
                   toggleSize: 10,
                   width: 40,
-                  onToggle: (val) async{
+                  onToggle: (val) async {
                     print("Updated Backup Value is $val");
                     Navigator.pop(context);
                     var tempId = "";
-                    if(val){
+                    if (val) {
                       tempId = userId;
                     }
-                    var status = await goalController.mutationGoalMemberBackup(tempId);
+                    var status =
+                        await goalController.mutationGoalMemberBackup(tempId);
 
-                    if(!status){
+                    if (!status) {
                       showError(title: "Error", message: "Failed to Backup");
                       return;
-                    }else{
-                      if(val){
+                    } else {
+                      if (val) {
                         backupMemberMap[userId] = true;
-                        showSuccess(title: "Success", message: "Backup Switched on");
-                      }else{
+                        showSuccess(
+                            title: "Success", message: "Backup Switched on");
+                      } else {
                         backupMemberMap[userId] = false;
-                        showSuccess(title: "Success", message: "Backup Switched off");
+                        showSuccess(
+                            title: "Success", message: "Backup Switched off");
                       }
                     }
-                    setState(() {
-
-                    });
+                    setState(() {});
                   })
             ],
           ),
@@ -394,8 +378,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
           leading: Icon(Icons.remove_circle),
           title: Text('Remove'),
           onPressed: () async {
-            var status =
-                await goalController.mutationGoalMemberRemove(userId);
+            var status = await goalController.mutationGoalMemberRemove(userId);
             if (status) {
               memberList.removeAt(index);
               showSuccess(
@@ -405,5 +388,159 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
             }
           }),
     ];
+  }
+
+  void showMentorDialog(String memberId, int position) async {
+    await showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        isDismissible: true,
+        elevation: 15,
+        builder: (context) {
+          return Container(
+              height: 40.h,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20))),
+              child: showMentorList(memberId, position));
+        });
+  }
+
+  Widget showMentorList(String memberId, int position) {
+    var localMentorId = memberMentorMap[memberId] ?? "";
+    print("Element Position is $position");
+    return Stack(
+      children: [
+        Column(
+          children: [
+            SizedBox(
+              height: 15.w,
+              width: double.infinity,
+              child: Stack(
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      icon: Icon(
+                        Icons.cancel,
+                      )),
+                  Center(
+                    child: Container(
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                        child: Text(
+                          "Assign Mentor",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 16.sp, fontWeight: FontWeight.w700),
+                        )),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+                child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                  padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
+                  child: InkWell(
+                    onTap: () async {
+                      var shouldProceed = await goalController.mutationGoalMemberMentor(memberId, "");
+                      if(shouldProceed){
+                        memberMentorMap[memberId] = "";
+                        memberList.elementAt(position)?.mentor = null;
+                      }
+
+                      setState(() {
+                        Get.back();
+                        showSuccess(title: "Success", message: "Mentor Updated Successfully");
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        localMentorId.isEmpty
+                            ? Icon(
+                                Icons.circle,
+                                color: Colors.red,
+                              )
+                            : Icon(Icons.circle_outlined),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                            child: Text(
+                          "None",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )),
+                        SizedBox(
+                          width: 10,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: memberList.length,
+                    itemBuilder: (context, localPosition) {
+                      var individualMember = memberList.elementAt(localPosition);
+                      bool shouldMemberId =
+                          (individualMember?.id ?? "") == localMentorId;
+                      print("Local Mentor ID is $localMentorId & Selected Mentor Id is ${individualMember?.id}");
+                      return Container(
+                        margin: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                        padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
+                        child: InkWell(
+                          onTap: () async {
+                            var shouldProceed = await goalController.mutationGoalMemberMentor(memberId, individualMember?.id);
+                            print("Individual Member ${individualMember?.fullname}");
+                            if(shouldProceed){
+                              memberMentorMap[memberId] = individualMember?.id ?? "";
+                              memberList.elementAt(position)?.mentor = individualMember;
+                            }
+                            setState(() {
+                              Get.back();
+                              showSuccess(title: "Success", message: "Mentor Updated Successfully");
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              shouldMemberId
+                                  ? Icon(
+                                      Icons.circle,
+                                      color: Colors.red,
+                                    )
+                                  : Icon(Icons.circle_outlined),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                  child: Text(
+                                "${individualMember?.fullname ?? ""}",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
+                              SizedBox(
+                                width: 10,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+              ],
+            )),
+          ],
+        ),
+      ],
+    );
   }
 }
