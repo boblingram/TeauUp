@@ -20,8 +20,6 @@ class GoalParticipantsTabPage extends StatefulWidget {
 class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with BaseClass{
   final VEGoalController veGoalController = Get.find();
 
-  Map<String, bool> backupMemberMap = {};
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -177,9 +175,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
 
   List<QudsPopupMenuBase> getMenuItems(int index) {
     var userId = veGoalController.selectedGoalMemberList.elementAt(index)?.id ?? "";
-    var backupValue = backupMemberMap[userId ?? ""] ?? false;
-
-    print("Backup value is ${backupValue}");
+    var backupMemberID = veGoalController.userGoalPerInfo?.goalInfo.backup.toString() ?? "";
 
     return [
       QudsPopupMenuItem(
@@ -198,7 +194,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
               Text('Backup'),
               FlutterSwitch(
                   activeColor: Colors.red,
-                  value: backupValue,
+                  value: backupMemberID == userId,
                   height: 20,
                   toggleSize: 10,
                   width: 40,
@@ -217,11 +213,11 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
                       return;
                     } else {
                       if (val) {
-                        backupMemberMap[userId] = true;
+                        veGoalController.userGoalPerInfo?.goalInfo.backup = userId;
                         showSuccess(
                             title: "Success", message: "Backup Switched on");
                       } else {
-                        backupMemberMap[userId] = false;
+                        veGoalController.userGoalPerInfo?.goalInfo.backup = "";
                         showSuccess(
                             title: "Success", message: "Backup Switched off");
                       }

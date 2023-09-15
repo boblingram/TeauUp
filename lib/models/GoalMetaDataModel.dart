@@ -67,6 +67,7 @@ class UserGoalInfo{
   var status;
   var type;
   var desc;
+  var backup;
 
   UserGoalInfo({
     this.id,
@@ -74,7 +75,8 @@ class UserGoalInfo{
     this.name,
     this.endDate,
     this.type,
-    this.desc
+    this.desc,
+    this.backup
 });
 
   factory UserGoalInfo.fromJson(Map<String, dynamic> json) => UserGoalInfo(
@@ -83,7 +85,8 @@ class UserGoalInfo{
     name: json["name"],
     endDate: json["endDate"],
     type: json["type"],
-    desc: json["desc"]
+    desc: json["desc"],
+    backup: json["backup"]
   );
 
 }

@@ -27,7 +27,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
 
   final GoalController goalController = Get.find();
 
-  Map<String, bool> backupMemberMap = {};
+  String backupMemberID = "";
 
   Map<String, String> memberMentorMap = {};
 
@@ -317,9 +317,8 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
 
   List<QudsPopupMenuBase> getMenuItems(int index) {
     var userId = memberList.elementAt(index)?.id ?? "";
-    var backupValue = backupMemberMap[userId ?? ""] ?? false;
 
-    print("Backup value is ${backupValue}");
+    var backupValue = backupMemberID == userId;
 
     return [
       QudsPopupMenuItem(
@@ -357,11 +356,11 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                       return;
                     } else {
                       if (val) {
-                        backupMemberMap[userId] = true;
+                        backupMemberID = userId;
                         showSuccess(
                             title: "Success", message: "Backup Switched on");
                       } else {
-                        backupMemberMap[userId] = false;
+                        backupMemberID = "";
                         showSuccess(
                             title: "Success", message: "Backup Switched off");
                       }
