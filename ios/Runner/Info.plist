@@ -34,6 +34,22 @@
 	<string>Please grant microphone access</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need photo library access, to capture your photos</string>
+    <key>NSCalendarsUsageDescription</key>
+	<string>We need photo library access, to capture your photos</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+	<string>We need photo library access, to capture your photos</string>
+    <key>NSAppleMusicUsageDescription</key>
+	<string>We need photo library access, to capture your photos</string>
+	<key>NSMotionUsageDescription</key>
+    <string>We need photo library access, to capture your photos</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>We need photo library access, to capture your photos</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>We need photo library access, to capture your photos</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>We need photo library access, to capture your photos</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>We need photo library access, to capture your photos</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
