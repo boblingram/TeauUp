@@ -284,7 +284,7 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                       buttonRadius: 5,
                       onPressed: ()async {
                         if(!isNextAllowed.value){
-                          //TODO Show Error
+                          showError(title: "Error", message: "Name and Description Required");
                           return;
                         }
                         bool shouldProceed = await _goalController.updateNameAndDescription(goalNTC.text.trim(),goalDTC.text.trim(),widget.selectedGoal);

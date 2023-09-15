@@ -494,7 +494,9 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                       bool shouldMemberId =
                           (individualMember?.id ?? "") == localMentorId;
                       print("Local Mentor ID is $localMentorId & Selected Mentor Id is ${individualMember?.id}");
-                      return Container(
+
+                      bool shouldShowMentor = memberId != (individualMember?.id ?? "");
+                      return shouldShowMentor ? Container(
                         margin: EdgeInsets.fromLTRB(10, 5, 10, 5),
                         padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
                         child: InkWell(
@@ -534,7 +536,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                             ],
                           ),
                         ),
-                      );
+                      ) : Container();
                     }),
               ],
             )),

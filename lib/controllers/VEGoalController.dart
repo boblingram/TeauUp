@@ -830,4 +830,117 @@ class VEGoalController extends GetxController {
     return true;
   }
 
+  //Goal
+  Future<bool> mutationGoalMemberRemove(String memberID, int positionIndex) async{
+    print("Member Remove Mutation is $memberID");
+
+
+    String mutation =
+    '''mutation MyMutation {
+  removeGoalMember(goalId: "$goalId", userId: "$memberID") {
+    activities
+    id
+  }
+}
+''';
+    showLoader();
+    try {
+      var result = await GraphQLService.tempClient
+          .mutate(MutationOptions(document: gql(mutation)));
+      //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
+      //It can have exception or data
+      log(result.data.toString());
+      //json.encode(result.data);
+      hidePLoader();
+      if (result.data == null && result.exception != null) {
+        //No Data Received from Server;
+        GraphQLService.parseError(result.exception, "Remove Group Member Mutation");
+        return false;
+      }
+
+      selectedGoalMemberList.removeAt(positionIndex);
+
+      return true;
+    } catch (onError, stacktrace) {
+      print("Remove Group Member Mutation is $onError");
+      print("Failed at $stacktrace");
+      hidePLoader();
+      return false;
+    }
+  }
+
+  Future<bool> mutationGoalMemberBackup(String tempId) async{
+    print("Member Remove Mutation is $tempId");
+
+    String mutation =
+    '''mutation MyMutation {
+  setBackup(goalId: "$goalId", userId: "$tempId") {
+    id
+    mentor
+    backup
+  }
+}
+''';
+    showLoader();
+    try {
+      var result = await GraphQLService.tempClient
+          .mutate(MutationOptions(document: gql(mutation)));
+      //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
+      //It can have exception or data
+      log(result.data.toString());
+      //json.encode(result.data);
+      hidePLoader();
+      if (result.data == null && result.exception != null) {
+        //No Data Received from Server;
+        GraphQLService.parseError(result.exception, "Backup Group Member Mutation");
+        return false;
+      }
+    } catch (onError, stacktrace) {
+      print("Backup Group Member Mutation is $onError");
+      print("Failed at $stacktrace");
+      hidePLoader();
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> mutationGoalMemberMentor(String memberID, String mentorID) async{
+    print("Member Mentor Mutation is $memberID $mentorID");
+
+    String mutation = '''mutation MyMutation {
+setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID") {
+    collabType
+    id
+    members {
+      mentorId
+      userId
+    }
+  }
+}
+''';
+
+    showLoader();
+    try {
+      var result = await GraphQLService.tempClient
+          .mutate(MutationOptions(document: gql(mutation)));
+      //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
+      //It can have exception or data
+      log(result.data.toString());
+      //json.encode(result.data);
+      hidePLoader();
+      if (result.data == null && result.exception != null) {
+        //No Data Received from Server;
+        GraphQLService.parseError(result.exception, "Mentor Group Member Mutation");
+        return false;
+      }
+      return true;
+    } catch (onError, stacktrace) {
+      print("Mentor Group Member Mutation is $onError");
+      print("Failed at $stacktrace");
+      hidePLoader();
+      return false;
+    }
+
+  }
+
 }

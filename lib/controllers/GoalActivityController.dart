@@ -337,7 +337,6 @@ class GoalActivityController extends GetxController {
     //Name
     activityNameTEC.text = initialActivityModel.name;
 
-    //TODO Month Day, Custom Day Pending
     if (initialActivityModel.freq == null || initialActivityModel.freq
         .toString()
         .isEmpty) {
