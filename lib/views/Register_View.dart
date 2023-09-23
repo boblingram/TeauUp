@@ -1,6 +1,11 @@
+import 'dart:developer';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:teamup/controllers/RootController.dart';
 import 'package:teamup/mixins/baseClass.dart';
 
 import '../bottom_sheets/privacy_policy_bottom_sheet.dart';
@@ -19,11 +24,46 @@ class RegisterView extends StatefulWidget {
 class _RegisterViewState extends State<RegisterView> with BaseClass{
 
   TextEditingController nameController = TextEditingController();
+  final RootController rootController = Get.find();
 
   @override
   void dispose() {
     nameController.dispose();
     super.dispose();
+  }
+
+  void postUIBuild() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if(GetPlatform.isAndroid){
+      var androidResult = await deviceInfo.androidInfo;
+      log("Data is ${androidResult.data}");
+      rootController.deviceId = androidResult.id;
+      rootController.fingerprint = androidResult.fingerprint;
+    }else{
+      var iOSResult = await deviceInfo.iosInfo;
+      rootController.deviceId = iOSResult.model ?? AppStrings.emptyValue;
+      rootController.fingerprint = iOSResult.identifierForVendor ?? AppStrings.emptyValue;
+      print("iOS Data Received is Name ${iOSResult.name}"
+          "\n Identifier for Vendor ${iOSResult.identifierForVendor}"
+          "\n Localized Model ${iOSResult.localizedModel}"
+          "\n Model ${iOSResult.model}"
+          "\n System Name ${iOSResult.systemName}"
+          "\n System Version ${iOSResult.systemVersion}"
+          "\n Data ${iOSResult.data}"
+          "\n  UTS ${iOSResult.utsname}");
+    }
+    rootController.updateDeviceIdFingerprint();
+
+
+    var result = await deviceInfo.deviceInfo;
+
+    print("Base Device Info is ${result.data}");
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {postUIBuild();});
   }
 
   @override
@@ -61,17 +101,21 @@ class _RegisterViewState extends State<RegisterView> with BaseClass{
                       backgroundColor:
                       Colors.red,
                       text: "Next",
-                      leftMargin: 0,topMargin: 20,
+                      leftMargin: 0,topMargin: 40,
                       buttonRadius: 10,
                       rightMargin: 0,
                       bottomMargin: 20,
                       onPressed: () {
-                        print("Next Button Pressed");
+                        if(nameController.text == null || nameController.text.isEmpty){
+                          showError(title: "Error", message: "Name is required");
+                          return;
+                        }
+                        rootController.newRegistrationToServer(nameController.text.trim());
                       },
                       context: context)
                 ],
               ),
-            ),flex: 3,),
+            ),flex: 4,),
             Expanded(child: Text.rich(
               TextSpan(
                 children: [

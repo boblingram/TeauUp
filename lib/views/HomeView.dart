@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/controllers/VEGoalController.dart';
@@ -27,7 +28,7 @@ class _HomeViewState extends State<HomeView> with BaseClass {
   int _selectedIndex = 0;
   var pageTitle = "Goals".obs;
 
-  GoalController goalController = Get.put(GoalController());
+  late GoalController goalController;
   VEGoalController veGoalController = Get.put(VEGoalController());
 
   void _onItemTapped(int index) {
@@ -68,35 +69,21 @@ class _HomeViewState extends State<HomeView> with BaseClass {
 
   @override
   void initState() {
+    try{
+      goalController = Get.find();
+    }catch(onError){
+      print("Failed to find Goal Controller $onError");
+      goalController = Get.put(GoalController());
+    }
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {postUIBuild();});
   }
 
   void postUIBuild(){
-    firebaseNotification();
+    //TODO Update FCM This is required because of Testing
+    //goalController.mutationNotificationServer(value);
   }
 
-  Future<void> firebaseNotification() async {
-    print("FirebaseInitialization");
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      badge: true,
-      provisional: false,
-      sound: true,
-    );
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
-      //await Notification_Service().init();
-      messaging.getToken().then((value) {
-        print("FCM Token is $value");
-        goalController.mutationNotificationServer(value);
-      }).catchError((error) {
-        print("GetFCMTokenFunctionError is $error");
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

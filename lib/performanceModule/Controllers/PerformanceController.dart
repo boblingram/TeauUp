@@ -3,8 +3,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../utils/Constants.dart';
+import '../../utils/app_strings.dart';
 import '../PerformanceConstants.dart';
 import '../Model/LeaderboardItemExpansionModel.dart';
 
@@ -57,9 +59,13 @@ class PerformanceController extends GetxController{
   var dropStreakSelectedValue = 1.obs;
   var dropStreakDownList = [DropdownMenuItem(child: Text("Practice Math"),value: 1,),DropdownMenuItem(child: Text("Connect With People"),value: 2,),DropdownMenuItem(child: Text("Hobbies Time"),value: 3,)];
 
+  final localStorage = GetStorage();
+
   @override
   void onInit() {
     super.onInit();
+    userID = localStorage.read(AppStrings.localClientIdValue) ?? AppStrings.defaultUserId;
+    print("UserId is $userID");
     fetchMyPerformance();
   }
 

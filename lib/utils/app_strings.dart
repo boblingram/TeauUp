@@ -50,4 +50,17 @@ class AppStrings {
   static const String defaultMarkasRead = "Mark as Read";
   static const String defaultDelete = "Delete";
 
+  //Default Server Values
+  static const String emptyValue = "empty";
+  static const String defaultUserId = "1";
+
+  //Local Storage
+  static const String localFCMValue = "fcmValueLS";
+  static const String localIsAppOpenFirstTime = "isAppOpenFTLS";
+  static const String localDeviceIdValue = "deviceIdLS";
+  static const String localFingerprintValue = "fingerprintLS";
+  static const String localAuthkeyValue = "authKeyLS";
+  //this is userId only
+  static const String localClientIdValue = "clientIdLS";
+
 }

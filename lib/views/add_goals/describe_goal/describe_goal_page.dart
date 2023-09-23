@@ -31,7 +31,7 @@ class DescribeGoalPage extends StatefulWidget {
 
 class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
   File? imagePicked;
-  GoalController _goalController = Get.find();
+  late GoalController _goalController;
 
   TextEditingController goalNTC = TextEditingController(text: "");
   TextEditingController goalDTC = TextEditingController(text: "");
@@ -40,6 +40,12 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
 
   @override
   void initState() {
+    try{
+      _goalController = Get.find();
+    }catch(onError){
+      print("Failed to find Goal Controller $onError");
+      _goalController = Get.put(GoalController());
+    }
     super.initState();
     goalNTC.addListener(_handleTextChanged);
     goalDTC.addListener(_handleTextChanged);

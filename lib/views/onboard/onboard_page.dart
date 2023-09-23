@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
+import 'package:teamup/controllers/RootController.dart';
 import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/views/HomeView.dart';
 import '../../mixins/baseClass.dart';
@@ -22,6 +23,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> with BaseClass {
   late PageController _controller;
   final ValueNotifier<int> _pageNotifier = ValueNotifier<int>(0);
 
+  final RootController rootController = Get.find();
+
   void moveToPreviousPage() {
     if (currentIndex > 0) {
       currentIndex = currentIndex - 1;
@@ -35,9 +38,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> with BaseClass {
     animatePage();
   }
 
-  void moveToHomePage() {
-    pushReplaceAndClearStack(
-        context: context, destination: const HomeView());
+  void moveToCreateGoalPage() {
+    rootController.navigateToCreateGoalPage();
   }
 
   void animatePage() {
@@ -164,7 +166,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with BaseClass {
                                   if (currentIndex == 1) {
                                     moveToNextPage();
                                   } else {
-                                    moveToHomePage();
+                                    moveToCreateGoalPage();
                                   }
                                 },
                                 child: Container(

@@ -267,6 +267,3 @@ class Notification_Service {
     });
   }
 }
-
-void navigateToNewsScreen(String newsSlug) {
-}

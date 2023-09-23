@@ -6,6 +6,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
@@ -16,9 +17,11 @@ import 'package:teamup/models/IndividualNotificationModel.dart';
 import 'package:teamup/models/SuccessGoalMemberModel.dart';
 import 'package:teamup/utils/Enums.dart';
 import 'package:teamup/utils/GraphQLService.dart';
+import 'package:teamup/views/HomeView.dart';
 
 import '../models/IndividualGoalActivityModel.dart';
 import '../utils/Constants.dart';
+import '../utils/app_strings.dart';
 import '../widgets/EditGoalActivityView.dart';
 
 class GoalController extends GetxController {
@@ -215,9 +218,13 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     initialActivityModel.name = activityName;
   }
 
+  final localStorage = GetStorage();
+
   @override
   void onInit() {
     super.onInit();
+    userId = localStorage.read(AppStrings.localClientIdValue) ?? AppStrings.defaultUserId;
+    print("UserId is $userId");
     initializeActivityModel();
   }
 
@@ -994,6 +1001,10 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
       case GoalCreatedSuccessPageEnum.GoalCreateActivityPage:
         Get.close(3);
         break;
+    }
+
+    if (!Get.isOverlaysOpen) {
+      Get.to(()=>HomeView());
     }
   }
 

@@ -4,13 +4,14 @@ import 'dart:developer';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/models/GoalMetaDataModel.dart';
 import 'package:teamup/models/IndividualGoalMemberModel.dart';
 import 'package:teamup/models/JourneyGoalModel.dart';
-import 'package:teamup/models/SucessGoalMetaDataModel.dart';
+import 'package:teamup/models/SuccessGoalMetaDataModel.dart';
 import 'package:teamup/utils/Enums.dart';
 import 'package:teamup/utils/GraphQLService.dart';
 import 'package:teamup/utils/app_strings.dart';
@@ -43,6 +44,15 @@ class VEGoalController extends GetxController {
 
   var goalName = "".obs;
   var goalDesc = "".obs;
+
+  final localStorage = GetStorage();
+
+  @override
+  void onInit() {
+    super.onInit();
+    userId = localStorage.read(AppStrings.localClientIdValue) ?? AppStrings.defaultUserId;
+    print("UserId is $userId");
+  }
 
   void updateGoalId(String tempId) {
     goalId = tempId;

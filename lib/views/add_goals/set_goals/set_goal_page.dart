@@ -11,7 +11,8 @@ import 'package:teamup/widgets/CreateGoalMetaDataView.dart';
 import '../describe_goal/describe_goal_page.dart';
 
 class SetGoalPage extends StatelessWidget with BaseClass {
-  SetGoalPage({Key? key}) : super(key: key);
+  final bool showBack;
+  SetGoalPage({Key? key, this.showBack = true}) : super(key: key);
 
 
   @override
@@ -23,6 +24,7 @@ class SetGoalPage extends StatelessWidget with BaseClass {
               onPressed: () {
                 popToPreviousScreen(context: context);
               },
+              showBack: showBack,
               showWelcome: true,
               sliderText: "1/4",
               sliderValue: 30,
