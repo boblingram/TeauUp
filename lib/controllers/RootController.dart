@@ -139,6 +139,7 @@ class RootController extends GetxController{
     localStorage.write(AppStrings.localClientIdValue, registerUserDataModel.registerUser.user.id);
     localStorage.write(AppStrings.localAuthkeyValue, registerUserDataModel.registerUser.authToken.authKey);
     jwtToken = registerUserDataModel.registerUser.authToken.jwtString.toString();
+    localStorage.write(AppStrings.localClientNameValue, name);
     navigateToOnBoardingPage();
     return;
   }

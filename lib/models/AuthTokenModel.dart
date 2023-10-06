@@ -17,3 +17,11 @@ class AuthTokenModel {
   );
 
 }
+
+class AssertTokenModel{
+  AuthToken authTokenData;
+
+  AssertTokenModel({required this.authTokenData});
+
+  factory AssertTokenModel.fromJson(Map<String, dynamic> json) => AssertTokenModel(authTokenData: AuthToken.fromJson(json["authToken"]));
+}

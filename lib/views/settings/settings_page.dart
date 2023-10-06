@@ -44,7 +44,7 @@ class SettingsPage extends StatelessWidget with BaseClass {
         ),
         title: Text(
           "Settings",
-          style: GoogleFonts.roboto(color: Colors.black),
+          style: GoogleFonts.openSans(color: Colors.black),
         ),
         actions: [
           Icon(
@@ -79,7 +79,7 @@ class SettingsPage extends StatelessWidget with BaseClass {
                         builder: (value) {
                           return Text(
                             value.getName,
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.openSans(
                               color: Colors.grey,
                               fontSize: 20,
                               fontWeight: FontWeight.w600,
@@ -91,7 +91,7 @@ class SettingsPage extends StatelessWidget with BaseClass {
                     ),
                     Text(
                       "joined 1st jul 2021  ",
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.openSans(
                         color: Colors.black,
                         fontWeight: FontWeight.w300,
                       ),
@@ -106,7 +106,7 @@ class SettingsPage extends StatelessWidget with BaseClass {
             padding: const EdgeInsets.only(left: 20, top: 35, bottom: 5),
             child: Text(
               "Account",
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.openSans(
                 color: Colors.grey,
                 fontWeight: FontWeight.w400,
                 fontSize: 12,
@@ -124,7 +124,7 @@ class SettingsPage extends StatelessWidget with BaseClass {
                       Text(
                         value.getName,
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.openSans(
                           color: Colors.black,
                         ),
                       ),
@@ -161,7 +161,7 @@ class SettingsPage extends StatelessWidget with BaseClass {
                             Text(
                               "Add",
                               textAlign: TextAlign.center,
-                              style: GoogleFonts.roboto(
+                              style: GoogleFonts.openSans(
                                 color: Colors.orange,
                               ),
                             ),
@@ -178,7 +178,7 @@ class SettingsPage extends StatelessWidget with BaseClass {
                       : Text(
                           value.getEmail,
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.openSans(
                             color: Colors.black,
                           ),
                         ),
@@ -194,7 +194,7 @@ class SettingsPage extends StatelessWidget with BaseClass {
             padding: const EdgeInsets.only(left: 20, top: 35, bottom: 5),
             child: Text(
               "Help & Support",
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.openSans(
                 color: Colors.grey,
                 fontWeight: FontWeight.w400,
                 fontSize: 12,
@@ -234,7 +234,7 @@ class SettingsPage extends StatelessWidget with BaseClass {
             padding: const EdgeInsets.only(left: 20, top: 35, bottom: 5),
             child: Text(
               "About our service",
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.openSans(
                 color: Colors.grey,
                 fontWeight: FontWeight.w400,
                 fontSize: 12,
@@ -326,7 +326,7 @@ class SettingsPage extends StatelessWidget with BaseClass {
             child: Text(
               "TeamUp Version\n1.0",
               textAlign: TextAlign.center,
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.openSans(
                 color: Colors.grey,
               ),
             ),

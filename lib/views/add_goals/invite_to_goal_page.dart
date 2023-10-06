@@ -4,6 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:teamup/controllers/GoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
 
+import '../../utils/GoalIconandColorStatic.dart';
 import '../../utils/PermissionManager.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/CreateGoalMetaDataView.dart';
@@ -12,7 +13,8 @@ import 'invite_goals_page/individual_goals_page.dart';
 
 
 class InviteToGoalPage extends StatefulWidget {
-  const InviteToGoalPage({Key? key}) : super(key: key);
+  final String selectedGoal;
+  const InviteToGoalPage({Key? key, required this.selectedGoal}) : super(key: key);
 
   @override
   State<InviteToGoalPage> createState() => _InviteToGoalPageState();
@@ -41,7 +43,7 @@ class _InviteToGoalPageState extends State<InviteToGoalPage>
                 pinned: true,
                 elevation: 0,
                 automaticallyImplyLeading: false,
-                backgroundColor: AppColors.goalAppBarColor,
+                backgroundColor: AppColors.white,
                 flexibleSpace: FlexibleSpaceBar(
                   collapseMode: CollapseMode.pin,
                   background: Column(
@@ -55,6 +57,8 @@ class _InviteToGoalPageState extends State<InviteToGoalPage>
                           sliderText: "4/4",
                           sliderValue: 120,
                           goalMetaTitle: "Invite",
+                          containerBackgroundColor: GoalIconandColorStatic.getColorName(
+                              widget.selectedGoal),
                           goalMetaDescription:
                               "Do it alone or do it with a group. Invite\nmentor to guide you or invite friends to\ninspire you."),
                     ],
@@ -67,14 +71,19 @@ class _InviteToGoalPageState extends State<InviteToGoalPage>
                     color: Colors.white,
                     child: Container(
                       height: 40,
+                      padding: EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          //border: Border.all(color: Colors.white),
-                          color: Colors.grey.shade300),
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 10),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 10),
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(5),
+                        /*boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      offset: Offset(0, 2),
+                      blurRadius: 4,
+                    ),
+                    ],*/
+                      ),
+                      margin: EdgeInsets.fromLTRB(20, 10, 20, 5),
                       child: TabBar(
                         tabs: const [
                           Tab(
@@ -97,6 +106,14 @@ class _InviteToGoalPageState extends State<InviteToGoalPage>
                             borderRadius: _selectedTabValue == 0
                                 ? BorderRadius.circular(5)
                                 : BorderRadius.circular(5),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 3,
+                                blurRadius: 7,
+                                offset: Offset(0, 3), // changes position of shadow
+                              ),
+                            ],
                             color: Colors.white),
                         labelColor: Colors.black,
                         onTap: (value) {
@@ -111,7 +128,7 @@ class _InviteToGoalPageState extends State<InviteToGoalPage>
               )
             ];
           },
-          body: _selectedTabValue == 0 ? GroupGoalPage() : IndividualGoalPage()),
+          body: _selectedTabValue == 0 ? GroupGoalPage(selectedGoal: widget.selectedGoal) : IndividualGoalPage(selectedGoal: widget.selectedGoal)),
     );
   }
 }

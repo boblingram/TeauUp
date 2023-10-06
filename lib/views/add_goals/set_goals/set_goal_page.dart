@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
@@ -6,6 +7,7 @@ import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/utils/GoalIconandColorStatic.dart';
 import 'package:teamup/utils/app_Images.dart';
 import 'package:teamup/utils/app_colors.dart';
+import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/widgets/CreateGoalMetaDataView.dart';
 
 import '../describe_goal/describe_goal_page.dart';
@@ -14,9 +16,15 @@ class SetGoalPage extends StatelessWidget with BaseClass {
   final bool showBack;
   SetGoalPage({Key? key, this.showBack = true}) : super(key: key);
 
+  String getName(){
+    var localStorage = GetStorage();
+    var name = localStorage.read(AppStrings.localClientNameValue) ?? "";
+    return name;
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Column(
         children: [
@@ -28,6 +36,8 @@ class SetGoalPage extends StatelessWidget with BaseClass {
               showWelcome: true,
               sliderText: "1/4",
               sliderValue: 30,
+              welcomeName: getName(),
+              containerBackgroundColor: AppColors.setGoalColor,
               sliderColor: HexColor(AppColors.sliderColor),
               goalMetaTitle: "Set a Goal",
               goalMetaDescription:
@@ -57,8 +67,8 @@ class SetGoalPage extends StatelessWidget with BaseClass {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          height: 9.h,
-                          width: 9.h,
+                          height: 7.h,
+                          width: 7.h,
                           decoration: BoxDecoration(
                             color: HexColor(GoalIconandColorStatic.goalColorList.elementAt(index)),
                             shape: BoxShape.circle,
@@ -70,20 +80,21 @@ class SetGoalPage extends StatelessWidget with BaseClass {
                                   color: Colors.white,
                                 )
                               : Padding(
-                                  padding: EdgeInsets.all(4.w),
+                                  padding: EdgeInsets.all(2.w),
                                   child: Image.asset(
                                       GoalIconandColorStatic.getImageName(GoalIconandColorStatic.goalList.elementAt(index)))),
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: 7,
                         ),
                         Text(
                           GoalIconandColorStatic.goalList.elementAt(index),
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.openSans(
                             color: HexColor(GoalIconandColorStatic.goalColorList.elementAt(index)),
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
+                          maxLines: 1,
                         ),
                       ],
                     ),

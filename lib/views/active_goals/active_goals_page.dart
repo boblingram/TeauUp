@@ -21,7 +21,7 @@ class ActiveGoalsPage extends StatelessWidget {
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(AppStrings.yourGoals, style: TextStyle(fontWeight: FontWeight.w400),),
+                Text(AppStrings.yourGoals, style: TextStyle(fontWeight: FontWeight.w600,letterSpacing: 0.5),),
               ],
             ),
             const SizedBox(

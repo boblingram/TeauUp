@@ -69,6 +69,7 @@ class _RegisterViewState extends State<RegisterView> with BaseClass{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(backgroundColor: Colors.red,),
       body: Container(
         child: Column(
@@ -76,44 +77,46 @@ class _RegisterViewState extends State<RegisterView> with BaseClass{
             Expanded(child: Container(),flex: 2,),
             Expanded(child: Container(
               padding: EdgeInsets.fromLTRB(5.w, 0, 5.w, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Let's Get\nStarted",style: TextStyle(fontSize: 20.sp,color: Colors.black54,fontWeight: FontWeight.w700),),
-                  Text("Looks like you are using Teamup for the first time. By what name do you want to appear for others?",style: TextStyle(fontSize: 12.sp),),
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(5)),
-                    child: EditTextWithHint(
-                        hintText: "Enter Your Name",
-                        context: context,
-                        leftMargin: 0,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Let's Get\nStarted",style: TextStyle(fontSize: 20.sp,color: Colors.black54,fontWeight: FontWeight.w700),),
+                    Text("Looks like you are using Teamup for the first time. By what name do you want to appear for others?",style: TextStyle(fontSize: 12.sp),),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: EditTextWithHint(
+                          hintText: "Enter Your Name",
+                          context: context,
+                          leftMargin: 0,
+                          rightMargin: 0,
+                          radius: 5,
+                          textEditingController:
+                          nameController,
+                          inputAction: TextInputAction.done,
+                          inputType: TextInputType.text),
+                    ),
+                    RoundedEdgeButton(
+                        backgroundColor:
+                        Colors.red,
+                        text: "Next",
+                        leftMargin: 0,topMargin: 40,
+                        buttonRadius: 10,
                         rightMargin: 0,
-                        radius: 5,
-                        textEditingController:
-                        nameController,
-                        inputAction: TextInputAction.done,
-                        inputType: TextInputType.text),
-                  ),
-                  RoundedEdgeButton(
-                      backgroundColor:
-                      Colors.red,
-                      text: "Next",
-                      leftMargin: 0,topMargin: 40,
-                      buttonRadius: 10,
-                      rightMargin: 0,
-                      bottomMargin: 20,
-                      onPressed: () {
-                        if(nameController.text == null || nameController.text.isEmpty){
-                          showError(title: "Error", message: "Name is required");
-                          return;
-                        }
-                        rootController.newRegistrationToServer(nameController.text.trim());
-                      },
-                      context: context)
-                ],
+                        bottomMargin: 20,
+                        onPressed: () {
+                          if(nameController.text == null || nameController.text.isEmpty){
+                            showError(title: "Error", message: "Name is required");
+                            return;
+                          }
+                          rootController.newRegistrationToServer(nameController.text.trim());
+                        },
+                        context: context)
+                  ],
+                ),
               ),
             ),flex: 4,),
             Expanded(child: Text.rich(

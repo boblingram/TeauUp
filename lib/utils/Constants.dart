@@ -16,10 +16,10 @@ int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
 }
 
-showLoader({String text = "Please wait..."}) {
+showLoader({String text = "Please wait...", String? progressColor}) {
   Get.dialog(
     Center(
-      child: ProgressBarWidget(text: "$text"),
+      child: ProgressBarWidget(text: "$text", progressColor: progressColor,),
     ),
     barrierDismissible: false,
   );

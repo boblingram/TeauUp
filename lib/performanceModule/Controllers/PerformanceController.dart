@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../utils/Constants.dart';
+import '../../utils/GraphQLService.dart';
 import '../../utils/app_strings.dart';
 import '../PerformanceConstants.dart';
 import '../Model/LeaderboardItemExpansionModel.dart';
@@ -71,17 +72,6 @@ class PerformanceController extends GetxController{
 
   void fetchLeaderboardList()async{
     //Graphql
-    final HttpLink httpLink = HttpLink(Constants.BASEURL,
-      defaultHeaders: {
-        Constants.HEADER_API_KEY: Constants.API_KEY
-      },
-    );
-
-    final GraphQLClient graphqlClient = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
-
     final query = gql('''query MyQuery {
   leaderBoard(goalId:"1") {
      FNLN
@@ -92,7 +82,7 @@ class PerformanceController extends GetxController{
     thirtyDayStats
   }
 }''');
-    var result = await graphqlClient.query(QueryOptions(document: query));
+    var result = await GraphQLService.makeGraphQLRequest(QueryOptions( document: query));
     //It can have exception or data
     //log(result.data.toString());
     json.encode(result.data);
@@ -110,16 +100,6 @@ class PerformanceController extends GetxController{
 
   Future<LeaderboardItemExpansionModel?> fetchExpansionValue(String userId) async{
     //Graphql
-    final HttpLink httpLink = HttpLink(Constants.BASEURL,
-      defaultHeaders: {
-        Constants.HEADER_API_KEY: Constants.API_KEY
-      },
-    );
-
-    final GraphQLClient graphqlClient = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
 
     final query = gql('''query MyQuery {
   userActivitySumm(userId: "$userId") {
@@ -131,7 +111,7 @@ class PerformanceController extends GetxController{
     thirtyDaySumm
   }
 }''');
-    var result = await graphqlClient.query(QueryOptions(document: query));
+    var result = await GraphQLService.makeGraphQLRequest(QueryOptions( document: query));
     //It can have exception or data
     log(result.data.toString());
     if(result.data == null && result.exception != null){
@@ -154,16 +134,6 @@ class PerformanceController extends GetxController{
 
   void fetchMyPerformance()async{
     //Graphql
-    final HttpLink httpLink = HttpLink(Constants.BASEURL,
-      defaultHeaders: {
-        Constants.HEADER_API_KEY: Constants.API_KEY
-      },
-    );
-
-    final GraphQLClient graphqlClient = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
 
     final query = gql('''query MyQuery {
   userPerformance(userId: "$userID") {
@@ -207,7 +177,7 @@ class PerformanceController extends GetxController{
   }
 }
 ''');
-    var result = await graphqlClient.query(QueryOptions(document: query));
+    var result = await GraphQLService.makeGraphQLRequest(QueryOptions( document: query));
     //It can have exception or data
     //log(result.data.toString());
 

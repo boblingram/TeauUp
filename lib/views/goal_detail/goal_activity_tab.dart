@@ -34,7 +34,7 @@ class GoalActivityTabPage extends StatelessWidget {
             child: Text(
               "End and Archive Goal",
               textAlign: TextAlign.center,
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.openSans(
                 color: AppColors.black,
                 fontWeight: FontWeight.w400,
                 fontSize: 18,
@@ -77,7 +77,7 @@ class GoalActivityTabPage extends StatelessWidget {
                                 children: [
                                   Text(
                                     "${index+1}. ${veGoalController.convertStringToNotNull(item.name)}",
-                                    style: GoogleFonts.roboto(
+                                    style: GoogleFonts.openSans(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 16,
@@ -89,7 +89,7 @@ class GoalActivityTabPage extends StatelessWidget {
                                     },
                                     child: Text(
                                       "Edit",
-                                      style: GoogleFonts.roboto(
+                                      style: GoogleFonts.openSans(
                                         color: AppColors.black,
                                         fontWeight: FontWeight.w400,
                                         fontSize: 16,
@@ -128,7 +128,7 @@ class GoalActivityTabPage extends StatelessWidget {
                                 children: [
                                   Text(
                                     "End date: ",
-                                    style: GoogleFonts.roboto(
+                                    style: GoogleFonts.openSans(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 14,
@@ -136,7 +136,7 @@ class GoalActivityTabPage extends StatelessWidget {
                                   ),
                                   Text(
                                     veGoalController.convertEndDateToAppropriate(item.endDt),
-                                    style: GoogleFonts.roboto(
+                                    style: GoogleFonts.openSans(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14,
@@ -186,7 +186,7 @@ class GoalActivityTabPage extends StatelessWidget {
         ),
         Text(
           title,
-          style: GoogleFonts.roboto(color: Colors.black, fontSize: 12),
+          style: GoogleFonts.openSans(color: Colors.black, fontSize: 12),
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:teamup/mixins/baseClass.dart';
+import 'package:teamup/utils/GoalIconandColorStatic.dart';
 import 'package:teamup/utils/app_colors.dart';
 
 import '../../../bottom_sheets/date_picker.dart';
@@ -19,7 +21,9 @@ import '../../../widgets/CreateGoalMetaDataView.dart';
 import '../invite_to_goal_page.dart';
 
 class CreateGoalActivities extends StatefulWidget {
-  const CreateGoalActivities({super.key});
+  final String selectedGoal;
+
+  const CreateGoalActivities({super.key, required this.selectedGoal});
 
   @override
   State<CreateGoalActivities> createState() => _CreateGoalActivitiesState();
@@ -31,12 +35,16 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
   final TextEditingController controller = TextEditingController();
   String selectedDate = "";
 
+  Color selectionColor = Colors.red;
+  Color unSelectedColor = Colors.grey.shade300;
+  final FocusNode _focusNode = FocusNode();
+
   Widget _myRadioButton(
       {required String title,
       required int value,
       required Function onChanged}) {
     return RadioListTile(
-      activeColor: Colors.grey.shade700,
+      activeColor: selectionColor,
       value: value,
       contentPadding: EdgeInsets.zero,
       groupValue: activityGC.radioGroupValue.value,
@@ -49,7 +57,21 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
 
   @override
   void initState() {
+    selectionColor =
+        HexColor(GoalIconandColorStatic.getColorName(widget.selectedGoal));
+    unSelectedColor = HexColor(AppColors.nonActivitySelectedBGColor);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  bool _isTapInsideTextField(Offset tapPosition) {
+    RenderBox renderBox = context.findRenderObject() as RenderBox;
+    return renderBox.paintBounds.contains(tapPosition);
   }
 
   @override
@@ -71,10 +93,14 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                       sliderValue: 80,
                       sliderColor: HexColor(AppColors.sliderColor),
                       goalMetaTitle: "Create goal Activities",
+                      containerBackgroundColor:
+                          GoalIconandColorStatic.getColorName(
+                              widget.selectedGoal),
                       goalMetaDescription:
                           "List the unique set of activities that need\nto be completed to achieve your goal.",
                     ),
-                    Padding(
+                    Container(
+                      color: Colors.white,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 20),
                       child: Column(
@@ -83,10 +109,11 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                         children: [
                           Text(
                             "Configure Activities",
-                            style: GoogleFonts.roboto(
-                              color: Colors.black,
+                            style: GoogleFonts.openSans(
+                              color:
+                                  HexColor(AppColors.staticActivityTextColor),
                               fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                           SizedBox(
@@ -110,20 +137,22 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                       children: [
                                         Text(
                                           "Activity ${index + 1}",
-                                          style: GoogleFonts.roboto(
-                                            color: Colors.black,
+                                          style: GoogleFonts.openSans(
+                                            color: HexColor(AppColors
+                                                .staticActivityTextColor),
                                             fontSize: 16,
-                                            fontWeight: FontWeight.w700,
+                                            fontWeight: FontWeight.w500,
                                           ),
                                         ),
                                         InkWell(
                                           onTap: () {
-                                            activityGC.editGoalActivitySheet(item, index);
+                                            activityGC.editGoalActivitySheet(
+                                                item, index,selectedColor: selectionColor);
                                           },
                                           child: Text(
                                             "Edit",
-                                            style: GoogleFonts.roboto(
-                                              color: Colors.red,
+                                            style: GoogleFonts.openSans(
+                                              color: selectionColor,
                                               fontSize: 16,
                                               fontWeight: FontWeight.w700,
                                             ),
@@ -146,7 +175,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                         alignment: Alignment.centerLeft,
                                         child: Text(
                                           item.name ?? "",
-                                          style: GoogleFonts.roboto(
+                                          style: GoogleFonts.openSans(
                                               color: Colors.black,
                                               fontSize: 16),
                                         ),
@@ -160,10 +189,11 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                               }),
                           Text(
                             "Activity Name",
-                            style: GoogleFonts.roboto(
-                              color: Colors.grey.shade900,
+                            style: GoogleFonts.openSans(
+                              color:
+                                  HexColor(AppColors.staticActivityTextColor),
                               fontSize: 16,
-                              fontWeight: FontWeight.w400,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           const SizedBox(
@@ -176,6 +206,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                             child: EditTextWithHint(
                                 hintText: "Enter activity Name",
                                 context: context,
+                                focusNode: _focusNode,
                                 leftMargin: 0,
                                 rightMargin: 0,
                                 textEditingController:
@@ -190,10 +221,11 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                           ///Frequency
                           Text(
                             "Frequency",
-                            style: GoogleFonts.roboto(
-                              color: Colors.grey.shade900,
+                            style: GoogleFonts.openSans(
+                              color:
+                                  HexColor(AppColors.staticActivityTextColor),
                               fontSize: 16,
-                              fontWeight: FontWeight.w400,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           const SizedBox(
@@ -205,6 +237,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                               ...activityGC.frequencies.map((e) {
                                 return InkWell(
                                   onTap: () {
+                                    _focusNode.unfocus();
                                     activityGC
                                         .updateFrequencySelection(e["index"]);
                                   },
@@ -214,13 +247,13 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                         horizontal: 12, vertical: 5),
                                     decoration: BoxDecoration(
                                         color: e["isSelected"]
-                                            ? Colors.red
-                                            : Colors.grey.shade300,
+                                            ? selectionColor
+                                            : unSelectedColor,
                                         borderRadius:
                                             BorderRadius.circular(15)),
                                     child: Text(
                                       e["name"],
-                                      style: GoogleFonts.roboto(
+                                      style: GoogleFonts.openSans(
                                           color: e["isSelected"]
                                               ? Colors.white
                                               : Colors.black),
@@ -243,7 +276,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                   children: [
                                     Text(
                                       "Select dates",
-                                      style: GoogleFonts.roboto(
+                                      style: GoogleFonts.openSans(
                                         color: Colors.grey.shade700,
                                         fontSize: 16,
                                         fontWeight: FontWeight.w700,
@@ -254,7 +287,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                     ),
                                     Text(
                                       activityGC.selectedDaysText,
-                                      style: GoogleFonts.roboto(
+                                      style: GoogleFonts.openSans(
                                         color: Colors.grey.shade400,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400,
@@ -272,7 +305,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                       child: TableCalendar(
                                         calendarStyle: CalendarStyle(
                                             selectedDecoration: BoxDecoration(
-                                                color: Colors.red,
+                                                color: selectionColor,
                                                 shape: BoxShape.circle)),
                                         firstDay: DateTime.utc(2010, 10, 16),
                                         lastDay: DateTime.utc(2030, 3, 14),
@@ -301,14 +334,15 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                 )
                               : Container(),
                           SizedBox(
-                            height: 2.h,
+                            height: 0.5.h,
                           ),
                           Text(
                             "When",
-                            style: GoogleFonts.roboto(
-                              color: Colors.grey.shade900,
+                            style: GoogleFonts.openSans(
+                              color:
+                                  HexColor(AppColors.staticActivityTextColor),
                               fontSize: 16,
-                              fontWeight: FontWeight.w400,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           Column(
@@ -317,6 +351,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                   title: "Any time of the day",
                                   value: 0,
                                   onChanged: (newValue) {
+                                    _focusNode.unfocus();
                                     activityGC.updateRadioGroupValue(newValue);
                                     /*setState(() {
                                         _groupValue = newValue;
@@ -333,6 +368,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                         title: "Specific time",
                                         value: 1,
                                         onChanged: (newValue) {
+                                          _focusNode.unfocus();
                                           activityGC
                                               .updateRadioGroupValue(newValue);
                                         },
@@ -345,7 +381,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                               horizontal: 10),
                                           height: 40,
                                           decoration: BoxDecoration(
-                                              color: Colors.grey.shade300,
+                                              color: unSelectedColor,
                                               borderRadius:
                                                   BorderRadius.circular(5)),
                                           child: Center(
@@ -355,9 +391,9 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                                   child: Text(
                                                 "3:00",
                                                 textAlign: TextAlign.center,
-                                                style: GoogleFonts.roboto(
+                                                style: GoogleFonts.openSans(
                                                   color: Colors.black,
-                                                  fontWeight: FontWeight.w500,
+                                                  fontWeight: FontWeight.w400,
                                                 ),
                                               )),
                                               value: activityGC
@@ -370,15 +406,16 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                                       child: Text(
                                                     value,
                                                     textAlign: TextAlign.center,
-                                                    style: GoogleFonts.roboto(
+                                                    style: GoogleFonts.openSans(
                                                       color: Colors.black,
                                                       fontWeight:
-                                                          FontWeight.w500,
+                                                          FontWeight.w400,
                                                     ),
                                                   )),
                                                 );
                                               }).toList(),
                                               onChanged: (value) {
+                                                _focusNode.unfocus();
                                                 activityGC
                                                     .updateDropDownTime(value!);
                                               },
@@ -390,18 +427,19 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                         ),
                                         Container(
                                           decoration: BoxDecoration(
-                                              color: Colors.grey.shade300,
+                                              color: unSelectedColor,
                                               borderRadius:
                                                   BorderRadius.circular(5)),
                                           height: 40,
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 8),
+                                              horizontal: 5),
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
                                               InkWell(
                                                 onTap: () {
+                                                  _focusNode.unfocus();
                                                   activityGC.updateAmPM(false);
                                                 },
                                                 child: Container(
@@ -410,15 +448,15 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                                   decoration: BoxDecoration(
                                                       color: activityGC
                                                               .isPmSelected
-                                                          ? Colors.grey.shade300
+                                                          ? unSelectedColor
                                                           : Colors.white,
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                              5)),
+                                                              8)),
                                                   child: Center(
                                                     child: Text(
                                                       "AM",
-                                                      style: GoogleFonts.roboto(
+                                                      style: GoogleFonts.openSans(
                                                           color: Colors.black),
                                                     ),
                                                   ),
@@ -426,6 +464,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                               ),
                                               InkWell(
                                                 onTap: () {
+                                                  _focusNode.unfocus();
                                                   activityGC.updateAmPM(true);
                                                 },
                                                 child: Container(
@@ -435,15 +474,14 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                                       color: activityGC
                                                               .isPmSelected
                                                           ? Colors.white
-                                                          : Colors
-                                                              .grey.shade300,
+                                                          : unSelectedColor,
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                              5)),
+                                                              8)),
                                                   child: Center(
                                                     child: Text(
                                                       "PM",
-                                                      style: GoogleFonts.roboto(
+                                                      style: GoogleFonts.openSans(
                                                           color: Colors.black),
                                                     ),
                                                   ),
@@ -473,10 +511,11 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                     children: [
                                       Text(
                                         "Duration",
-                                        style: GoogleFonts.roboto(
-                                          color: Colors.grey.shade700,
+                                        style: GoogleFonts.openSans(
+                                          color: HexColor(AppColors
+                                              .staticActivityTextColor),
                                           fontSize: 16,
-                                          fontWeight: FontWeight.w700,
+                                          fontWeight: FontWeight.w500,
                                         ),
                                       ),
                                       const SizedBox(
@@ -491,6 +530,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                             return Expanded(
                                               child: InkWell(
                                                 onTap: () {
+                                                  _focusNode.unfocus();
                                                   activityGC
                                                       .updateDailyFrequencyDuration(
                                                           e["index"]);
@@ -504,16 +544,15 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                                       vertical: 5),
                                                   decoration: BoxDecoration(
                                                       color: e["isSelected"]
-                                                          ? Colors.red
-                                                          : Colors
-                                                              .grey.shade300,
+                                                          ? selectionColor
+                                                          : unSelectedColor,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               15)),
                                                   child: Text(
                                                     e["name"],
                                                     textAlign: TextAlign.center,
-                                                    style: GoogleFonts.roboto(
+                                                    style: GoogleFonts.openSans(
                                                         color: e["isSelected"]
                                                             ? Colors.white
                                                             : Colors.black),
@@ -538,7 +577,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                   children: [
                                     Text(
                                       "Set End Date (Optional)",
-                                      style: GoogleFonts.roboto(
+                                      style: GoogleFonts.openSans(
                                         color: Colors.grey.shade700,
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
@@ -546,6 +585,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                     ),
                                     InkWell(
                                       onTap: () async {
+                                        _focusNode.unfocus();
                                         CupertinoDatePickerBottomSheet()
                                             .cupertinoDatePicker(context,
                                                 (selectedDate) {
@@ -574,7 +614,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                               activityGC.getSelectedDate.isEmpty
                                                   ? "No end date"
                                                   : activityGC.getSelectedDate,
-                                              style: GoogleFonts.roboto(
+                                              style: GoogleFonts.openSans(
                                                   color: Colors.grey),
                                             )),
                                             const Icon(
@@ -593,10 +633,11 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                           ),
                           Text(
                             "Reminder",
-                            style: GoogleFonts.roboto(
-                              color: Colors.grey.shade700,
+                            style: GoogleFonts.openSans(
+                              color:
+                                  HexColor(AppColors.staticActivityTextColor),
                               fontSize: 16,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           const SizedBox(
@@ -605,21 +646,55 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    "Remind me at",
-                                    style: GoogleFonts.roboto(
-                                      color: Colors.grey.shade700,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
+                              Expanded(child: activityGC.isReminderToggleOn
+                                  ? Text.rich(
+                                TextSpan(
+                                  style: GoogleFonts.openSans(
+                                    color: Colors.grey.shade700,
+                                    fontSize: 10.5.sp,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  children: [
+                                    TextSpan(text: 'Remind me '),
+                                    TextSpan(
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          // Handle the tap action here
+                                          _focusNode.unfocus();
+                                          CupertinoTimePickerBottomSheet()
+                                              .cupertinoTimePicker(context,
+                                                  (selectedTime) {
+                                                popToPreviousScreen(
+                                                    context: context);
+                                                // Split the custom time string into hours, minutes, and seconds
+                                                activityGC.updateReminderTime(
+                                                    selectedTime);
+                                              });
+                                        },
+                                      text: activityGC.reminderTime,
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  InkWell(
-                                    onTap: () {
+                                    TextSpan(text: ' before that task starts'),
+                                  ],
+                                ),
+                              )
+                                  : Text(
+                                "Do not remind me",
+                                style: GoogleFonts.openSans(
+                                  color: Colors.grey.shade700,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),flex: 7,),
+                              Expanded(
+                                flex: 1,
+                                child: FlutterSwitch(
+                                  height: 25,
+                                  width: 50,
+                                  activeColor: selectionColor,
+                                  value: activityGC.isReminderToggleOn,
+                                  onToggle: (value) {
+                                    activityGC.changeToggleState();
+                                    if (value) {
                                       CupertinoTimePickerBottomSheet()
                                           .cupertinoTimePicker(context,
                                               (selectedTime) {
@@ -628,100 +703,16 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                         activityGC
                                             .updateReminderTime(selectedTime);
                                       });
-                                    },
-                                    child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey.shade300,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Center(
-                                            child:
-                                                Text(activityGC.reminderTime))),
-                                  ),
-                                  /*Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                height: 40,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.shade300,
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: Center(
-                                  child: DropdownButton<String>(
-                                    //    icon: const SizedBox(),
-                                    hint: Center(
-                                        child: Text(
-                                      "3:00",
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.roboto(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    )),
-                                    value: activityGC.selectedDropDownTime,
-                                    items: activityGC.getTimeList
-                                        .map((String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Center(
-                                            child: Text(
-                                          value,
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.roboto(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        )),
-                                      );
-                                    }).toList(),
-                                    onChanged: (value) {
-                                      activityGC.updateDropDownTime(value!);
-                                    },
-                                  ),
+                                    }
+                                  },
                                 ),
-                              )*/
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  /*Text(
-                                "In the morning",
-                                style: GoogleFonts.roboto(
-                                  color: Colors.grey.shade700,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),*/
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                ],
-                              ),
-                              FlutterSwitch(
-                                height: 25,
-                                width: 50,
-                                activeColor: Colors.red,
-                                value: activityGC.isReminderToggleOn,
-                                onToggle: (value) {
-                                  activityGC.changeToggleState();
-                                  if (value) {
-                                    CupertinoTimePickerBottomSheet()
-                                        .cupertinoTimePicker(context,
-                                            (selectedTime) {
-                                      popToPreviousScreen(context: context);
-                                      // Split the custom time string into hours, minutes, and seconds
-                                      activityGC
-                                          .updateReminderTime(selectedTime);
-                                    });
-                                  }
-                                },
                               ),
                             ],
                           ),
                           const Divider(),
                           InkWell(
                             onTap: () async {
+                              _focusNode.unfocus();
                               if (activityGC.activityNameController.text
                                   .trim()
                                   .isEmpty) {
@@ -763,7 +754,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                   ),
                                   Text(
                                     "Add another activity",
-                                    style: GoogleFonts.roboto(
+                                    style: GoogleFonts.openSans(
                                       color: Colors.grey.shade500,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
@@ -774,17 +765,43 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                             ),
                           ),
                           RoundedEdgeButton(
-                              backgroundColor: Colors.red,
+                              backgroundColor: selectionColor,
                               text: "Next",
                               leftMargin: 0,
                               buttonRadius: 10,
                               rightMargin: 0,
                               topMargin: 15,
                               bottomMargin: 20,
-                              onPressed: () {
+                              onPressed: () async {
+                                _focusNode.unfocus();
+                                if(activityGC.successfullyCreatedActivityList.isNotEmpty){
+                                  pushToNextScreen(
+                                      context: context,
+                                      destination: InviteToGoalPage(selectedGoal: widget.selectedGoal,));
+                                  return;
+                                }
+                                if (activityGC.activityNameController.text
+                                    .trim()
+                                    .isEmpty) {
+                                  showError(
+                                      title: "Empty",
+                                      message: "Please add activity name");
+                                  return;
+                                }
+                                activityGC.updateActivityName(activityGC
+                                    .activityNameController.text
+                                    .trim());
+                                var response =
+                                    await activityGC.validationOfAddActivity();
+                                if (!response) {
+                                  showError(
+                                      title: "Error",
+                                      message: activityGC.errorText);
+                                  return;
+                                }
                                 pushToNextScreen(
                                     context: context,
-                                    destination: const InviteToGoalPage());
+                                    destination: InviteToGoalPage(selectedGoal: widget.selectedGoal,));
                               },
                               context: context)
                         ],
@@ -809,7 +826,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
               ),
               Text(
                 "Select days",
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.openSans(
                   color: Colors.grey.shade700,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -824,6 +841,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                   ...activityGC.selectWeeklyDays.map((e) {
                     return InkWell(
                       onTap: () {
+                        _focusNode.unfocus();
                         activityGC.updateWeeklyDays(e["index"]);
                       },
                       child: Container(
@@ -831,12 +849,12 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                             horizontal: 15, vertical: 5),
                         decoration: BoxDecoration(
                             color: e["isSelected"]
-                                ? Colors.red
-                                : Colors.grey.shade300,
+                                ? selectionColor
+                                : unSelectedColor,
                             borderRadius: BorderRadius.circular(15)),
                         child: Text(
                           e["name"],
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.openSans(
                               color: e["isSelected"]
                                   ? Colors.white
                                   : Colors.black),
@@ -873,7 +891,7 @@ Row(
                                                       "January",
                                                       textAlign:
                                                           TextAlign.center,
-                                                      style: GoogleFonts.roboto(
+                                                      style: GoogleFonts.openSans(
                                                         color: Colors.black,
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -929,7 +947,7 @@ Row(
                                                       "2021",
                                                       textAlign:
                                                           TextAlign.center,
-                                                      style: GoogleFonts.roboto(
+                                                      style: GoogleFonts.openSans(
                                                         color: Colors.black,
                                                         fontWeight:
                                                             FontWeight.w500,

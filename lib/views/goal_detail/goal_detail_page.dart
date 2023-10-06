@@ -124,7 +124,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                             ),
                             Text(
                               "${widget.userGoalPerInfo.goalInfo.type ?? AppStrings.defaultType}",
-                              style: GoogleFonts.roboto(
+                              style: GoogleFonts.openSans(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
                                 fontSize: 16,
@@ -137,7 +137,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                               children: [
                                 Obx(()=>Text(
                                   veGoalController.goalName.value,
-                                  style: GoogleFonts.roboto(
+                                  style: GoogleFonts.openSans(
                                     color: Colors.white,
                                     fontSize: 23,
                                     fontWeight: FontWeight.w500,
@@ -149,7 +149,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                                   },
                                   child: Text(
                                     "Edit",
-                                    style: GoogleFonts.roboto(
+                                    style: GoogleFonts.openSans(
                                       color: AppColors.white,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 16,
@@ -161,7 +161,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                             ),
                             Text(
                               "Goal set by: Saradhi (You)",
-                              style: GoogleFonts.roboto(
+                              style: GoogleFonts.openSans(
                                 color: Colors.white,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -172,7 +172,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                             ),
                             Obx(()=>Text(
                               veGoalController.goalDesc.value,
-                              style: GoogleFonts.roboto(
+                              style: GoogleFonts.openSans(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,
                                   fontSize: 16),

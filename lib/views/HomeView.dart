@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/performanceModule/Views/PerformanceView.dart';
+import 'package:teamup/utils/app_Images.dart';
 import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/views/GoalView.dart';
 import 'package:teamup/views/journey_views/journey_view.dart';
@@ -95,7 +97,7 @@ class _HomeViewState extends State<HomeView> with BaseClass {
         centerTitle: true,
         title: Obx(()=>Text(
           pageTitle.value,
-          style: GoogleFonts.roboto(color: AppColors.black),
+          style: GoogleFonts.openSans(color: AppColors.black,textStyle: TextStyle(fontWeight: FontWeight.w500,fontSize: 19.sp,letterSpacing: 0.3)),
         )),
         actions: [
           IconButton(
@@ -125,37 +127,54 @@ class _HomeViewState extends State<HomeView> with BaseClass {
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: _selectedIndex,
-          selectedItemColor: AppColors.red,
-          unselectedItemColor: AppColors.black,
+          backgroundColor: Colors.white,
+          selectedItemColor: HexColor(AppColors.selectedColor),
+          unselectedItemColor: HexColor(AppColors.nonSelectedColor),
           unselectedFontSize: 10,
           selectedFontSize: 12,
           iconSize: 20,
-          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
-          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+          selectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 8.5.sp),
+          unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500,fontSize: 8.5.sp),
           onTap: _onItemTapped,
           elevation: 5,
-          items: const [
+          items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.scoreboard_outlined),
+                icon: Padding(
+                  padding: EdgeInsets.fromLTRB(0,0,0,5),
+                  child: Image.asset(AppImages.unselectedGoalB,height: 5.w,width: 6.w,),
+                ),
+                activeIcon: Padding(
+                padding: EdgeInsets.fromLTRB(0,0,0,4),
+                child: Image.asset(AppImages.selectedGoalB,height: 6.5.w,width: 6.5.w,),
+                ),
                 label: AppStrings.goals,
                 backgroundColor: AppColors.white),
             BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_month),
+                icon: Padding(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                    child: Icon(Icons.calendar_month)),
                 label: AppStrings.journey,
                 backgroundColor: AppColors.white),
             BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.add_circle_outline_sharp,
-                  size: 30,
+                icon: Padding(
+                  padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                  child: Icon(
+                    Icons.add_circle_outline_sharp,
+                    size: 30,
+                  ),
                 ),
                 label: '',
                 backgroundColor: AppColors.white),
             BottomNavigationBarItem(
-                icon: Icon(Icons.perm_phone_msg_outlined),
+                icon: Padding(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                    child: Icon(Icons.perm_phone_msg_outlined)),
                 label: AppStrings.connect,
                 backgroundColor: AppColors.white),
             BottomNavigationBarItem(
-                icon: Icon(Icons.bar_chart),
+                icon: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                    child: Icon(Icons.bar_chart)),
                 label: AppStrings.performance,
                 backgroundColor: AppColors.white),
           ]),
@@ -163,3 +182,4 @@ class _HomeViewState extends State<HomeView> with BaseClass {
     );
   }
 }
+

@@ -1,13 +1,14 @@
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hexcolor/src/hexcolor_base.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/widgets/rounded_edge_button.dart';
 
 class MultiSelectContacts extends StatefulWidget {
   final List<Contact> contactsList;
-
-  MultiSelectContacts({Key? key, required this.contactsList}) : super(key: key);
+  final Color? selectedColor;
+  MultiSelectContacts({Key? key, required this.contactsList, this.selectedColor}) : super(key: key);
 
   @override
   State<MultiSelectContacts> createState() => _MultiSelectContactsState();
@@ -136,7 +137,7 @@ class _MultiSelectContactsState extends State<MultiSelectContacts> {
         Align(
           alignment: Alignment.bottomCenter,
           child: RoundedEdgeButton(
-              backgroundColor: Colors.red,
+              backgroundColor: widget.selectedColor ?? Colors.red,
               text: "Done",
               leftMargin: 20,
               buttonRadius: 10,
@@ -180,8 +181,9 @@ class _MultiSelectContactsState extends State<MultiSelectContacts> {
                 child: Row(
                   children: [
                     CircleAvatar(
+                      backgroundColor: widget.selectedColor,
                       child: Text(
-                          individualContact.displayName?[0] ?? "A"),
+                          individualContact.displayName?[0] ?? "A",style: TextStyle(color: Colors.white),),
                     ),
                     SizedBox(
                       width: 10,
@@ -210,12 +212,12 @@ class _MultiSelectContactsState extends State<MultiSelectContacts> {
                       selectedContactList
                           .contains(individualContact)
                           ? Icons.check_circle_outlined
-                          : Icons.check_circle,
+                          : Icons.circle_outlined,
                       color: selectedContactList
                           .contains(individualContact)
-                          ? Colors.red
+                          ? widget.selectedColor ?? Colors.red
                           : Colors.grey,
-                    )),
+                    size: 21.sp,)),
                   ],
                 ),
               ),

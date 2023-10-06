@@ -5,7 +5,8 @@ import 'package:teamup/utils/app_colors.dart';
 
 class ProgressBarWidget extends StatelessWidget {
   final String? text;
-  const ProgressBarWidget({Key? key, this.text}) : super(key: key);
+  final String? progressColor;
+  const ProgressBarWidget({Key? key, this.text, this.progressColor}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class ProgressBarWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircularProgressIndicator(
-                color: HexColor(AppColors.progressBarC),
+                color: HexColor(progressColor ?? AppColors.progressBarC),
               ),
               this.text != null ? SizedBox(width: 28) : Container(),
               this.text != null ? Text("${this.text}") : Container(),

@@ -37,12 +37,15 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
   TextEditingController goalDTC = TextEditingController(text: "");
 
   var isNextAllowed = false.obs;
+  
+  Color selectionColor = Colors.red;
 
   @override
   void initState() {
-    try{
+    selectionColor = HexColor(GoalIconandColorStatic.getColorName(widget.selectedGoal));
+    try {
       _goalController = Get.find();
-    }catch(onError){
+    } catch (onError) {
       print("Failed to find Goal Controller $onError");
       _goalController = Get.put(GoalController());
     }
@@ -50,7 +53,7 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
     goalNTC.addListener(_handleTextChanged);
     goalDTC.addListener(_handleTextChanged);
   }
-  
+
   @override
   void dispose() {
     goalNTC.removeListener(_handleTextChanged);
@@ -61,12 +64,8 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
   }
 
   void _handleTextChanged() {
-    isNextAllowed.value = goalNTC.text
-        .trim()
-        .isNotEmpty &&
-      goalDTC.text
-            .trim()
-            .isNotEmpty;
+    isNextAllowed.value =
+        goalNTC.text.trim().isNotEmpty && goalDTC.text.trim().isNotEmpty;
   }
 
   Future pickImage() async {
@@ -88,14 +87,18 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            CreateGoalMetaDataView(onPressed: (){
-              popToPreviousScreen(context: context);
-            },
-              sliderText: "2/4",
-              sliderValue: 50,
-              sliderColor: HexColor(AppColors.sliderColor),
-              goalMetaTitle: "Describe your Goal",
-              goalMetaDescription: "This goal helps participants to know\nwhat they can achieve by this goal. We\nhave prefilled a default description\nbased on your goal selection. You can\nedit this or create your own description"),
+            CreateGoalMetaDataView(
+                onPressed: () {
+                  popToPreviousScreen(context: context);
+                },
+                sliderText: "2/4",
+                sliderValue: 50,
+                sliderColor: HexColor(AppColors.sliderColor),
+                goalMetaTitle: "Describe your Goal",
+                containerBackgroundColor:
+                    GoalIconandColorStatic.getColorName(widget.selectedGoal),
+                goalMetaDescription:
+                    "This goal helps participants to know\nwhat they can achieve by this goal. We\nhave prefilled a default description\nbased on your goal selection. You can\nedit this or create your own description."),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Column(
@@ -122,19 +125,23 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                                   height: 6.w,
                                   width: 6.w,
                                   decoration: BoxDecoration(
-                                    color: HexColor(GoalIconandColorStatic.getColorName(widget.selectedGoal)),
+                                    color: HexColor(
+                                        GoalIconandColorStatic.getColorName(
+                                            widget.selectedGoal)),
                                     shape: BoxShape.circle,
                                   ),
                                   child: Padding(
                                       padding: EdgeInsets.all(0.9.w),
-                                      child: Image.asset(GoalIconandColorStatic.getImageName(widget.selectedGoal))),
+                                      child: Image.asset(
+                                          GoalIconandColorStatic.getImageName(
+                                              widget.selectedGoal))),
                                 ),
                           const SizedBox(
                             width: 10,
                           ),
                           Text(
                             widget.selectedGoal,
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.openSans(
                               color: Colors.black,
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
@@ -142,7 +149,7 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                           ),
                         ],
                       ),
-                      InkWell(
+                      /*InkWell(
                         onTap: () {
                           popToPreviousScreen(context: context);
                         },
@@ -150,7 +157,7 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                           children: [
                             Text(
                               "Change",
-                              style: GoogleFonts.roboto(
+                              style: GoogleFonts.openSans(
                                 color: Colors.black,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
@@ -163,27 +170,30 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                             ),
                           ],
                         ),
-                      )
+                      )*/
                     ],
-                  ),
-                  const Divider(),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    "Goal Name",
-                    style: GoogleFonts.roboto(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                    ),
                   ),
                   const SizedBox(
                     height: 5,
                   ),
+                  const Divider(),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "Goal Name",
+                    style: GoogleFonts.openSans(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
                   Container(
                     decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
+                        border: Border.all(color: Colors.grey.shade400),
                         borderRadius: BorderRadius.circular(5)),
                     child: EditTextWithHint(
                         hintText: "Enter Goal Name",
@@ -191,28 +201,27 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                         leftMargin: 0,
                         rightMargin: 0,
                         radius: 5,
-                        textEditingController:
-                            goalNTC,
+                        textEditingController: goalNTC,
                         inputAction: TextInputAction.done,
                         inputType: TextInputType.text),
                   ),
                   const SizedBox(
-                    height: 15,
+                    height: 18,
                   ),
                   Text(
                     "Goal Description",
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.openSans(
                       color: Colors.black,
                       fontSize: 16,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(
-                    height: 5,
+                    height: 8,
                   ),
                   Container(
                     decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
+                        border: Border.all(color: Colors.grey.shade400),
                         borderRadius: BorderRadius.circular(5)),
                     child: EditTextWithHint(
                         hintText: "",
@@ -220,88 +229,102 @@ class _DescribeGoalPageState extends State<DescribeGoalPage> with BaseClass {
                         context: context,
                         leftMargin: 0,
                         rightMargin: 0,
-                        textEditingController:
-                            goalDTC,
+                        textEditingController: goalDTC,
                         inputAction: TextInputAction.done,
                         inputType: TextInputType.text),
                   ),
                   const SizedBox(
                     height: 15,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Goal Icon",
-                        style: GoogleFonts.roboto(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          pickImage();
-                        },
-                        child: Row(
+                  widget.selectedGoal == "Custom"
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            imagePicked != null
-                                ? Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Image(
-                                      image: FileImage(imagePicked!),
-                                    ),
-                                  )
-                                : Container(
-                                    height: 6.w,
-                                    width: 6.w,
-                                    decoration: BoxDecoration(
-                                        color: HexColor(GoalIconandColorStatic.getColorName(widget.selectedGoal)),
-                                        shape: BoxShape.circle),
-                              child: Padding(
-                                  padding: EdgeInsets.all(0.9.w),
-                                  child: Image.asset(GoalIconandColorStatic.getImageName(widget.selectedGoal))),
+                            Text(
+                              "Goal Icon",
+                              style: GoogleFonts.openSans(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                pickImage();
+                              },
+                              child: Row(
+                                children: [
+                                  imagePicked != null
+                                      ? Container(
+                                          height: 20,
+                                          width: 20,
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Image(
+                                            image: FileImage(imagePicked!),
+                                          ),
+                                        )
+                                      : Container(
+                                          height: 6.w,
+                                          width: 6.w,
+                                          decoration: BoxDecoration(
+                                              color: HexColor(
+                                                  GoalIconandColorStatic
+                                                      .getColorName(
+                                                          widget.selectedGoal)),
+                                              shape: BoxShape.circle),
+                                          child: Padding(
+                                              padding: EdgeInsets.all(0.9.w),
+                                              child: Image.asset(
+                                                  GoalIconandColorStatic
+                                                      .getImageName(widget
+                                                          .selectedGoal))),
+                                        ),
+                                  const SizedBox(
+                                    width: 5,
                                   ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            const Icon(
-                              Icons.arrow_forward_ios,
-                              color: Colors.black,
-                              size: 15,
-                            ),
+                                  const Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: Colors.black,
+                                    size: 15,
+                                  ),
+                                ],
+                              ),
+                            )
                           ],
-                        ),
-                      )
-                    ],
-                  ),
-                  Obx(()=>RoundedEdgeButton(
-                      backgroundColor: isNextAllowed.value
-                          ? Colors.red
-                          : Colors.grey,
+                        )
+                      : Container(),
+                  Obx(() => RoundedEdgeButton(
+                      backgroundColor:
+                          isNextAllowed.value ? selectionColor : Colors.grey,
                       text: "Next",
                       leftMargin: 0,
                       rightMargin: 0,
                       topMargin: 20,
                       buttonRadius: 5,
-                      onPressed: ()async {
-                        if(!isNextAllowed.value){
-                          showError(title: "Error", message: "Name and Description Required");
+                      onPressed: () async {
+                        if (!isNextAllowed.value) {
+                          showError(
+                              title: "Error",
+                              message: "Name and Description Required");
                           return;
                         }
-                        bool shouldProceed = await _goalController.updateNameAndDescription(goalNTC.text.trim(),goalDTC.text.trim(),widget.selectedGoal);
-                        if(shouldProceed){
+                        bool shouldProceed =
+                            await _goalController.updateNameAndDescription(
+                                goalNTC.text.trim(),
+                                goalDTC.text.trim(),
+                                widget.selectedGoal);
+                        if (shouldProceed) {
                           pushToNextScreen(
                               context: context,
-                              destination: CreateGoalActivities());
-                        }else{
-                          showError(title: "Failed", message: "Please try again!");
+                              destination: CreateGoalActivities(
+                                selectedGoal: widget.selectedGoal,
+                              ));
+                        } else {
+                          showError(
+                              title: "Failed", message: "Please try again!");
                         }
-
                       },
                       context: context)),
                 ],

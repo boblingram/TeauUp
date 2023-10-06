@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:quds_popup_menu/quds_popup_menu.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/mixins/baseClass.dart';
@@ -11,12 +12,17 @@ import 'package:teamup/models/IndividualGoalMemberModel.dart';
 import 'package:teamup/views/add_goals/already_goal_created/goal_created_page.dart';
 
 import '../../../controllers/GoalController.dart';
+import '../../../utils/GoalIconandColorStatic.dart';
 import '../../../utils/PermissionManager.dart';
+import '../../../utils/app_Images.dart';
+import '../../../utils/app_colors.dart';
 import '../../../widgets/MultipleSelectContactView.dart';
 import '../../../widgets/rounded_edge_button.dart';
+import '../../../utils/Constants.dart';
 
 class GroupGoalPage extends StatefulWidget {
-  GroupGoalPage({Key? key}) : super(key: key);
+  final String selectedGoal;
+  GroupGoalPage({Key? key, required this.selectedGoal}) : super(key: key);
 
   @override
   State<GroupGoalPage> createState() => _GroupGoalPageState();
@@ -39,17 +45,27 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
       return;
     }
 
+    showLoader(progressColor: GoalIconandColorStatic.getColorName(widget.selectedGoal));
     List<Contact> contactList = await ContactsService.getContacts(
         withThumbnails: false,
         photoHighResolution: false,
         iOSLocalizedLabels: false,
         androidLocalizedLabels: false);
+    
+    //await Future.delayed(Duration(seconds: 5));
+    hidePLoader();
+    final AnimationController controller = AnimationController(
+      vsync: Navigator.of(context),
+      duration: Duration(milliseconds: 500),
+    );
+
     var result = await showModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
         isScrollControlled: true,
         isDismissible: true,
         elevation: 15,
+        transitionAnimationController: controller,
         builder: (context) {
           return Container(
               height: 80.h,
@@ -60,8 +76,10 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                       topRight: Radius.circular(20))),
               child: MultiSelectContacts(
                 contactsList: contactList,
+                selectedColor: HexColor(GoalIconandColorStatic.getColorName(widget.selectedGoal))
               ));
         });
+
     print("Multi Select contact result ${result.runtimeType}");
     if (result != null) {
       var response = await goalController.createGroupGoalMemberMutation(result);
@@ -77,6 +95,14 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
         print("Length of List is ${response.length}");
       }
     }
+  }
+
+  Color selectedColor = Colors.red;
+
+  @override
+  void initState() {
+    selectedColor = HexColor(GoalIconandColorStatic.getColorName(widget.selectedGoal));
+    super.initState();
   }
 
   @override
@@ -106,19 +132,16 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(
-                                Icons.people_alt_outlined,
-                                color: Colors.black,
-                              ),
+                              Image.asset(AppImages.add_member_3Icon,height: 4.h,width: 4.h,),
                               const SizedBox(
                                 width: 8,
                               ),
                               Text(
                                 "Add more members",
-                                style: GoogleFonts.roboto(
+                                style: GoogleFonts.openSans(
                                   color: Colors.black,
                                   fontSize: 16,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
                             ],
@@ -127,12 +150,12 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                       ),
                 RoundedEdgeButton(
                     backgroundColor:
-                        memberList.value.isEmpty ? Colors.grey : Colors.red,
+                        memberList.value.isEmpty ? Colors.grey : selectedColor,
                     text: "Next",
                     leftMargin: 20,
                     buttonRadius: 10,
                     rightMargin: 20,
-                    bottomMargin: 20,
+                    bottomMargin: 30,
                     onPressed: () {
                       if (memberList.value.isEmpty) {
                         showError(
@@ -153,22 +176,23 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 16,),
                 Text(
                   "Invite members",
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.openSans(
                       color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16),
+                      fontWeight: FontWeight.w400,
+                      fontSize: 13.sp),
                 ),
                 const SizedBox(
-                  height: 15,
+                  height: 7,
                 ),
                 Text(
                   "Invite your friends and encourage each other to push a little harder",
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.openSans(
                       color: Colors.grey,
                       fontWeight: FontWeight.w400,
-                      fontSize: 14),
+                      fontSize: 11.5.sp),
                 ),
                 memberList.value.length == 0
                     ? const SizedBox(
@@ -186,72 +210,67 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                             itemBuilder: (BuildContext context, int index) {
                               var memberItem = memberList.elementAt(index);
                               return Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                padding:  EdgeInsets.fromLTRB(
+                                    0, 15, 0,10),
+                                child: Column(
                                   children: [
-                                    Container(
-                                      height: 25,
-                                      width: 25,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
-                                        border: Border.all(color: Colors.grey),
-                                      ),
-                                      child: const Center(
-                                          child: Icon(Icons.person)),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            memberItem?.fullname ?? "",
-                                            style: GoogleFonts.roboto(
-                                                color: Colors.black,
-                                                fontSize: 11.sp,
-                                                fontWeight: FontWeight.w400),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Image.asset(AppImages.user_white_icon, height: 17,width: 17,),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                memberItem?.fullname ?? "",
+                                                style: GoogleFonts.openSans(
+                                                    color: Colors.black,
+                                                    fontSize: 12.sp,
+                                                    fontWeight: FontWeight.w400),
+                                              ),
+                                              memberItem?.mentor == null
+                                                  ? Container()
+                                                  : Text(
+                                                      "Mentored by ${memberItem?.mentor?.fullname ?? ""}",
+                                                      style: GoogleFonts.openSans(
+                                                          color: Colors.black,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                            ],
                                           ),
-                                          memberItem?.mentor == null
-                                              ? Container()
-                                              : Text(
-                                                  "Mentored by ${memberItem?.mentor?.fullname ?? ""}",
-                                                  style: GoogleFonts.roboto(
-                                                      color: Colors.black,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                        ],
-                                      ),
-                                    ),
-                                    QudsPopupButton(
-                                      // backgroundColor: Colors.red,
-                                      tooltip: 'T',
-                                      items: getMenuItems(index),
-                                      child: const Icon(
+                                        ),
+                                        QudsPopupButton(
+                                          // backgroundColor: Colors.red,
+                                          tooltip: 'T',
+                                          items: getMenuItems(index),
+                                          child: Icon(
+                                            Icons.keyboard_arrow_down_sharp,
+                                            color: HexColor(AppColors.downArrowGrey),
+                                            size: 24.sp,
+                                          ),
+                                        ),
+                                        /*   IconButton(
+                                      onPressed: () {
+
+                                        );
+                                      },
+                                      icon: const Icon(
                                         Icons.keyboard_arrow_down_sharp,
                                         color: Colors.grey,
                                         size: 20,
                                       ),
+                                    )*/
+                                      ],
                                     ),
-                                    /*   IconButton(
-                                  onPressed: () {
-
-                                    );
-                                  },
-                                  icon: const Icon(
-                                    Icons.keyboard_arrow_down_sharp,
-                                    color: Colors.grey,
-                                    size: 20,
-                                  ),
-                                )*/
+                                    Divider()
                                   ],
                                 ),
                               );
@@ -274,19 +293,16 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(
-                                Icons.people_outline,
-                                color: Colors.grey,
-                              ),
+                              Image.asset(AppImages.add_member_3Icon,height: 4.h,width: 4.h,),
                               const SizedBox(
                                 width: 8,
                               ),
                               Text(
                                 "Add members",
-                                style: GoogleFonts.roboto(
+                                style: GoogleFonts.openSans(
                                   color: Colors.black,
                                   fontSize: 16,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
                             ],
@@ -302,10 +318,11 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                 memberList.value.length == 0
                     ? Text(
                         "Note: After adding participants, you can select backup & mentors from the added participants",
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.openSans(
                           color: Colors.grey,
                           fontWeight: FontWeight.w400,
-                          fontSize: 14,
+                          fontStyle: FontStyle.italic,
+                          fontSize: 11.5.sp,
                         ),
                       )
                     : Container(),
@@ -357,12 +374,10 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                     } else {
                       if (val) {
                         backupMemberID = userId;
-                        showSuccess(
-                            title: "Success", message: "Backup Switched on");
+                        showSuccess("Backup Switched on");
                       } else {
                         backupMemberID = "";
-                        showSuccess(
-                            title: "Success", message: "Backup Switched off");
+                        showSuccess("Backup Switched off");
                       }
                     }
                     setState(() {});
@@ -380,8 +395,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
             var status = await goalController.mutationGoalMemberRemove(userId);
             if (status) {
               memberList.removeAt(index);
-              showSuccess(
-                  title: "Success", message: "Member Removed Successfully");
+              showSuccess("Member Removed Successfully");
             } else {
               showError(title: "Error", message: "Failed to remove member");
             }
@@ -457,7 +471,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
 
                       setState(() {
                         Get.back();
-                        showSuccess(title: "Success", message: "Mentor Updated Successfully");
+                        showSuccess("Mentor Updated Successfully");
                       });
                     },
                     child: Row(
@@ -508,7 +522,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                             }
                             setState(() {
                               Get.back();
-                              showSuccess(title: "Success", message: "Mentor Updated Successfully");
+                              showSuccess("Mentor Updated Successfully");
                             });
                           },
                           child: Row(

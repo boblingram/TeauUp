@@ -62,5 +62,6 @@ class AppStrings {
   static const String localAuthkeyValue = "authKeyLS";
   //this is userId only
   static const String localClientIdValue = "clientIdLS";
+  static const String localClientNameValue = "nameLS";
 
 }

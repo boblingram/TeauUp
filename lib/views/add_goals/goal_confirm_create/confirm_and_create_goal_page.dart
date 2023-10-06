@@ -18,7 +18,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
         centerTitle: true,
         title: Text(
           "Confirm & Create",
-          style: GoogleFonts.roboto(
+          style: GoogleFonts.openSans(
             color: Colors.white,
           ),
         ),
@@ -57,7 +57,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                               children: [
                                 Text(
                                   "Study",
-                                  style: GoogleFonts.roboto(
+                                  style: GoogleFonts.openSans(
                                     color: AppColors.darkGrey,
                                     fontWeight: FontWeight.w700,
                                     fontSize: 18,
@@ -68,7 +68,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                                 ),
                                 Text(
                                   "Practice Maths",
-                                  style: GoogleFonts.roboto(
+                                  style: GoogleFonts.openSans(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 16,
@@ -79,7 +79,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                           ),
                           Text(
                             "Edit",
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.openSans(
                               color: AppColors.black,
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
@@ -93,7 +93,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                       ),
                       Text(
                         "This goal will help us to focus on solving maths problems. The topics that will be taken over time would be \"Arithmetic, Number System, and Number theory, Algebra, Geometry, and Calculus\" ",
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.openSans(
                           color: Colors.black,
                           fontWeight: FontWeight.w400,
                           fontSize: 14,
@@ -121,7 +121,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                         children: [
                           Text(
                             "Activities",
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.openSans(
                               color: AppColors.black,
                               fontWeight: FontWeight.w700,
                               fontSize: 18,
@@ -129,7 +129,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                           ),
                           Text(
                             "Edit",
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.openSans(
                               color: AppColors.black,
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
@@ -143,7 +143,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                       ),
                       Text(
                         "Calculus - Solve 5 Different equations",
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.openSans(
                           color: Colors.black,
                           fontWeight: FontWeight.w400,
                           fontSize: 16,
@@ -179,7 +179,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                         children: [
                           Text(
                             "End date: ",
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.openSans(
                               color: Colors.black,
                               fontWeight: FontWeight.w400,
                               fontSize: 14,
@@ -187,7 +187,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                           ),
                           Text(
                             "30/07/2023",
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.openSans(
                               color: Colors.black,
                               fontWeight: FontWeight.w700,
                               fontSize: 14,
@@ -233,7 +233,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                       ),
                       Text(
                         "Geometry - Study Euclidean geometry",
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.openSans(
                           color: Colors.black,
                           fontWeight: FontWeight.w400,
                           fontSize: 16,
@@ -269,7 +269,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                         children: [
                           Text(
                             "End date: ",
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.openSans(
                               color: Colors.black,
                               fontWeight: FontWeight.w400,
                               fontSize: 14,
@@ -277,7 +277,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                           ),
                           Text(
                             "No end date set",
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.openSans(
                               color: Colors.black,
                               fontWeight: FontWeight.w700,
                               fontSize: 14,
@@ -292,7 +292,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                         children: [
                           Text(
                             "Remind me at ",
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.openSans(
                               color: Colors.black,
                               fontWeight: FontWeight.w400,
                               fontSize: 14,
@@ -308,7 +308,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                                 children: [
                                   Text(
                                     "8:00 AM",
-                                    style: GoogleFonts.roboto(
+                                    style: GoogleFonts.openSans(
                                       color: Colors.grey,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14,
@@ -324,7 +324,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                           ),
                           Text(
                             " in the morning",
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.openSans(
                               color: Colors.black,
                               fontWeight: FontWeight.w400,
                               fontSize: 14,
@@ -364,7 +364,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                       children: [
                         Text(
                           "Group Goal",
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.openSans(
                             color: AppColors.black,
                             fontWeight: FontWeight.w700,
                             fontSize: 18,
@@ -372,7 +372,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                         ),
                         Text(
                           "Edit",
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.openSans(
                             color: AppColors.black,
                             fontWeight: FontWeight.w400,
                             fontSize: 16,
@@ -386,7 +386,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
                     ),
                     Text(
                       "Invited members",
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.openSans(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
                         fontSize: 14,
@@ -448,11 +448,11 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
             children: [
               Text(
                 "Tarun",
-                style: GoogleFonts.roboto(color: Colors.black, fontSize: 12),
+                style: GoogleFonts.openSans(color: Colors.black, fontSize: 12),
               ),
               Text(
                 "Mentored by Saradhi",
-                style: GoogleFonts.roboto(color: Colors.black, fontSize: 12),
+                style: GoogleFonts.openSans(color: Colors.black, fontSize: 12),
               ),
             ],
           )
@@ -474,7 +474,7 @@ class ConfirmAndCreateGoalPage extends StatelessWidget with BaseClass{
         ),
         Text(
           title,
-          style: GoogleFonts.roboto(color: Colors.black, fontSize: 12),
+          style: GoogleFonts.openSans(color: Colors.black, fontSize: 12),
         ),
       ],
     );

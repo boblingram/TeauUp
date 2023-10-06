@@ -13,9 +13,26 @@ class AppColors {
   static  Color greyWithShade300 = Colors.grey.shade300;
   static  Color prupleWithShade300 = Colors.purple.shade300;
 
+
+  //Goal View
+  static String goalViewBC = "#E9E9E9";
   //Performance Module
   //FBC - Fall back Color
   static String performanceFBC = "#5B5B5B";
+
+  //Bottom Bar Color
+  static String nonSelectedColor = "#B4B4B4";
+  static String selectedColor = "#E52137";
+
+  //Invite Goal Color
+  static String downArrowGrey = "#676767";
+
+  //Empty Text Field Color
+  static String describeTextFieldColor = "#F6F6F6";
+
+  //Create Goal Activity Color
+  static String staticActivityTextColor = "#434343";
+  static String nonActivitySelectedBGColor = "#F2F1F0";
 
   //Progress Bar Color
   static String progressBarC = "#FF0000";
@@ -34,10 +51,14 @@ class AppColors {
   static String introspectionIconBG = "#6F9EDA";
   static String gymIconBG = "#E6C153";
   static String customIconBG = "#888888";
+  static String swimmingIconBG = "#B5e3e2";
+  static String meditationIconBG = "#A9A78B";
+  static String sadhanaIconBG = "#221C35";
 
   //Goal Screen 2
   static String describeGoalColor = "#429488";
   static String sliderColor = "#000000";
+  static String setGoalColor = "#658E92";
 
   //Journey
   static String journeyColor = "#F3F3F3";

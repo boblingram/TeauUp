@@ -53,9 +53,9 @@ class UserPerInfo{
   });
   
   factory UserPerInfo.fromJson(Map<String, dynamic> json) => UserPerInfo(
-    mainStreak: json["goalInfo"],
-    totalXP: json["totalXP"],
-    totalDays:json["totalDays"],
+    mainStreak: json["goalInfo"] ?? "0",
+    totalXP: json["totalXP"] ?? "0",
+    totalDays:json["totalDays"] ?? "0",
   );
 
 }

@@ -12,6 +12,9 @@ class GoalIconandColorStatic{
     "Walking",
     "Gym",
     "Introspection",
+    "Sadhana",
+    "Meditation",
+    "Swimming",
     "Custom"
   ];
 
@@ -24,6 +27,9 @@ class GoalIconandColorStatic{
     AppColors.walkingIconBG,
     AppColors.gymIconBG,
     AppColors.introspectionIconBG,
+    AppColors.sadhanaIconBG,
+    AppColors.meditationIconBG,
+    AppColors.swimmingIconBG,
     AppColors.customIconBG
   ];
 
@@ -45,6 +51,12 @@ class GoalIconandColorStatic{
         return AppColors.gymIconBG;
       case "Introspection":
         return AppColors.introspectionIconBG;
+      case "Sadhana":
+        return AppColors.sadhanaIconBG;
+      case "Meditation":
+        return AppColors.meditationIconBG;
+      case "Swimming":
+        return AppColors.swimmingIconBG;
       default:
         return AppColors.customIconBG;
     }
@@ -66,9 +78,16 @@ class GoalIconandColorStatic{
         return AppImages.gymIcon;
       case "Introspection":
         return AppImages.introspectionIcon;
+      case "Sadhana":
+        return AppImages.sadhanaIcon;
+      case "Meditation":
+        return AppImages.meditationIcon;
+      case "Swimming":
+        return AppImages.swimmingIcon;
       case "Cycling":
-      default:
         return AppImages.cyclingIcon;
+      default:
+        return AppImages.addIcon;
     }
   }
 }

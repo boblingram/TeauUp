@@ -50,7 +50,7 @@ class EndGoalWidget extends StatelessWidget with BaseClass {
               children: [
                 Text(
                   "${userGoalPerInfo.goalInfo.name ?? ""}",
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.openSans(
                       color: Colors.black,
                       fontWeight: FontWeight.w700,
                       fontSize: 14),
@@ -60,7 +60,7 @@ class EndGoalWidget extends StatelessWidget with BaseClass {
                 ),
                 Text(
                   "Ended on ${getRequiredTime(userGoalPerInfo.goalInfo.endDate)}",
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.openSans(
                       color: Colors.black,
                       fontWeight: FontWeight.w400,
                       fontSize: 12),
@@ -75,7 +75,7 @@ class EndGoalWidget extends StatelessWidget with BaseClass {
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               child: Text(
                 "View",
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.openSans(
                     color: Colors.white, fontWeight: FontWeight.w500),
               ),
             ),*/

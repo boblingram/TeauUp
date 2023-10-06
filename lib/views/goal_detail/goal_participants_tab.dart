@@ -38,7 +38,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
                   Text(
                     "Participants:",
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.openSans(
                       color: AppColors.black,
                       fontWeight: FontWeight.w700,
                       fontSize: 18,
@@ -47,7 +47,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
                   Obx(()=>Text(
                     " ${veGoalController.selectedGoalMemberList.length}",
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.openSans(
                       color: AppColors.black,
                       fontSize: 18,
                     ),
@@ -107,7 +107,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
             ),
             Text(
               "Add more participants",
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.openSans(
                   color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600),
             ),
           ],
@@ -142,14 +142,14 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
               children: [
                 Text(
                   "${item.fullname}",
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.openSans(
                       color: Colors.black,
                       fontWeight:
                       index == 0 ? FontWeight.w700 : FontWeight.w400),
                 ),
                 Text(
                   veGoalController.convertStringToNotNull(item.mentor).isEmpty ? "" :"You are mentored by ${veGoalController.convertStringToNotNull(item.mentor?.fullname)}",
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.openSans(
                       color: Colors.black,
                       fontWeight:
                       index == 0 ? FontWeight.w600 : FontWeight.w400),

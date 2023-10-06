@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 
 class SettingsProfileController extends GetxController {
-  String _name = "Sonal";
-  String _email = "";
+  String _name = "Akash";
+  String _email = "goelakash44@gmail.com";
 
   void updateUserData(String name, String email) {
     _name = name;

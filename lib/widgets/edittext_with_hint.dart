@@ -15,6 +15,7 @@ class EditTextWithHint extends StatelessWidget {
   final Color? iconColor;
   final bool isEnabled;
   final int maxLines;
+  final FocusNode? focusNode;
 
   final TextInputAction inputAction;
 
@@ -37,7 +38,8 @@ class EditTextWithHint extends StatelessWidget {
       this.trailingIcon,
       this.leadingIcon,
       this.isEnabled = true,
-      this.iconColor});
+      this.iconColor,
+      this.focusNode});
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +68,7 @@ class EditTextWithHint extends StatelessWidget {
               left: 15,
             ),
             child: TextField(
+              focusNode: focusNode,
               style: const TextStyle(color: Colors.black, fontSize: 16),
               maxLines: maxLines,
               controller: textEditingController,

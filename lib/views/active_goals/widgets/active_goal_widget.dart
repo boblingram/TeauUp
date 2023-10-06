@@ -60,7 +60,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
                       children: [
                         Text(
                           "${userGoalPerInfo.goalInfo.name}",
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.openSans(
                               color: AppColors.black,
                               fontSize: 16,
                               fontWeight: FontWeight.w600),
@@ -81,7 +81,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
                             ),
                             Text(
                               AppStrings.nextActivityInOneHour,
-                              style: GoogleFonts.roboto(
+                              style: GoogleFonts.openSans(
                                   color: AppColors.black,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w300),
@@ -99,7 +99,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
                         const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                     child: Text(
                       AppStrings.view,
-                      style: GoogleFonts.roboto(color: AppColors.white),
+                      style: GoogleFonts.openSans(color: AppColors.white),
                     ),
                   ),
                 ],
@@ -110,104 +110,19 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
               child: Row(
                 children: [
                   Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppColors.greyWithShade300,
-                        ),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Image(
-                              image: AssetImage(AppImages.shareIcon),
-                              height: 12,
-                              width: 12,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Expanded(
-                            child: Text(
-                              "Days Spent ${userGoalPerInfo.perInfo.totalDays ?? "0"}",
-                              style: GoogleFonts.roboto(
-                                color: AppColors.black,
-                                fontSize: 12,
-                              ),
-                              maxLines: 1,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    child: IndividualDetailsActiveGoalWidget(textToShow: "${userGoalPerInfo.perInfo.totalDays ?? "0"} days spent", assetStringName: AppImages.weekly_GIcon,),
                   ),
                   const SizedBox(
                     width: 5,
                   ),
                   Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppColors.greyWithShade300,
-                        ),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image(
-                            image: AssetImage(AppImages.shareIcon),
-                            height: 12,
-                            width: 12,
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            "${userGoalPerInfo.perInfo.mainStreak ?? "0"} days streak",
-                            style: GoogleFonts.roboto(
-                                color: AppColors.black, fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ),
+                    child: IndividualDetailsActiveGoalWidget(textToShow: "${userGoalPerInfo.perInfo.mainStreak ?? "0"} days streak", assetStringName: AppImages.streak_GIcon,),
                   ),
                   const SizedBox(
                     width: 5,
                   ),
                   Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppColors.greyWithShade300,
-                        ),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image(
-                            image: AssetImage(AppImages.shareIcon),
-                            height: 12,
-                            width: 12,
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            "${userGoalPerInfo.perInfo.totalXP ?? "0"} xp points",
-                            style: GoogleFonts.roboto(
-                                color: AppColors.black, fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ),
+                    child: IndividualDetailsActiveGoalWidget(textToShow: "${userGoalPerInfo.perInfo.totalXP ?? "0"} xp points", assetStringName: AppImages.star_GIcon,),
                   ),
                 ],
               ),
@@ -225,7 +140,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
                 child: Text(
                   "We generate fear when we do nothing. We overcome those fears by taking actions",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.openSans(
                     color: AppColors.black,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -235,6 +150,49 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
             )*/
           ],
         ),
+      ),
+    );
+  }
+}
+
+class IndividualDetailsActiveGoalWidget extends StatelessWidget {
+  final String textToShow;
+  final String assetStringName;
+  const IndividualDetailsActiveGoalWidget({super.key, required this.textToShow,required this.assetStringName });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: AppColors.greyWithShade300,
+        ),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      padding: const EdgeInsets.symmetric(
+          horizontal: 5, vertical: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Image(
+              image: AssetImage(assetStringName),
+              height: 12,
+              width: 12,
+            ),
+          ),
+
+          Expanded(
+            child: Text(
+              textToShow,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.openSans(
+                  color: AppColors.black, fontSize: 12),
+              maxLines: 1,
+            ),
+            flex: 4,
+          ),
+        ],
       ),
     );
   }

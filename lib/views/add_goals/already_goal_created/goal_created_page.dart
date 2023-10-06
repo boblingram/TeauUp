@@ -34,7 +34,7 @@ class GoalCreatedPage extends StatelessWidget with BaseClass{
             child: Text(
               "Home",
               textAlign: TextAlign.center,
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.openSans(
                 color: AppColors.white,
                 fontWeight: FontWeight.w400,
                 fontSize: 18,
@@ -53,7 +53,7 @@ class GoalCreatedPage extends StatelessWidget with BaseClass{
           Text(
             "Group Created",
             textAlign: TextAlign.center,
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.openSans(
               color: AppColors.black,
               fontWeight: FontWeight.w700,
               fontSize: 20,
@@ -65,7 +65,7 @@ class GoalCreatedPage extends StatelessWidget with BaseClass{
           Text(
             "Creating and setting goals is great\nbut achieving them can be much\nharder. We'll help you get there",
             textAlign: TextAlign.center,
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.openSans(
               color: AppColors.darkGrey,
               fontWeight: FontWeight.w400,
               fontSize: 18,

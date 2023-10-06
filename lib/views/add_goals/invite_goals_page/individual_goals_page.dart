@@ -3,10 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:quds_popup_menu/quds_popup_menu.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/controllers/GoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
+import 'package:teamup/utils/GoalIconandColorStatic.dart';
 
 import '../../../utils/PermissionManager.dart';
 import '../../../widgets/rounded_edge_button.dart';
@@ -14,7 +16,8 @@ import '../already_goal_created/goal_created_page.dart';
 import '../goal_confirm_create/confirm_and_create_goal_page.dart';
 
 class IndividualGoalPage extends StatefulWidget {
-  const IndividualGoalPage({super.key});
+  final String selectedGoal;
+  const IndividualGoalPage({super.key, required this.selectedGoal});
 
   @override
   State<IndividualGoalPage> createState() => _IndividualGoalPageState();
@@ -58,6 +61,14 @@ class _IndividualGoalPageState extends State<IndividualGoalPage> with BaseClass 
         context: context, destination: GoalCreatedPage());
   }
 
+  Color selectedColor = Colors.red;
+
+  @override
+  void initState() {
+    selectedColor = HexColor(GoalIconandColorStatic.getColorName(widget.selectedGoal));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,7 +104,7 @@ class _IndividualGoalPageState extends State<IndividualGoalPage> with BaseClass 
                     ),
                     Text(
                       "Change Mentor",
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.openSans(
                         color: Colors.black,
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -104,7 +115,7 @@ class _IndividualGoalPageState extends State<IndividualGoalPage> with BaseClass 
               ),
             ),
             RoundedEdgeButton(
-                backgroundColor: _contact == null ? Colors.grey : Colors.red,
+                backgroundColor: _contact == null ? Colors.grey : selectedColor,
                 text: "Next",
                 leftMargin: 20,
                 buttonRadius: 10,
@@ -132,7 +143,7 @@ class _IndividualGoalPageState extends State<IndividualGoalPage> with BaseClass 
           children: [
             Text(
               "Invite Mentor",
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.openSans(
                   color: Colors.black,
                   fontWeight: FontWeight.w600,
                   fontSize: 16),
@@ -142,7 +153,7 @@ class _IndividualGoalPageState extends State<IndividualGoalPage> with BaseClass 
             ),
             Text(
               "Work with a coach or a mentor to achieve this goal.",
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.openSans(
                   color: Colors.grey,
                   fontWeight: FontWeight.w400,
                   fontSize: 14),
@@ -180,7 +191,7 @@ class _IndividualGoalPageState extends State<IndividualGoalPage> with BaseClass 
                       child: Text(
                         _contact?.displayName ??
                             "",
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.openSans(
                             color: Colors.black,
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w400),
@@ -216,7 +227,7 @@ class _IndividualGoalPageState extends State<IndividualGoalPage> with BaseClass 
                     ),
                     Text(
                       "Invite Mentor",
-                      style: GoogleFonts.roboto(
+                      style: GoogleFonts.openSans(
                         color: Colors.black,
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -242,7 +253,7 @@ class _IndividualGoalPageState extends State<IndividualGoalPage> with BaseClass 
                     child: Text(
               "Skip Inviting mentor, I would do this goal alone",
               textAlign: TextAlign.center,
-              style: GoogleFonts.roboto(
+              style: GoogleFonts.openSans(
                     color: Colors.red,
                     fontWeight: FontWeight.w400,
                     fontSize: 14,

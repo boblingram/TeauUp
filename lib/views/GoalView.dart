@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/views/active_goals/active_goals_page.dart';
@@ -31,7 +32,7 @@ class _GoalViewState extends State<GoalView> {
     return Scaffold(
       backgroundColor: AppColors.white,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         child: DefaultTabController(
           length: 2,
           child: Column(
@@ -40,40 +41,31 @@ class _GoalViewState extends State<GoalView> {
               Container(
                 height: 40,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(8),
                   //border: Border.all(color: AppColors.white),
-                  color: AppColors.greyWithShade300,
+                  color: Colors.grey[200],
                 ),
                 padding:
-                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                child: TabBar(
-                  tabs: const [
-                    Tab(
-                      text: AppStrings.activeGoals,
-                    ),
-                    Tab(
-                      text: AppStrings.archiveGoals,
-                    ),
-                    //  Tab(icon: Icon(Icons.directions_bike)),
-                  ],
-                  labelStyle: const TextStyle(
-                      color: AppColors.black, fontWeight: FontWeight.w700),
-                  unselectedLabelStyle: const TextStyle(
-                      color: AppColors.darkGrey, fontWeight: FontWeight.w500),
-                  unselectedLabelColor: AppColors.black,
-                  indicatorColor: AppColors.transparent,
-                  indicator: BoxDecoration(
-                      borderRadius: _selectedTabValue == 0
-                          ? BorderRadius.circular(5)
-                          : BorderRadius.circular(5),
-                      color: AppColors.white),
-                  labelColor: AppColors.black,
+                    const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                child : TabBar(
                   onTap: (value) {
                     setState(() {
                       _selectedTabValue = value;
                     });
                   },
-                ),
+                  tabs: [Tab(text: AppStrings.activeGoals,),Tab(text: AppStrings.archiveGoals,)],
+                  labelColor: Colors.black87,
+                  indicator: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(6),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        offset: Offset(0, 2),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),),
               ),
               const SizedBox(
                 height: 8,
