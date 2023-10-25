@@ -33,6 +33,9 @@ class _GoalDetailPageState extends State<GoalDetailPage>
 
   VEGoalController veGoalController = Get.put(VEGoalController());
 
+  String createdByName = "";
+  String localGoalType = AppStrings.defaultGoalType;
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +44,12 @@ class _GoalDetailPageState extends State<GoalDetailPage>
     veGoalController.updateGoalId(widget.userGoalPerInfo.goalInfo.id.toString());
     veGoalController.updateUserGoalPerInfo(widget.userGoalPerInfo);
     veGoalController.updateSelectedItemIndex(widget.itemIndex);
+
+    if(widget.userGoalPerInfo.goalInfo.createdByName != null){
+      createdByName = widget.userGoalPerInfo.goalInfo.createdByName.toString().trim();
+    }
+
+    localGoalType = widget.userGoalPerInfo.goalInfo.type ?? AppStrings.defaultGoalType;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {fetchGoalDetailData();});
   }
@@ -63,7 +72,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                 pinned: true,
                 elevation: 0,
                 automaticallyImplyLeading: true,
-                backgroundColor: AppColors.goalAppBarColor,
+                backgroundColor: HexColor(GoalIconandColorStatic.getColorName(localGoalType)),
                 flexibleSpace: FlexibleSpaceBar(
                   collapseMode: CollapseMode.pin,
                   background: Column(
@@ -71,7 +80,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                     children: <Widget>[
                       Container(
                         width: double.infinity,
-                        color: const Color(0xff589288),
+                        color: HexColor(GoalIconandColorStatic.getColorName(localGoalType)),
                         padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,12 +111,12 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                                   height: 11.w,
                                   width: 11.w,
                                   decoration: BoxDecoration(
-                                    color: HexColor(GoalIconandColorStatic.getColorName(widget.userGoalPerInfo.goalInfo.type ?? AppStrings.defaultType)),
+                                    color: HexColor(GoalIconandColorStatic.getColorName(widget.userGoalPerInfo.goalInfo.type ?? AppStrings.defaultGoalType)),
                                     shape: BoxShape.circle,
                                   ),
                                   child: Padding(
                                       padding: EdgeInsets.all(1.w),
-                                      child: Image.asset(GoalIconandColorStatic.getImageName(widget.userGoalPerInfo.goalInfo.type ?? AppStrings.defaultType))),
+                                      child: Image.asset(GoalIconandColorStatic.getImageName(widget.userGoalPerInfo.goalInfo.type ?? AppStrings.defaultGoalType))),
                                 ),
                                 const SizedBox(
                                   width: 10,
@@ -123,7 +132,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                               height: 10,
                             ),
                             Text(
-                              "${widget.userGoalPerInfo.goalInfo.type ?? AppStrings.defaultType}",
+                              "${widget.userGoalPerInfo.goalInfo.type ?? AppStrings.defaultGoalType}",
                               style: GoogleFonts.openSans(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
@@ -145,7 +154,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                                 ),),
                                 widget.isEditingEnabled ? InkWell(
                                   onTap: (){
-                                    veGoalController.editGoalNDSheet();
+                                    veGoalController.editGoalNDSheet(selectedColor: HexColor(GoalIconandColorStatic.getColorName(localGoalType)));
                                   },
                                   child: Text(
                                     "Edit",
@@ -159,14 +168,14 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                                 ) : Container(),
                               ],
                             ),
-                            Text(
-                              "Goal set by: Saradhi (You)",
+                            createdByName.isNotEmpty ? Text(
+                              "Goal set by: $createdByName",
                               style: GoogleFonts.openSans(
                                 color: Colors.white,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
                               ),
-                            ),
+                            ) : Container(),
                             const SizedBox(
                               height: 15,
                             ),
@@ -237,7 +246,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
             ];
           },
           body: _selectedTabValue == 0
-              ? GoalActivityTabPage(isEditingEnabled: widget.isEditingEnabled,)
+              ? GoalActivityTabPage(isEditingEnabled: widget.isEditingEnabled, localGoalType: localGoalType)
               : _selectedTabValue == 1
               ? GoalParticipantsTabPage()
               : Journey_View(isGoalTab: true,goalId: veGoalController.goalId,)),

@@ -10,6 +10,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/utils/GoalIconandColorStatic.dart';
 import 'package:teamup/utils/app_colors.dart';
+import 'package:teamup/utils/app_integers.dart';
 
 import '../../../bottom_sheets/date_picker.dart';
 import '../../../controllers/GoalController.dart';
@@ -37,6 +38,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
 
   Color selectionColor = Colors.red;
   Color unSelectedColor = Colors.grey.shade300;
+  String hexSelectedColorString = "#FF0000";
   final FocusNode _focusNode = FocusNode();
 
   Widget _myRadioButton(
@@ -60,6 +62,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
     selectionColor =
         HexColor(GoalIconandColorStatic.getColorName(widget.selectedGoal));
     unSelectedColor = HexColor(AppColors.nonActivitySelectedBGColor);
+    hexSelectedColorString = GoalIconandColorStatic.getColorName(widget.selectedGoal);
     super.initState();
   }
 
@@ -725,7 +728,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                   .activityNameController.text
                                   .trim());
                               var response =
-                                  await activityGC.validationOfAddActivity();
+                                  await activityGC.validationOfAddActivity(selectedColor: selectionColor);
                               if (!response) {
                                 showError(
                                     title: "Error",
@@ -792,7 +795,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                     .activityNameController.text
                                     .trim());
                                 var response =
-                                    await activityGC.validationOfAddActivity();
+                                    await activityGC.validationOfAddActivity(selectedColor: selectionColor);
                                 if (!response) {
                                   showError(
                                       title: "Error",

@@ -188,10 +188,11 @@ mixin BaseClass {
   void showSuccess({
     required String title,
     required String message,
+    Color backgroundColor = Colors.green
   }) {
     Get.snackbar(title, message,
         colorText: Colors.black,
-        backgroundColor: Colors.green,
+        backgroundColor: backgroundColor,
         duration: const Duration(milliseconds: 1500));
   }
 

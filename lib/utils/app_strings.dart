@@ -34,7 +34,7 @@ class AppStrings {
   ///Default Strings
   static const String defaultName = "";
   static const String defaultDescription = "";
-  static const String defaultType = "Custom";
+  static const String defaultGoalType = "Custom";
   static const String defaultNullString = "";
   static const String defaultEndDate = "No end date set";
   static const String defaultTimeValue = "Anytime of day";
@@ -53,6 +53,7 @@ class AppStrings {
   //Default Server Values
   static const String emptyValue = "empty";
   static const String defaultUserId = "1";
+  static const String emptyName = "Me";
 
   //Local Storage
   static const String localFCMValue = "fcmValueLS";

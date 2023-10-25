@@ -12,9 +12,9 @@ import 'package:teamup/widgets/rounded_edge_button.dart';
 class EditGoalNDView extends StatefulWidget {
   final String name;
   final String description;
-
+  final Color selectedColor;
   const EditGoalNDView(
-      {super.key, required this.name, required this.description});
+      {super.key, required this.name, required this.description, required this.selectedColor});
 
   @override
   State<EditGoalNDView> createState() => _EditGoalNDViewState();
@@ -131,7 +131,7 @@ class _EditGoalNDViewState extends State<EditGoalNDView> {
         ),
         Obx(()=>RoundedEdgeButton(
             backgroundColor: isNextAllowed.value
-                ? Colors.red
+                ? widget.selectedColor
                 : Colors.grey,
             text: "Next",
             leftMargin: 0,

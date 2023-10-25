@@ -45,9 +45,9 @@ showErrorWOTitle(String message) {
       backgroundColor: HexColor(AppColors.failedMessageC), colorText: Colors.white);
 }
 
-showSuccess(String message) {
+showSuccess(String message, {Color? selectedColor}) {
   Get.snackbar('Success!', message,
-      backgroundColor: HexColor(AppColors.successMessageC), colorText: Colors.white);
+      backgroundColor: selectedColor ?? HexColor(AppColors.successMessageC), colorText: Colors.white);
 }
 
 showSnackMessage(String message,

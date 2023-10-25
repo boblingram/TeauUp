@@ -17,6 +17,8 @@ import 'package:teamup/models/IndividualNotificationModel.dart';
 import 'package:teamup/models/SuccessGoalMemberModel.dart';
 import 'package:teamup/utils/Enums.dart';
 import 'package:teamup/utils/GraphQLService.dart';
+import 'package:teamup/utils/app_colors.dart';
+import 'package:teamup/utils/app_integers.dart';
 import 'package:teamup/views/HomeView.dart';
 
 import '../models/IndividualGoalActivityModel.dart';
@@ -130,7 +132,7 @@ class GoalController extends GetxController {
   var newGoalDescription = "";
   var newSelectedGoalType = "";
 
-  var tempGoalId = "73403221-09b6-400e-b214-8f4beb09b2b9";
+  var tempGoalId = "2402f30e-f665-486b-936a-8b7ea22853cd";
 
   Future<bool> updateNameAndDescription(
       String name, String description, String selectedGoalType) async {
@@ -138,6 +140,8 @@ class GoalController extends GetxController {
     newGoalDescription = description;
     newSelectedGoalType = selectedGoalType;
 
+    //TODO Comment this
+    return true;
     var result = await createGoalMutation(selectedGoalType, name, description);
     return result;
   }
@@ -224,10 +228,13 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 
   final localStorage = GetStorage();
 
+  var userName = "";
+
   @override
   void onInit() {
     super.onInit();
     userId = localStorage.read(AppStrings.localClientIdValue) ?? AppStrings.defaultUserId;
+    userName = localStorage.read(AppStrings.localClientNameValue) ?? AppStrings.emptyName;
     print("UserId is $userId");
     //Update Name by
     initializeActivityModel();
@@ -604,7 +611,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 
   String errorText = "Please try again!";
 
-  Future<bool> validationOfAddActivity() async {
+  Future<bool> validationOfAddActivity({Color? selectedColor}) async {
     bool shouldContinue = true;
     if (isReminderToggleOn &&
         (initialActivityModel.reminder == null ||
@@ -689,17 +696,17 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
       errorText = "";
     }
 
-    return await initiateCreateActivityMutation();
+    return await initiateCreateActivityMutation(selectedColor: selectedColor);
   }
 
-  Future<bool> initiateCreateActivityMutation() async {
+  Future<bool> initiateCreateActivityMutation({Color? selectedColor}) async {
     var mutation =
         gql('''mutation MyMutation( \$customDay: [String] = ${json.encode(initialActivityModel.customDay)}, \$monthDay: [String] = ${json.encode(initialActivityModel.monthDay)}, \$weekDay: [String] = ${json.encode(initialActivityModel.weekDay)}) {
   addGoalActivity(activity: {customDay: \$customDay, desc: "${initialActivityModel.desc}", 
   duration: "${initialActivityModel.duration.toString()}", endDt: "${initialActivityModel.endDt}", 
   freq: "${initialActivityModel.freq}", monthDay: \$monthDay, 
   name: "${initialActivityModel.name}", reminder: "${initialActivityModel.reminder}", 
-  time: "${initialActivityModel.time}", weekDay: \$weekDay}, goalId: "$tempGoalId") {
+  time: "${initialActivityModel.time}", weekDay: \$weekDay, instrFile : ""}, goalId: "$tempGoalId") {
     customDay
     desc
     duration
@@ -723,7 +730,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 }
 ''');
 
-    print("Mutation called is $mutation");
+    print("Mutation called is ${mutation.toString()}");
 
     showLoader();
     /*var result = await GraphQLService.tempClient
@@ -739,7 +746,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
       GraphQLService.parseError(result.exception, "CreateGoalActivityMutation");
       return false;
     }
-    showSuccess("Activity created Successfully");
+    showSuccess("Activity created Successfully",selectedColor: AppColors.makeColorDarker(selectedColor ?? Colors.green.shade400, AppIntegers.colorDarkerValue));
     IndividualGoalActivityModel tempNewModel = IndividualGoalActivityModel();
     tempNewModel.id = result.data?["addGoalActivity"]["id"];
     tempNewModel.name = result.data?["addGoalActivity"]["name"];
@@ -797,7 +804,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
       }
       successfullyCreatedActivityList[selectedIndex] = result;
       update();
-      showSuccess("Activity Edited Successfully");
+      showSuccess("Activity Edited Successfully",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
     }catch(onError, Stacktrace){
       print("Failed to Edit Activity this is response $onError Error Stack Trace $Stacktrace");
     }
@@ -925,15 +932,31 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 ''';*/
 
     List<IndividualGoalMemberModel> groupMembers = contact
-        .map((e) => IndividualGoalMemberModel(
-              createdBy: userId,
-              createdDt: currentTime.toIso8601String(),
-              deviceId: "",
-              fullname: e?.displayName ?? "",
-              modifiedBy: userId,
-              modifiedDt: currentTime.toIso8601String(),
-              ph: e?.phones?[0].value ?? "",
-            ))
+        .map((e) {
+      if(e != null && e.givenName != null && e.givenName == "self_selected"){
+        print("Self Was Selected");
+        return IndividualGoalMemberModel(
+          createdBy: userId,
+          createdDt: currentTime.toIso8601String(),
+          deviceId: "",
+          fullname: e?.displayName ?? "",
+          modifiedBy: userId,
+          modifiedDt: currentTime.toIso8601String(),
+          id: userId,
+          ph: "-1",
+        );
+      }else{
+        return IndividualGoalMemberModel(
+          createdBy: userId,
+          createdDt: currentTime.toIso8601String(),
+          deviceId: "",
+          fullname: e?.displayName ?? "",
+          modifiedBy: userId,
+          modifiedDt: currentTime.toIso8601String(),
+          ph: e?.phones?[0].value ?? "",
+        );
+      }
+    })
         .toList();
     var mutation =
         gql('''mutation MyMutation(\$goalId: String!, \$goalMembers: [UserIP]!) {
@@ -978,7 +1001,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 
 }''';*/
 
-    print("Group Mutation is $mutation");
+    print("Group Mutation is ${mutation.toString()}");
     showLoader();
     try {
       /*var result = await GraphQLService.tempClient

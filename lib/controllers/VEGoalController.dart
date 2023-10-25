@@ -14,6 +14,9 @@ import 'package:teamup/models/JourneyGoalModel.dart';
 import 'package:teamup/models/SuccessGoalMetaDataModel.dart';
 import 'package:teamup/utils/Enums.dart';
 import 'package:teamup/utils/GraphQLService.dart';
+import 'package:teamup/utils/app_Images.dart';
+import 'package:teamup/utils/app_colors.dart';
+import 'package:teamup/utils/app_integers.dart';
 import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/utils/json_constants.dart';
 import 'package:teamup/widgets/EditGoalActivityView.dart';
@@ -255,7 +258,7 @@ class VEGoalController extends GetxController {
   }
 
   //Show Bottom Sheet for editing of Goal name and Description
-  void editGoalNDSheet() {
+  void editGoalNDSheet({Color selectedColor = Colors.red}) {
     var name = convertStringToNotNull(userGoalPerInfo?.goalInfo.name ?? "");
     var desc = convertStringToNotNull(userGoalPerInfo?.goalInfo.desc);
     print("Show Goal Name and Description Sheet");
@@ -265,6 +268,7 @@ class VEGoalController extends GetxController {
           child: EditGoalNDView(
             name: name,
             description: desc,
+            selectedColor: selectedColor,
           ),
         ),
         backgroundColor: Colors.white);
@@ -309,7 +313,8 @@ class VEGoalController extends GetxController {
       }
       selectedGoalActivityList[listIndex] = result;
       update();
-      showSuccess("Activity Edited Successfully");
+
+      showSuccess("Activity Edited Successfully",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
     }catch(onError, Stacktrace){
       print("Failed to UpdateActivity this is response $onError Error Stack Trace $Stacktrace");
     }
@@ -479,6 +484,7 @@ class VEGoalController extends GetxController {
       backup
       collabType
       createdBy
+      createdByName
       createdDt
       desc
       endDate
@@ -509,7 +515,7 @@ class VEGoalController extends GetxController {
     //print("Temporary Results are $tempResult");
 
     //It can have exception or data
-    //log(result.data.toString());
+    log(result.data.toString());
     //json.encode(result.data);
     if (result.data == null && result.exception != null) {
       //No Data Received from Server;
@@ -768,6 +774,11 @@ class VEGoalController extends GetxController {
     }
 
     List<Contact> contactList = await ContactsService.getContacts(withThumbnails: false,photoHighResolution: false,iOSLocalizedLabels: false,androidLocalizedLabels: false);
+
+    //Add Me
+    var localName = localStorage.read(AppStrings.localClientNameValue) ?? AppStrings.emptyName;
+    Contact selfContact = Contact(displayName: "$localName",givenName: "self_selected",phones: [Item(value: "",label: "self")]);
+    contactList.insert(0, selfContact);
     var result = await showModalBottomSheet(
         context: Get.context!,
         backgroundColor: Colors.transparent,
@@ -794,16 +805,32 @@ class VEGoalController extends GetxController {
   }
 
   Future<bool> createGroupGoalMemberMutation(List<Contact?> contact) async {
+
     List<IndividualGoalMemberModel> groupMembers = contact
-        .map((e) => IndividualGoalMemberModel(
-      createdBy: userId,
-      createdDt: currentDateTime.toIso8601String(),
-      deviceId: "",
-      fullname: e?.displayName ?? "",
-      modifiedBy: userId,
-      modifiedDt: currentDateTime.toIso8601String(),
-      ph: e?.phones?[0].value ?? "",
-    ))
+        .map((e) {
+      if(e != null && e.givenName != null && e.givenName == "self_selected"){
+        print("Self Was Selected");
+        return IndividualGoalMemberModel(
+          createdBy: userId,
+          createdDt: currentDateTime.toIso8601String(),
+          deviceId: "",
+          fullname: e?.displayName ?? "",
+          modifiedBy: userId,
+          modifiedDt: currentDateTime.toIso8601String(),
+          id: userId,
+          ph: "-1",
+        );
+      }
+      return IndividualGoalMemberModel(
+        createdBy: userId,
+        createdDt: currentDateTime.toIso8601String(),
+        deviceId: "",
+        fullname: e?.displayName ?? "",
+        modifiedBy: userId,
+        modifiedDt: currentDateTime.toIso8601String(),
+        ph: e?.phones?[0].value ?? "",
+      );
+    })
         .toList();
     var mutation =
     gql('''mutation MyMutation(\$goalId: String!, \$goalMembers: [UserIP]!) {

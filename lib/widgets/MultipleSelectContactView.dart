@@ -8,7 +8,8 @@ import 'package:teamup/widgets/rounded_edge_button.dart';
 class MultiSelectContacts extends StatefulWidget {
   final List<Contact> contactsList;
   final Color? selectedColor;
-  MultiSelectContacts({Key? key, required this.contactsList, this.selectedColor}) : super(key: key);
+  final bool isSingleSelect;
+  MultiSelectContacts({Key? key, required this.contactsList, this.selectedColor, this.isSingleSelect = false}) : super(key: key);
 
   @override
   State<MultiSelectContacts> createState() => _MultiSelectContactsState();
@@ -18,11 +19,15 @@ class _MultiSelectContactsState extends State<MultiSelectContacts> {
   TextEditingController searchTextController = TextEditingController();
   var selectedContactList = <Contact>[].obs;
 
+  var selectedSingleContact = <Contact>{}.obs;
+
   var searchContacts = <Contact>[].obs;
 
   @override
   void initState() {
     super.initState();
+    selectedSingleContact.clear();
+    print("Single Select is ${widget.isSingleSelect}");
   }
 
   @override
@@ -102,7 +107,7 @@ class _MultiSelectContactsState extends State<MultiSelectContacts> {
                         fontWeight: FontWeight.w500),
                   ),
                 )),
-            Obx(() => Container(
+            widget.isSingleSelect ? Container():Obx(() => Container(
                   padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,6 +150,10 @@ class _MultiSelectContactsState extends State<MultiSelectContacts> {
               bottomMargin: 20,
               onPressed: () {
                 //Close
+                if(widget.isSingleSelect){
+                  Get.back(result: selectedSingleContact.value);
+                  return;
+                }
                 Get.back(result: selectedContactList.value);
               },
               context: context),
@@ -166,16 +175,32 @@ class _MultiSelectContactsState extends State<MultiSelectContacts> {
             itemCount: phoneList.length ?? 0 ,
               itemBuilder: (context, position2){
               var phoneDetail = phoneList.elementAt(position2);
+              var name = individualContact.displayName ?? "";
+              if(individualContact.givenName != null && individualContact.givenName == "self_selected"){
+                name = "${individualContact.displayName ?? ""} (You)";
+              }
+
             return Container(
               margin: EdgeInsets.fromLTRB(10, 5, 10, 5),
               padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
               child: InkWell(
                 onTap: () {
-                  if (selectedContactList
-                      .contains(individualContact)) {
-                    selectedContactList.remove(individualContact);
-                  } else {
-                    selectedContactList.add(individualContact);
+                  if(widget.isSingleSelect){
+
+                    selectedSingleContact.clear();
+
+                    if (selectedSingleContact.contains(individualContact)) {
+                      selectedSingleContact.remove(individualContact);
+                    } else {
+                      selectedSingleContact.add(individualContact);
+                    }
+                  }else{
+                    if (selectedContactList
+                        .contains(individualContact)) {
+                      selectedContactList.remove(individualContact);
+                    } else {
+                      selectedContactList.add(individualContact);
+                    }
                   }
                 },
                 child: Row(
@@ -193,7 +218,7 @@ class _MultiSelectContactsState extends State<MultiSelectContacts> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "${individualContact.displayName ?? ""}",
+                              "$name",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style:
@@ -209,11 +234,17 @@ class _MultiSelectContactsState extends State<MultiSelectContacts> {
                       width: 10,
                     ),
                     Obx(() => Icon(
-                      selectedContactList
+                      widget.isSingleSelect ? selectedSingleContact
+                          .contains(individualContact)
+                          ? Icons.check_circle_outlined
+                          : Icons.circle_outlined : selectedContactList
                           .contains(individualContact)
                           ? Icons.check_circle_outlined
                           : Icons.circle_outlined,
-                      color: selectedContactList
+                      color: widget.isSingleSelect ? selectedSingleContact
+                          .contains(individualContact)
+                          ? widget.selectedColor ?? Colors.red
+                          : Colors.grey : selectedContactList
                           .contains(individualContact)
                           ? widget.selectedColor ?? Colors.red
                           : Colors.grey,

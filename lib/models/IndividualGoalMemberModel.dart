@@ -73,15 +73,28 @@ class IndividualGoalMemberModel {
       );
 
   Map<String, dynamic> toJson() {
-    return {
-      'createdBy': createdBy,
-      'createdDt': createdDt,
-      'deviceId': deviceId,
-      'fullname': fullname,
-      'modifiedBy': modifiedBy,
-      'modifiedDt': modifiedDt,
-      'ph': ph,
-    };
+    if(ph == "-1"){
+      return {
+        'createdBy': createdBy,
+        'createdDt': createdDt,
+        'deviceId': deviceId,
+        'fullname': fullname,
+        'modifiedBy': modifiedBy,
+        'modifiedDt': modifiedDt,
+        'ph': ph,
+        'id':id
+      };
+    }else{
+      return {
+        'createdBy': createdBy,
+        'createdDt': createdDt,
+        'deviceId': deviceId,
+        'fullname': fullname,
+        'modifiedBy': modifiedBy,
+        'modifiedDt': modifiedDt,
+        'ph': ph,
+      };
+    }
   }
 }
 /*

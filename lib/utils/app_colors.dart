@@ -51,9 +51,9 @@ class AppColors {
   static String introspectionIconBG = "#6F9EDA";
   static String gymIconBG = "#E6C153";
   static String customIconBG = "#888888";
-  static String swimmingIconBG = "#B5e3e2";
+  static String swimmingIconBG = "#559166";
   static String meditationIconBG = "#A9A78B";
-  static String sadhanaIconBG = "#221C35";
+  static String sadhanaIconBG = "#94C973";
 
   //Goal Screen 2
   static String describeGoalColor = "#429488";
@@ -66,4 +66,32 @@ class AppColors {
   //Notification
   static String notificationColor = "#39394A";
 
+  static Color makeColorDarker(Color color, int amount) {
+    print("Red is ${color.red}, green is ${color.green}, blue is ${color.blue} and alpha is ${color.alpha} ${color.toString()}");
+    int red = color.red - amount;
+    int green = color.green - amount;
+    int blue = color.blue - amount;
+
+    red = red.clamp(0, 255);
+    green = green.clamp(0, 255);
+    blue = blue.clamp(0, 255);
+    print("Red is $red, green is $green, blue is $blue and alpha is ${color.alpha} ${color.toString()}");
+    return Color.fromRGBO(red, green, blue, 1);
+    //return Color.fromARGB(color.alpha, red, green, blue);
+  }
+
+  static Color makeHexColorDarker(String hexColor, int amount) {
+    Color color = Color(int.parse(hexColor.substring(1), radix: 16));
+    print("Red is ${color.red}, green is ${color.green}, blue is ${color.blue} and alpha is ${color.alpha} ${color.toString()}");
+    int red = color.red - amount;
+    int green = color.green - amount;
+    int blue = color.blue - amount;
+
+    red = red.clamp(0, 255);
+    green = green.clamp(0, 255);
+    blue = blue.clamp(0, 255);
+    print("Red is $red, green is $green, blue is $blue and alpha is ${color.alpha} ${color.toString()}");
+    return Color.fromRGBO(red, green, blue, 1);
+    //return Color.fromARGB(color.alpha, red, green, blue);
+  }
 }

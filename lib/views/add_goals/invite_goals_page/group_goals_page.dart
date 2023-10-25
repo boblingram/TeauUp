@@ -9,6 +9,7 @@ import 'package:quds_popup_menu/quds_popup_menu.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/models/IndividualGoalMemberModel.dart';
+import 'package:teamup/utils/app_integers.dart';
 import 'package:teamup/views/add_goals/already_goal_created/goal_created_page.dart';
 
 import '../../../controllers/GoalController.dart';
@@ -59,6 +60,9 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
       duration: Duration(milliseconds: 500),
     );
 
+    //Add Me
+    Contact selfContact = Contact(displayName: "${goalController.userName}",givenName: "self_selected",phones: [Item(value: "",label: "self")]);
+    contactList.insert(0, selfContact);
     var result = await showModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
@@ -374,10 +378,10 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                     } else {
                       if (val) {
                         backupMemberID = userId;
-                        showSuccess("Backup Switched on");
+                        showSuccess("Backup Switched on",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
                       } else {
                         backupMemberID = "";
-                        showSuccess("Backup Switched off");
+                        showSuccess("Backup Switched off",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
                       }
                     }
                     setState(() {});
@@ -395,7 +399,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
             var status = await goalController.mutationGoalMemberRemove(userId);
             if (status) {
               memberList.removeAt(index);
-              showSuccess("Member Removed Successfully");
+              showSuccess("Member Removed Successfully",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
             } else {
               showError(title: "Error", message: "Failed to remove member");
             }
@@ -471,7 +475,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
 
                       setState(() {
                         Get.back();
-                        showSuccess("Mentor Updated Successfully");
+                        showSuccess("Mentor Updated Successfully",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
                       });
                     },
                     child: Row(
@@ -522,7 +526,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                             }
                             setState(() {
                               Get.back();
-                              showSuccess("Mentor Updated Successfully");
+                              showSuccess("Mentor Updated Successfully",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
                             });
                           },
                           child: Row(

@@ -71,10 +71,11 @@ class CreateGoalMetaDataView extends StatelessWidget {
           ),
           Text(
             goalMetaTitle,
-            style: GoogleFonts.roboto(
-              color: Colors.white,
+            style: GoogleFonts.openSans(
+              color: Colors.white.withOpacity(0.6),
               fontSize: 18.sp,
               fontWeight: FontWeight.w500,
+
             ),
           ),
           const SizedBox(
@@ -83,7 +84,7 @@ class CreateGoalMetaDataView extends StatelessWidget {
           Text(
             goalMetaDescription,
             style: GoogleFonts.openSans(
-                color: Colors.white.withOpacity(0.9), fontWeight: FontWeight.w400, fontSize: 11.sp,letterSpacing: 0.2,height: 1.35),
+                color: Colors.white.withOpacity(0.6), fontWeight: FontWeight.w400, fontSize: 11.sp,letterSpacing: 0.2,height: 1.35),
           ),
         ],
       ),

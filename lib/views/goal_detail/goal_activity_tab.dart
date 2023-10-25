@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/controllers/VEGoalController.dart';
+import 'package:teamup/utils/GoalIconandColorStatic.dart';
 import 'package:teamup/widgets/ErrorListWidget.dart';
 
 import '../../utils/app_colors.dart';
 
 class GoalActivityTabPage extends StatelessWidget {
   final bool isEditingEnabled;
-  GoalActivityTabPage({Key? key, required this.isEditingEnabled,}) : super(key: key);
+  final String localGoalType;
+  GoalActivityTabPage({Key? key, required this.isEditingEnabled, required this.localGoalType,}) : super(key: key);
 
   VEGoalController veGoalController = Get.find();
 
@@ -85,7 +88,7 @@ class GoalActivityTabPage extends StatelessWidget {
                                   ),
                                   isEditingEnabled ? InkWell(
                                     onTap: (){
-                                      veGoalController.editGoalActivitySheet(item,index);
+                                      veGoalController.editGoalActivitySheet(item,index,selectedColor: HexColor(GoalIconandColorStatic.getColorName(localGoalType)));
                                     },
                                     child: Text(
                                       "Edit",

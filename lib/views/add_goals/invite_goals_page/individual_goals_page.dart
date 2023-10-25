@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +10,11 @@ import 'package:quds_popup_menu/quds_popup_menu.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/controllers/GoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
+import 'package:teamup/utils/Constants.dart';
 import 'package:teamup/utils/GoalIconandColorStatic.dart';
 
 import '../../../utils/PermissionManager.dart';
+import '../../../widgets/MultipleSelectContactView.dart';
 import '../../../widgets/rounded_edge_button.dart';
 import '../already_goal_created/goal_created_page.dart';
 import '../goal_confirm_create/confirm_and_create_goal_page.dart';
@@ -38,7 +42,60 @@ class _IndividualGoalPageState extends State<IndividualGoalPage> with BaseClass 
     }
 
     try {
-      final Contact? contact = await ContactsService.openDeviceContactPicker();
+
+      //Show Single Select
+      showLoader();
+      List<Contact> contactList = await ContactsService.getContacts(
+          withThumbnails: false,
+          photoHighResolution: false,
+          iOSLocalizedLabels: false,
+          androidLocalizedLabels: false);
+
+      //await Future.delayed(Duration(seconds: 5));
+      hidePLoader();
+      final AnimationController controller = AnimationController(
+        vsync: Navigator.of(context),
+        duration: Duration(milliseconds: 500),
+      );
+
+      //Add Me
+      Contact selfContact = Contact(displayName: "${goalController.userName}",givenName: "self_selected",phones: [Item(value: "",label: "self")]);
+      contactList.insert(0, selfContact);
+      var result = await showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          isDismissible: true,
+          elevation: 15,
+          transitionAnimationController: controller,
+          builder: (context) {
+            return Container(
+                height: 80.h,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20))),
+                child: MultiSelectContacts(
+                    contactsList: contactList,
+                    isSingleSelect: true,
+                    selectedColor: HexColor(GoalIconandColorStatic.getColorName(widget.selectedGoal))
+                ));
+          });
+
+      print("Single Select contact result ${result.runtimeType}");
+      if (result != null) {
+        log("Single Select Result is ${result}");
+        if( result is Set){
+          _contact = (result as Set<Contact>).first;
+          var tempResult = await goalController.createIndividualMemberMutation(_contact!);
+          if(tempResult){
+            setState(() {});
+          }
+        }
+      }
+
+      /*final Contact? contact = await ContactsService.openDeviceContactPicker();
       print("Contact Selected is $contact");
       _contact = contact;
       if(contact != null){
@@ -48,7 +105,7 @@ class _IndividualGoalPageState extends State<IndividualGoalPage> with BaseClass 
         }
       }else{
 
-      }
+      }*/
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());
