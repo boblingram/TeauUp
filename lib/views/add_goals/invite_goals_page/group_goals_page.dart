@@ -466,7 +466,8 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
           print("Selected Contact is ${(result as Set<Contact>).first.displayName}");
           var name = (result as Set<Contact>).first.displayName ?? "";
           var phone = (result as Set<Contact>).first.phones?.first.value ?? "";
-          var tempNetworkResult = await goalController.mutationGoalMemberMentorV1(memberId,name,phone);
+          var givenName = (result as Set<Contact>).first.givenName ?? "";
+          var tempNetworkResult = await goalController.mutationGoalMemberMentorV1(memberId,name,phone,givenName);
           if(tempNetworkResult){
             memberList.elementAt(position)?.mentor = IndividualGoalMemberModel(fullname: name ?? "");
             setState(() {

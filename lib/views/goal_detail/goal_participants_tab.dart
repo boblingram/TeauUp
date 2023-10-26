@@ -340,7 +340,8 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
           print("Selected Contact is ${(result as Set<Contact>).first.displayName}");
           var name = (result as Set<Contact>).first.displayName ?? "";
           var phone = (result as Set<Contact>).first.phones?.first.value ?? "";
-          var tempNetworkResult = await veGoalController.mutationGoalMemberMentorV1(memberId,name,phone);
+          var givenName = (result as Set<Contact>).first.givenName ?? "";
+          var tempNetworkResult = await veGoalController.mutationGoalMemberMentorV1(memberId,name,phone, givenName);
           if(tempNetworkResult != null){
             print("Mentor Id is $tempNetworkResult");
             veGoalController.selectedGoalMemberList.elementAt(position)?.mentor = IndividualGoalMemberModel(fullname: name,id: tempNetworkResult);

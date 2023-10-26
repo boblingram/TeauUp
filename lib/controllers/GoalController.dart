@@ -1,8 +1,10 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:contacts_service/contacts_service.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -1146,13 +1148,13 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
   }
 
   Future<bool> mutationGoalMemberMentorV1(
-      String memberID, String name, String phone) async {
+      String memberID, String name, String phone, String givenName) async {
     print("Member Mentor is $memberID");
 
     var localDeviceId = localStorage.read(AppStrings.localDeviceIdValue) ?? "";
     String mutationString;
 
-    if (phone == "-1") {
+    if (givenName == "self_selected") {
       mutationString = '''mutation MyMutation {
   setMemberMentor_v1(goalId: "$tempGoalId", memberId: "$memberID", mentor: {createdBy: "$userId", createdDt: "${currentTime.toIso8601String()}", deviceId: "$localDeviceId", fullname: "$name", modifiedBy: "$userId", modifiedDt: "${currentTime.toIso8601String()}", ph: "-1", id: "$userId"}) {
     id
@@ -1283,5 +1285,15 @@ setMemberMentor(goalId: "$tempGoalId", memberId: "$memberID", mentorId: "$mentor
       print("Notification FCM Update is $onError");
       print("Failed at $stacktrace");
     }
+  }
+
+  void selectAndUploadFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      print("File Name is ${result.files.first.name}");
+    } else {
+      // User canceled the picker
+    }
+
   }
 }

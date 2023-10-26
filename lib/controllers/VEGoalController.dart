@@ -533,7 +533,7 @@ class VEGoalController extends GetxController {
     //print("Temporary Results are $tempResult");
 
     //It can have exception or data
-    log(result.data.toString());
+    //log(result.data.toString());
     //json.encode(result.data);
     if (result.data == null && result.exception != null) {
       //No Data Received from Server;
@@ -1022,13 +1022,13 @@ setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID")
   }
 
   Future<String?> mutationGoalMemberMentorV1(
-      String memberID, String name, String phone) async {
+      String memberID, String name, String phone, String givenName) async {
     print("Member Mentor is $memberID");
 
     var localDeviceId = localStorage.read(AppStrings.localDeviceIdValue) ?? "";
     String mutationString;
 
-    if (phone == "-1") {
+    if (givenName == "self_selected") {
       mutationString = '''mutation MyMutation {
   setMemberMentor_v1(goalId: "$goalId", memberId: "$memberID", mentor: {createdBy: "$userId", createdDt: "${currentDateTime.toIso8601String()}", deviceId: "$localDeviceId", fullname: "$name", modifiedBy: "$userId", modifiedDt: "${currentDateTime.toIso8601String()}", ph: "-1", id: "$userId"}) {
     id
