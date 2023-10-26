@@ -196,8 +196,17 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
 
 
   List<QudsPopupMenuBase> getMenuItems(int index) {
-    var userId = veGoalController.selectedGoalMemberList.elementAt(index)?.id ?? "";
+    var participantsId = veGoalController.selectedGoalMemberList.elementAt(index)?.id ?? "";
     var backupMemberID = veGoalController.userGoalPerInfo?.goalInfo.backup.toString() ?? "";
+
+    var mentorId = veGoalController.selectedGoalMemberList.elementAt(index).mentor?.id;
+
+    bool showJourneyOption = false;
+
+    print("Mentor Id is ${mentorId} and User Id is ${veGoalController.userId}");
+    if(mentorId != null && mentorId == veGoalController.userId){
+      showJourneyOption = true;
+    }
 
     return [
       QudsPopupMenuItem(
@@ -205,7 +214,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
           title: Text('Assign Mentor'),
           onPressed: () {
             //   showToast('Feedback Pressed!');
-            showMentorDialog(userId.toString(), index);
+            showMentorDialog(participantsId.toString(), index);
           }),
       QudsPopupMenuDivider(),
       QudsPopupMenuItem(
@@ -216,7 +225,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
               Text('Backup'),
               FlutterSwitch(
                   activeColor: selectionColor,
-                  value: backupMemberID == userId,
+                  value: backupMemberID == participantsId,
                   height: 20,
                   toggleSize: 10,
                   width: 40,
@@ -225,7 +234,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
                     Navigator.pop(context);
                     var tempId = "";
                     if (val) {
-                      tempId = userId;
+                      tempId = participantsId;
                     }
                     var status =
                     await veGoalController.mutationGoalMemberBackup(tempId);
@@ -235,7 +244,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
                       return;
                     } else {
                       if (val) {
-                        veGoalController.userGoalPerInfo?.goalInfo.backup = userId;
+                        veGoalController.userGoalPerInfo?.goalInfo.backup = participantsId;
                         showSuccess(
                             title: "Success", message: "Backup Switched on",backgroundColor: AppColors.makeColorDarker(selectionColor, AppIntegers.colorDarkerValue));
                       } else {
@@ -256,7 +265,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
           leading: Icon(Icons.remove_circle),
           title: Text('Remove'),
           onPressed: () async {
-            var status = await veGoalController.mutationGoalMemberRemove(userId, index);
+            var status = await veGoalController.mutationGoalMemberRemove(participantsId, index);
             if (status) {
               showSuccess(
                   title: "Success", message: "Member Removed Successfully",backgroundColor: AppColors.makeColorDarker(selectionColor, AppIntegers.colorDarkerValue));
@@ -264,6 +273,13 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
               showError(title: "Error", message: "Failed to remove member");
             }
           }),
+      QudsPopupMenuDivider(),
+      showJourneyOption ? QudsPopupMenuItem(
+          leading: Icon(Icons.calendar_month),
+          title: Text('Jounery'),
+          onPressed: () async {
+            veGoalController.showJourneyBottomSheet(participantId: participantsId);
+          }) : QudsPopupMenuDivider(),
     ];
   }
 

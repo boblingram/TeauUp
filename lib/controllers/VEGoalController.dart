@@ -20,6 +20,7 @@ import 'package:teamup/utils/app_colors.dart';
 import 'package:teamup/utils/app_integers.dart';
 import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/utils/json_constants.dart';
+import 'package:teamup/views/journey_views/journey_view.dart';
 import 'package:teamup/widgets/EditGoalActivityView.dart';
 
 import '../models/IndividualGoalActivityModel.dart';
@@ -184,7 +185,7 @@ class VEGoalController extends GetxController {
   /*[{"date":"2023-06-01T10:15:55.469427Z","id":"1","time":"2023-06-01T10:15:55.469427Z","name":"One","status":"COMPLETED"},{"date":"2023-06-01T10:15:55.469427Z","id":"1","time":"2023-06-01T10:15:55.469427Z","name":"One","status":"COMPLETED"}]*/
   /*[{"date":,"id":,"time":,"name":,"status":}]*/
 
-  void getJourneyData({String localGoalId = ""}) async {
+  void getJourneyData({String localGoalId = "", String? newUserId}) async {
     String queryData = "";
     if (localGoalId.isEmpty) {
       queryData = '''query MyQuery {
@@ -199,7 +200,19 @@ class VEGoalController extends GetxController {
 ''';
     } else {
       print("Goal Id is Called");
-      queryData = '''query MyQuery {
+      if(newUserId != null){
+        queryData = '''query MyQuery {
+  userJourneyByGoal(goalId: "$localGoalId", userId: "$newUserId") {
+    date
+    id
+    name
+    status
+    time
+  }
+}
+''';
+      }else{
+        queryData = '''query MyQuery {
   userJourneyByGoal(goalId: "$localGoalId", userId: "$userId") {
     date
     id
@@ -209,6 +222,7 @@ class VEGoalController extends GetxController {
   }
 }
 ''';
+      }
     }
 
     var query = gql(queryData);
@@ -1072,6 +1086,25 @@ setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID")
       hidePLoader();
       return null;
     }
+  }
+
+  void showJourneyBottomSheet({required participantId}) async{
+    await showModalBottomSheet(
+    context: Get.context!,
+    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    isDismissible: true,
+    elevation: 15,
+    builder: (context) {
+      return Container(
+          height: 80.h,
+          color: Colors.white,
+          /*decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
+          ),*/
+          child: Journey_View(goalId: goalId,participantId: participantId,));
+    });
   }
 
 }

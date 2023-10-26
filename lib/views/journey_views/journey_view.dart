@@ -12,7 +12,8 @@ import '../../utils/app_colors.dart';
 class Journey_View extends StatefulWidget {
   final bool isGoalTab;
   final String goalId;
-  const Journey_View({super.key, this.isGoalTab = false, this.goalId = ""});
+  final String? participantId;
+  const Journey_View({super.key, this.isGoalTab = false, this.goalId = "", this.participantId});
 
   @override
   State<Journey_View> createState() => _Journey_ViewState();
@@ -35,7 +36,7 @@ class _Journey_ViewState extends State<Journey_View> {
   }
 
   void postUIBuild(){
-    veGoalController.getJourneyData(localGoalId: widget.goalId);
+    veGoalController.getJourneyData(localGoalId: widget.goalId,newUserId: widget.participantId);
     //veGoalController.getFromJourneyJson(localIsJourney: widget.isGoalTab);
   }
 
