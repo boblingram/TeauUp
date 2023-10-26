@@ -48,7 +48,8 @@ class GoalController extends GetxController {
 
     /*var result = await GraphQLService.tempClient
         .query(QueryOptions(document: query));*/
-    var result = await GraphQLService.makeGraphQLRequest(QueryOptions( document: query));
+    var result =
+        await GraphQLService.makeGraphQLRequest(QueryOptions(document: query));
     log(result.data.toString());
     //json.encode(result.data);
     if (result.data == null && result.exception != null) {
@@ -71,8 +72,8 @@ class GoalController extends GetxController {
     }
   }
 
-  void notificationMutationQuery(
-      NotificationMutationEnum tempEnum, String notificationId, int rowIndex) async {
+  void notificationMutationQuery(NotificationMutationEnum tempEnum,
+      String notificationId, int rowIndex) async {
     print("Notification Mutation is ${tempEnum}");
     String mutationData = '';
     if (tempEnum == NotificationMutationEnum.MarkasRead) {
@@ -102,10 +103,11 @@ class GoalController extends GetxController {
     }
 
     var mutation = gql(mutationData);
-    showLoader();
+    showPLoader();
     /*var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: gql(mutation)));*/
-    var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+    var result = await GraphQLService.makeGraphMRequest(
+        MutationOptions(document: mutation));
     log(result.toString());
     hidePLoader();
     if (!GraphQLService.shouldContinueFurther(
@@ -114,7 +116,7 @@ class GoalController extends GetxController {
       return;
     }
 
-    switch(tempEnum){
+    switch (tempEnum) {
       case NotificationMutationEnum.Delete:
         notificationList.removeAt(rowIndex);
         update();
@@ -124,7 +126,6 @@ class GoalController extends GetxController {
         update();
         break;
     }
-
   }
 
   ///Describe Goal
@@ -179,10 +180,11 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 
 """);
 
-    showLoader();
+    showPLoader();
     /*var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: gql(mutation)));*/
-    var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+    var result = await GraphQLService.makeGraphMRequest(
+        MutationOptions(document: mutation));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
     //It can have exception or data
     log(result.data.toString());
@@ -194,7 +196,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
       return false;
     }
     var localGoalId = result.data?["postGoal"]["id"];
-    if(localGoalId == null){
+    if (localGoalId == null) {
       print("There is Error in parsing Goal ID");
       return false;
     }
@@ -233,8 +235,10 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
   @override
   void onInit() {
     super.onInit();
-    userId = localStorage.read(AppStrings.localClientIdValue) ?? AppStrings.defaultUserId;
-    userName = localStorage.read(AppStrings.localClientNameValue) ?? AppStrings.emptyName;
+    userId = localStorage.read(AppStrings.localClientIdValue) ??
+        AppStrings.defaultUserId;
+    userName = localStorage.read(AppStrings.localClientNameValue) ??
+        AppStrings.emptyName;
     print("UserId is $userId");
     //Update Name by
     initializeActivityModel();
@@ -253,7 +257,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     activityNameController.clear();
     _selectedDate = "";
     selectedDaysText = "";
-    for (var item in selectWeeklyDays){
+    for (var item in selectWeeklyDays) {
       item["isSelected"] = false;
     }
   }
@@ -478,9 +482,9 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     reminderTime = DateFormat("HH:mm").format(dateTime);
     String tempHour = reminderTime.split(':')[0];
     String tempMin = reminderTime.split(':')[1];
-    if(tempHour != "00"){
+    if (tempHour != "00") {
       reminderTime = "$tempHour hrs $tempMin min";
-    }else{
+    } else {
       reminderTime = "$tempMin min";
     }
 
@@ -700,8 +704,8 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
   }
 
   Future<bool> initiateCreateActivityMutation({Color? selectedColor}) async {
-    var mutation =
-        gql('''mutation MyMutation( \$customDay: [String] = ${json.encode(initialActivityModel.customDay)}, \$monthDay: [String] = ${json.encode(initialActivityModel.monthDay)}, \$weekDay: [String] = ${json.encode(initialActivityModel.weekDay)}) {
+    var mutation = gql(
+        '''mutation MyMutation( \$customDay: [String] = ${json.encode(initialActivityModel.customDay)}, \$monthDay: [String] = ${json.encode(initialActivityModel.monthDay)}, \$weekDay: [String] = ${json.encode(initialActivityModel.weekDay)}) {
   addGoalActivity(activity: {customDay: \$customDay, desc: "${initialActivityModel.desc}", 
   duration: "${initialActivityModel.duration.toString()}", endDt: "${initialActivityModel.endDt}", 
   freq: "${initialActivityModel.freq}", monthDay: \$monthDay, 
@@ -732,10 +736,11 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 
     print("Mutation called is ${mutation.toString()}");
 
-    showLoader();
+    showPLoader();
     /*var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: mutation));*/
-    var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+    var result = await GraphQLService.makeGraphMRequest(
+        MutationOptions(document: mutation));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
     //It can have exception or data
     log(result.data.toString());
@@ -746,7 +751,10 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
       GraphQLService.parseError(result.exception, "CreateGoalActivityMutation");
       return false;
     }
-    showSuccess("Activity created Successfully",selectedColor: AppColors.makeColorDarker(selectedColor ?? Colors.green.shade400, AppIntegers.colorDarkerValue));
+    showPSuccess("Activity created Successfully",
+        selectedColor: AppColors.makeColorDarker(
+            selectedColor ?? Colors.green.shade400,
+            AppIntegers.colorDarkerValue));
     IndividualGoalActivityModel tempNewModel = IndividualGoalActivityModel();
     tempNewModel.id = result.data?["addGoalActivity"]["id"];
     tempNewModel.name = result.data?["addGoalActivity"]["name"];
@@ -767,7 +775,9 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     return true;
   }
 
-  void editGoalActivitySheet(IndividualGoalActivityModel activityModel, int selectedIndex, {Color selectedColor = Colors.red}) async {
+  void editGoalActivitySheet(
+      IndividualGoalActivityModel activityModel, int selectedIndex,
+      {Color selectedColor = Colors.red}) async {
     print("Edit Individual Activity Sheet ${activityModel.toString()}");
     if (Get.context == null) {
       return;
@@ -793,25 +803,31 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
         });
 
     print("Initiated Edited Activity is ${result.toString()}");
-    if(result == null){
+    if (result == null) {
       return;
     }
-    try{
-      var errorResponse = await mutateActivityCreated(result as IndividualGoalActivityModel);
-      if(errorResponse != null){
+    try {
+      var errorResponse =
+          await mutateActivityCreated(result as IndividualGoalActivityModel);
+      if (errorResponse != null) {
         showErrorWOTitle(errorResponse);
         return;
       }
       successfullyCreatedActivityList[selectedIndex] = result;
       update();
-      showSuccess("Activity Edited Successfully",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
-    }catch(onError, Stacktrace){
-      print("Failed to Edit Activity this is response $onError Error Stack Trace $Stacktrace");
+      showPSuccess("Activity Edited Successfully",
+          selectedColor: AppColors.makeColorDarker(
+              selectedColor, AppIntegers.colorDarkerValue));
+    } catch (onError, Stacktrace) {
+      print(
+          "Failed to Edit Activity this is response $onError Error Stack Trace $Stacktrace");
     }
   }
 
-  Future<String?> mutateActivityCreated(IndividualGoalActivityModel tempModel) async{
-    var mutation = gql('''mutation MyMutation( \$customDay: [String] = ${json.encode(tempModel.customDay)}, \$monthDay: [String] = ${json.encode(tempModel.monthDay)}, \$weekDay: [String] = ${json.encode(tempModel.weekDay)}) {
+  Future<String?> mutateActivityCreated(
+      IndividualGoalActivityModel tempModel) async {
+    var mutation = gql(
+        '''mutation MyMutation( \$customDay: [String] = ${json.encode(tempModel.customDay)}, \$monthDay: [String] = ${json.encode(tempModel.monthDay)}, \$weekDay: [String] = ${json.encode(tempModel.weekDay)}) {
   updateActivity(activity: {customDay: \$customDay, desc: "${tempModel.desc}", 
   duration: "${tempModel.duration.toString()}", endDt: "${tempModel.endDt}", 
   freq: "${tempModel.freq}", monthDay: \$monthDay, 
@@ -831,10 +847,11 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
   }
 }''');
 
-    showLoader();
+    showPLoader();
     /*var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: mutation));*/
-    var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+    var result = await GraphQLService.makeGraphMRequest(
+        MutationOptions(document: mutation));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
     //It can have exception or data
     log(result.data.toString());
@@ -846,7 +863,6 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     }
     return null;
   }
-
 
   void initializeActivityModel() {
     initialActivityModel.customDay = [];
@@ -891,10 +907,11 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 
     print("Individual Mutation is $mutation");
 
-    showLoader();
+    showPLoader();
     /*var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: mutation));*/
-    var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+    var result = await GraphQLService.makeGraphMRequest(
+        MutationOptions(document: mutation));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
     //It can have exception or data
     log(result.data.toString());
@@ -909,7 +926,8 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     return true;
   }
 
-  Future<List<IndividualGoalMemberModel>?> createGroupGoalMemberMutation(List<Contact?> contact) async {
+  Future<List<IndividualGoalMemberModel>?> createGroupGoalMemberMutation(
+      List<Contact?> contact) async {
     /*List groupList = contact.map((e) => jsonEncode('''{createdBy: $userId, createdDt: ${currentTime.toIso8601String()}, deviceId: "", fullname: ${e?.displayName ?? ""}, modifiedBy: $userId, modifiedDt: ${currentTime.toIso8601String()}, ph: ${e?.phones?[0].value ?? ""}''')).toList();
     String mutation = '''mutation MyMutation {addGoalMembers(goalId: "$tempGoalId", goalMembers: $groupList) {
     createdBy
@@ -931,9 +949,8 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 }
 ''';*/
 
-    List<IndividualGoalMemberModel> groupMembers = contact
-        .map((e) {
-      if(e != null && e.givenName != null && e.givenName == "self_selected"){
+    List<IndividualGoalMemberModel> groupMembers = contact.map((e) {
+      if (e != null && e.givenName != null && e.givenName == "self_selected") {
         print("Self Was Selected");
         return IndividualGoalMemberModel(
           createdBy: userId,
@@ -945,7 +962,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
           id: userId,
           ph: "-1",
         );
-      }else{
+      } else {
         return IndividualGoalMemberModel(
           createdBy: userId,
           createdDt: currentTime.toIso8601String(),
@@ -956,10 +973,9 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
           ph: e?.phones?[0].value ?? "",
         );
       }
-    })
-        .toList();
-    var mutation =
-        gql('''mutation MyMutation(\$goalId: String!, \$goalMembers: [UserIP]!) {
+    }).toList();
+    var mutation = gql(
+        '''mutation MyMutation(\$goalId: String!, \$goalMembers: [UserIP]!) {
       addGoalMembers(goalId: \$goalId, goalMembers: \$goalMembers) {
         createdBy
         fullname
@@ -1002,7 +1018,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 }''';*/
 
     print("Group Mutation is ${mutation.toString()}");
-    showLoader();
+    showPLoader();
     try {
       /*var result = await GraphQLService.tempClient
           .mutate(MutationOptions(document: mutation,variables: {
@@ -1010,9 +1026,12 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
         'goalMembers': groupMembers.map((member) => member.toJson()).toList(), // Set the value for \$goalMembers
       }));*/
 
-      var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation,variables: {
+      var result = await GraphQLService.makeGraphMRequest(
+          MutationOptions(document: mutation, variables: {
         'goalId': tempGoalId, // Set the value for \$goalId
-        'goalMembers': groupMembers.map((member) => member.toJson()).toList(), // Set the value for \$goalMembers
+        'goalMembers': groupMembers
+            .map((member) => member.toJson())
+            .toList(), // Set the value for \$goalMembers
       }));
       //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
       //It can have exception or data
@@ -1024,7 +1043,8 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
         GraphQLService.parseError(result.exception, "Create Group Mutation");
         return null;
       }
-      SuccessGoalMemberModel successGoalMemberModel = SuccessGoalMemberModel.fromJson(result.data!);
+      SuccessGoalMemberModel successGoalMemberModel =
+          SuccessGoalMemberModel.fromJson(result.data!);
       return successGoalMemberModel.goalMemberList;
     } catch (onError, stacktrace) {
       print("Group Mutation Error is $onError");
@@ -1049,33 +1069,34 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     }
 
     if (!Get.isOverlaysOpen) {
-      Get.to(()=>HomeView());
+      Get.to(() => HomeView());
     }
   }
 
-  Future<bool> mutationGoalMemberRemove(String memberID) async{
+  Future<bool> mutationGoalMemberRemove(String memberID) async {
     print("Member Remove Mutation is $memberID");
 
-    var mutation =
-    gql('''mutation MyMutation {
+    var mutation = gql('''mutation MyMutation {
   removeGoalMember(goalId: "$tempGoalId", userId: "$memberID") {
     activities
     id
   }
 }
 ''');
-    showLoader();
+    showPLoader();
     try {
       /*var result = await GraphQLService.tempClient
           .mutate(MutationOptions(document: mutation));*/
-      var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+      var result = await GraphQLService.makeGraphMRequest(
+          MutationOptions(document: mutation));
       //It can have exception or data
       log(result.data.toString());
       //json.encode(result.data);
       hidePLoader();
       if (result.data == null && result.exception != null) {
         //No Data Received from Server;
-        GraphQLService.parseError(result.exception, "Remove Group Member Mutation");
+        GraphQLService.parseError(
+            result.exception, "Remove Group Member Mutation");
         return false;
       }
     } catch (onError, stacktrace) {
@@ -1087,11 +1108,10 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     return true;
   }
 
-  Future<bool> mutationGoalMemberBackup(String tempId) async{
+  Future<bool> mutationGoalMemberBackup(String tempId) async {
     print("Member Remove Mutation is $tempId");
 
-    var mutation =
-    gql('''mutation MyMutation {
+    var mutation = gql('''mutation MyMutation {
   setBackup(goalId: "$tempGoalId", userId: "$tempId") {
     id
     mentor
@@ -1099,11 +1119,12 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
   }
 }
 ''');
-    showLoader();
+    showPLoader();
     try {
       /*var result = await GraphQLService.tempClient
           .mutate(MutationOptions(document: gql(mutation)));*/
-      var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+      var result = await GraphQLService.makeGraphMRequest(
+          MutationOptions(document: mutation));
       //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
       //It can have exception or data
       log(result.data.toString());
@@ -1111,7 +1132,8 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
       hidePLoader();
       if (result.data == null && result.exception != null) {
         //No Data Received from Server;
-        GraphQLService.parseError(result.exception, "Backup Group Member Mutation");
+        GraphQLService.parseError(
+            result.exception, "Backup Group Member Mutation");
         return false;
       }
     } catch (onError, stacktrace) {
@@ -1123,7 +1145,73 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     return true;
   }
 
-  Future<bool> mutationGoalMemberMentor(String memberID, String mentorID) async{
+  Future<bool> mutationGoalMemberMentorV1(
+      String memberID, String name, String phone) async {
+    print("Member Mentor is $memberID");
+
+    var localDeviceId = localStorage.read(AppStrings.localDeviceIdValue) ?? "";
+    String mutationString;
+
+    if (phone == "-1") {
+      mutationString = '''mutation MyMutation {
+  setMemberMentor_v1(goalId: "$tempGoalId", memberId: "$memberID", mentor: {createdBy: "$userId", createdDt: "${currentTime.toIso8601String()}", deviceId: "$localDeviceId", fullname: "$name", modifiedBy: "$userId", modifiedDt: "${currentTime.toIso8601String()}", ph: "-1", id: "$userId"}) {
+    id
+    desc
+    name
+    members {
+      mentorId
+      userId
+    }
+  }
+}
+
+''';
+    } else {
+      mutationString = '''mutation MyMutation {
+  setMemberMentor_v1(goalId: "$tempGoalId", memberId: "$memberID", mentor: {createdBy: "$userId", createdDt: "${currentTime.toIso8601String()}", deviceId: "$localDeviceId", fullname: "$name", modifiedBy: "$userId", modifiedDt: "${currentTime.toIso8601String()}", ph: "$phone"}) {
+    id
+    desc
+    name
+    members {
+      mentorId
+      userId
+    }
+  }
+}
+
+''';
+    }
+
+    var mutation = gql(mutationString);
+
+    showPLoader();
+    try {
+      /*var result = await GraphQLService.tempClient
+          .mutate(MutationOptions(document: gql(mutation)));*/
+      var result = await GraphQLService.makeGraphMRequest(
+          MutationOptions(document: mutation));
+      //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
+      //It can have exception or data
+      log(result.data.toString());
+      //json.encode(result.data);
+      hidePLoader();
+      if (result.data == null && result.exception != null) {
+        //No Data Received from Server;
+        GraphQLService.parseError(
+            result.exception, "Mentor Group Member Mutation");
+        return false;
+      }
+      return true;
+    } catch (onError, stacktrace) {
+      print("Mentor Group Member Mutation is $onError");
+      print("Failed at $stacktrace");
+      hidePLoader();
+      return false;
+    }
+  }
+
+  Future<bool> mutationGoalMemberMentor(
+      String memberID, String mentorID) async {
     print("Member Mentor Mutation is $memberID $mentorID");
 
     var mutation = gql('''mutation MyMutation {
@@ -1138,11 +1226,12 @@ setMemberMentor(goalId: "$tempGoalId", memberId: "$memberID", mentorId: "$mentor
 }
 ''');
 
-    showLoader();
+    showPLoader();
     try {
       /*var result = await GraphQLService.tempClient
           .mutate(MutationOptions(document: gql(mutation)));*/
-      var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+      var result = await GraphQLService.makeGraphMRequest(
+          MutationOptions(document: mutation));
       //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
       //It can have exception or data
       log(result.data.toString());
@@ -1150,7 +1239,8 @@ setMemberMentor(goalId: "$tempGoalId", memberId: "$memberID", mentorId: "$mentor
       hidePLoader();
       if (result.data == null && result.exception != null) {
         //No Data Received from Server;
-        GraphQLService.parseError(result.exception, "Mentor Group Member Mutation");
+        GraphQLService.parseError(
+            result.exception, "Mentor Group Member Mutation");
         return false;
       }
       return true;
@@ -1160,14 +1250,12 @@ setMemberMentor(goalId: "$tempGoalId", memberId: "$memberID", mentorId: "$mentor
       hidePLoader();
       return false;
     }
-
   }
 
-  void mutationNotificationServer(String? value) async{
+  void mutationNotificationServer(String? value) async {
     print("Member FCM Update is $value");
 
-    var mutation =
-    gql('''mutation MyMutation {
+    var mutation = gql('''mutation MyMutation {
   putUser(id: "1", deviceId: "$value", fullname: "nefn1", ph: "newph") {
     deviceId
     fullname
@@ -1180,14 +1268,16 @@ setMemberMentor(goalId: "$tempGoalId", memberId: "$memberID", mentorId: "$mentor
     try {
       /*var result = await GraphQLService.tempClient
           .mutate(MutationOptions(document: gql(mutation)));*/
-      var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+      var result = await GraphQLService.makeGraphMRequest(
+          MutationOptions(document: mutation));
       //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
       //It can have exception or data
       log(result.data.toString());
       //json.encode(result.data);
       if (result.data == null && result.exception != null) {
         //No Data Received from Server;
-        GraphQLService.parseError(result.exception, "Notification FCM Update Mutation");
+        GraphQLService.parseError(
+            result.exception, "Notification FCM Update Mutation");
       }
     } catch (onError, stacktrace) {
       print("Notification FCM Update is $onError");

@@ -11,6 +11,7 @@ import 'package:sizer/sizer.dart';
 import 'package:teamup/models/GoalMetaDataModel.dart';
 import 'package:teamup/models/IndividualGoalMemberModel.dart';
 import 'package:teamup/models/JourneyGoalModel.dart';
+import 'package:teamup/models/SuccessGoalMentorDataModel.dart';
 import 'package:teamup/models/SuccessGoalMetaDataModel.dart';
 import 'package:teamup/utils/Enums.dart';
 import 'package:teamup/utils/GraphQLService.dart';
@@ -50,10 +51,13 @@ class VEGoalController extends GetxController {
 
   final localStorage = GetStorage();
 
+  var userName = "";
+
   @override
   void onInit() {
     super.onInit();
     userId = localStorage.read(AppStrings.localClientIdValue) ?? AppStrings.defaultUserId;
+    userName = localStorage.read(AppStrings.localClientNameValue) ?? "";
     print("UserId is $userId");
   }
 
@@ -208,7 +212,7 @@ class VEGoalController extends GetxController {
     }
 
     var query = gql(queryData);
-    showLoader();
+    showPLoader();
 
     /*var result = await GraphQLService.tempClient
         .query(QueryOptions(document: query));*/
@@ -314,7 +318,7 @@ class VEGoalController extends GetxController {
       selectedGoalActivityList[listIndex] = result;
       update();
 
-      showSuccess("Activity Edited Successfully",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
+      showPSuccess("Activity Edited Successfully",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
     }catch(onError, Stacktrace){
       print("Failed to UpdateActivity this is response $onError Error Stack Trace $Stacktrace");
     }
@@ -341,7 +345,7 @@ class VEGoalController extends GetxController {
   }
 }''');
 
-    showLoader();
+    showPLoader();
     /*var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: mutation));*/
     var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
@@ -375,7 +379,7 @@ class VEGoalController extends GetxController {
 """);
 
     //Show Progress Bar
-    showLoader();
+    showPLoader();
     /*var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: mutation));*/
     var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
@@ -436,7 +440,7 @@ class VEGoalController extends GetxController {
 
 """);
 
-    showLoader();
+    showPLoader();
 /*    var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: mutation));*/
     var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
@@ -458,7 +462,7 @@ class VEGoalController extends GetxController {
       selectedGoalListIndex = 0;
       update();
       Get.back();
-      showSuccess("${item.goalInfo.name ?? ""} Successfully Archived");
+      showPSuccess("${item.goalInfo.name ?? ""} Successfully Archived");
     }catch(onError, stackTrace){
       print("Failed Updating active goal to end goal $onError, StackTrace is $stackTrace");
     }
@@ -612,7 +616,7 @@ class VEGoalController extends GetxController {
         await GraphQLService.tempClient.query(QueryOptions(document: query));*/
     var result = await GraphQLService.makeGraphQLRequest(QueryOptions( document: query));
     //It can have exception or data
-    //log(result.data.toString());
+    log(result.data.toString());
     //json.encode(result.data);
     if (!shouldContinueFurther("FetchGoalMembershipData", result)) {
       showErrorWOTitle("Failed to Update Goal Membership");
@@ -702,7 +706,7 @@ class VEGoalController extends GetxController {
 
     var mutation = gql(mutationData);
 
-    showLoader();
+    showPLoader();
     /*var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: mutation));*/
     var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
@@ -761,7 +765,7 @@ class VEGoalController extends GetxController {
     getGoalActivitiesData(goalId);
   }
 
-  void addMoreParticipants() async {
+  void addMoreParticipants({required Color selectedColor}) async {
     if(Get.context == null){
       return;
     }
@@ -792,7 +796,7 @@ class VEGoalController extends GetxController {
                   color: Colors.white,
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
               ),
-              child: MultiSelectContacts(contactsList: contactList,));
+              child: MultiSelectContacts(contactsList: contactList,selectedColor: selectedColor,));
         });
     print("Multi Select contact result ${result.runtimeType}");
     if(result != null){
@@ -855,7 +859,7 @@ class VEGoalController extends GetxController {
 ''');
 
     print("Group Mutation is $mutation");
-    showLoader();
+    showPLoader();
     try {
       /*var result = await GraphQLService.tempClient
           .mutate(MutationOptions(document: mutation,variables: {
@@ -900,7 +904,7 @@ class VEGoalController extends GetxController {
   }
 }
 ''');
-    showLoader();
+    showPLoader();
     try {
       /*var result = await GraphQLService.tempClient
           .mutate(MutationOptions(document: mutation));*/
@@ -939,7 +943,7 @@ class VEGoalController extends GetxController {
   }
 }
 ''');
-    showLoader();
+    showPLoader();
     try {
       /*var result = await GraphQLService.tempClient
           .mutate(MutationOptions(document: mutation));*/
@@ -978,7 +982,7 @@ setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID")
 }
 ''');
 
-    showLoader();
+    showPLoader();
     try {
       /*var result = await GraphQLService.tempClient
           .mutate(MutationOptions(document: mutation));*/
@@ -1001,6 +1005,73 @@ setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID")
       return false;
     }
 
+  }
+
+  Future<String?> mutationGoalMemberMentorV1(
+      String memberID, String name, String phone) async {
+    print("Member Mentor is $memberID");
+
+    var localDeviceId = localStorage.read(AppStrings.localDeviceIdValue) ?? "";
+    String mutationString;
+
+    if (phone == "-1") {
+      mutationString = '''mutation MyMutation {
+  setMemberMentor_v1(goalId: "$goalId", memberId: "$memberID", mentor: {createdBy: "$userId", createdDt: "${currentDateTime.toIso8601String()}", deviceId: "$localDeviceId", fullname: "$name", modifiedBy: "$userId", modifiedDt: "${currentDateTime.toIso8601String()}", ph: "-1", id: "$userId"}) {
+    id
+    desc
+    name
+    members {
+      mentorId
+      userId
+    }
+  }
+}
+
+''';
+    } else {
+      mutationString = '''mutation MyMutation {
+  setMemberMentor_v1(goalId: "$goalId", memberId: "$memberID", mentor: {createdBy: "$userId", createdDt: "${currentDateTime.toIso8601String()}", deviceId: "$localDeviceId", fullname: "$name", modifiedBy: "$userId", modifiedDt: "${currentDateTime.toIso8601String()}", ph: "$phone"}) {
+    id
+    desc
+    name
+    members {
+      mentorId
+      userId
+    }
+  }
+}
+
+''';
+    }
+
+    var mutation = gql(mutationString);
+
+    showPLoader();
+    try {
+      /*var result = await GraphQLService.tempClient
+          .mutate(MutationOptions(document: gql(mutation)));*/
+      var result = await GraphQLService.makeGraphMRequest(
+          MutationOptions(document: mutation));
+      //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
+      //It can have exception or data
+      log(result.data.toString());
+      //json.encode(result.data);
+      hidePLoader();
+      if (result.data == null && result.exception != null) {
+        //No Data Received from Server;
+        GraphQLService.parseError(
+            result.exception, "Mentor Group Member Mutation");
+        return null;
+      }
+      SuccessGoalMentorDataModel successGoalMentorDataModel = SuccessGoalMentorDataModel.fromJson(result.data!);
+      print("Mentor Id is ${successGoalMentorDataModel.setMemberMentorModel.members.last.mentorId}");
+      return successGoalMentorDataModel.setMemberMentorModel.members.last.mentorId ?? "";
+    } catch (onError, stacktrace) {
+      print("Mentor Group Member Mutation is $onError");
+      print("Failed at $stacktrace");
+      hidePLoader();
+      return null;
+    }
   }
 
 }

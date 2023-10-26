@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +48,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
       return;
     }
 
-    showLoader(progressColor: GoalIconandColorStatic.getColorName(widget.selectedGoal));
+    showPLoader(progressColor: GoalIconandColorStatic.getColorName(widget.selectedGoal));
     List<Contact> contactList = await ContactsService.getContacts(
         withThumbnails: false,
         photoHighResolution: false,
@@ -220,9 +222,9 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                                   children: [
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        Image.asset(AppImages.user_white_icon, height: 17,width: 17,),
+                                        Image.asset(AppImages.user_white_icon, height: 20,width: 17,),
                                         const SizedBox(
                                           width: 10,
                                         ),
@@ -378,10 +380,10 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                     } else {
                       if (val) {
                         backupMemberID = userId;
-                        showSuccess("Backup Switched on",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
+                        showPSuccess("Backup Switched on",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
                       } else {
                         backupMemberID = "";
-                        showSuccess("Backup Switched off",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
+                        showPSuccess("Backup Switched off",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
                       }
                     }
                     setState(() {});
@@ -399,7 +401,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
             var status = await goalController.mutationGoalMemberRemove(userId);
             if (status) {
               memberList.removeAt(index);
-              showSuccess("Member Removed Successfully",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
+              showPSuccess("Member Removed Successfully",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
             } else {
               showError(title: "Error", message: "Failed to remove member");
             }
@@ -408,7 +410,80 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
   }
 
   void showMentorDialog(String memberId, int position) async {
-    await showModalBottomSheet(
+    final permissionManager = PermissionManager(context);
+
+    var response = await permissionManager.askForPermissionAndNavigate(null);
+    if(!response){
+      return;
+    }
+
+    try {
+      //Show Single Select
+      showPLoader();
+      List<Contact> contactList = await ContactsService.getContacts(
+          withThumbnails: false,
+          photoHighResolution: false,
+          iOSLocalizedLabels: false,
+          androidLocalizedLabels: false);
+
+      //await Future.delayed(Duration(seconds: 5));
+      hidePLoader();
+      final AnimationController controller = AnimationController(
+        vsync: Navigator.of(context),
+        duration: Duration(milliseconds: 500),
+      );
+
+      //Add Me
+      Contact selfContact = Contact(displayName: "${goalController.userName}",givenName: "self_selected",phones: [Item(value: "",label: "self")]);
+      contactList.insert(0, selfContact);
+      var result = await showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          isDismissible: true,
+          elevation: 15,
+          transitionAnimationController: controller,
+          builder: (context) {
+            return Container(
+                height: 80.h,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20))),
+                child: MultiSelectContacts(
+                    contactsList: contactList,
+                    staticText: "Add Mentor",
+                    isSingleSelect: true,
+                    selectedColor: HexColor(GoalIconandColorStatic.getColorName(widget.selectedGoal))
+                ));
+          });
+
+      print("Single Select contact result ${result.runtimeType}");
+      if (result != null) {
+        log("Single Select Result is ${result}");
+        if( result is Set){
+          print("Selected Contact is ${(result as Set<Contact>).first.displayName}");
+          var name = (result as Set<Contact>).first.displayName ?? "";
+          var phone = (result as Set<Contact>).first.phones?.first.value ?? "";
+          var tempNetworkResult = await goalController.mutationGoalMemberMentorV1(memberId,name,phone);
+          if(tempNetworkResult){
+            memberList.elementAt(position)?.mentor = IndividualGoalMemberModel(fullname: name ?? "");
+            setState(() {
+
+            });
+          }
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+
+    print("Element Position is $position");
+
+    /*await showModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
         isScrollControlled: true,
@@ -423,7 +498,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20))),
               child: showMentorList(memberId, position));
-        });
+        });*/
   }
 
   Widget showMentorList(String memberId, int position) {
@@ -475,7 +550,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
 
                       setState(() {
                         Get.back();
-                        showSuccess("Mentor Updated Successfully",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
+                        showPSuccess("Mentor Updated Successfully",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
                       });
                     },
                     child: Row(
@@ -526,7 +601,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                             }
                             setState(() {
                               Get.back();
-                              showSuccess("Mentor Updated Successfully",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
+                              showPSuccess("Mentor Updated Successfully",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
                             });
                           },
                           child: Row(

@@ -44,7 +44,7 @@ class _IndividualGoalPageState extends State<IndividualGoalPage> with BaseClass 
     try {
 
       //Show Single Select
-      showLoader();
+      showPLoader();
       List<Contact> contactList = await ContactsService.getContacts(
           withThumbnails: false,
           photoHighResolution: false,

@@ -9,7 +9,8 @@ class MultiSelectContacts extends StatefulWidget {
   final List<Contact> contactsList;
   final Color? selectedColor;
   final bool isSingleSelect;
-  MultiSelectContacts({Key? key, required this.contactsList, this.selectedColor, this.isSingleSelect = false}) : super(key: key);
+  final String staticText;
+  MultiSelectContacts({Key? key, required this.contactsList, this.selectedColor, this.isSingleSelect = false, this.staticText = "Add Members"}) : super(key: key);
 
   @override
   State<MultiSelectContacts> createState() => _MultiSelectContactsState();
@@ -72,7 +73,7 @@ class _MultiSelectContactsState extends State<MultiSelectContacts> {
                         margin:
                             EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                         child: Text(
-                          "Add Members",
+                          widget.staticText,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 16.sp, fontWeight: FontWeight.w700),

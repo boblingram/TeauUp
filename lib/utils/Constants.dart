@@ -16,7 +16,7 @@ int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
 }
 
-showLoader({String text = "Please wait...", String? progressColor}) {
+showPLoader({String text = "Please wait...", String? progressColor}) {
   Get.dialog(
     Center(
       child: ProgressBarWidget(text: "$text", progressColor: progressColor,),
@@ -45,7 +45,7 @@ showErrorWOTitle(String message) {
       backgroundColor: HexColor(AppColors.failedMessageC), colorText: Colors.white);
 }
 
-showSuccess(String message, {Color? selectedColor}) {
+showPSuccess(String message, {Color? selectedColor}) {
   Get.snackbar('Success!', message,
       backgroundColor: selectedColor ?? HexColor(AppColors.successMessageC), colorText: Colors.white);
 }

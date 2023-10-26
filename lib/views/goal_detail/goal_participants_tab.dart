@@ -1,14 +1,25 @@
+import 'dart:developer';
+
+import 'package:contacts_service/contacts_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:quds_popup_menu/quds_popup_menu.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/models/IndividualGoalMemberModel.dart';
+import 'package:teamup/utils/app_integers.dart';
+import 'package:teamup/utils/app_strings.dart';
 
+import '../../utils/Constants.dart';
+import '../../utils/GoalIconandColorStatic.dart';
+import '../../utils/PermissionManager.dart';
 import '../../utils/app_colors.dart';
+import '../../widgets/MultipleSelectContactView.dart';
 
 class GoalParticipantsTabPage extends StatefulWidget {
   const GoalParticipantsTabPage({super.key});
@@ -19,6 +30,17 @@ class GoalParticipantsTabPage extends StatefulWidget {
 
 class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with BaseClass{
   final VEGoalController veGoalController = Get.find();
+
+  var selectedGoal = AppStrings.defaultGoalType;
+  Color selectionColor = Colors.red;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedGoal = veGoalController.userGoalPerInfo?.goalInfo.type ?? AppStrings.defaultGoalType;
+    selectionColor = HexColor(GoalIconandColorStatic.getColorName(selectedGoal));
+    print("Selected Goal Type is ${veGoalController.userGoalPerInfo?.goalInfo.type}");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +113,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
   Widget addMoreWidget() {
     return InkWell(
       onTap: (){
-        veGoalController.addMoreParticipants();
+        veGoalController.addMoreParticipants(selectedColor : selectionColor);
       },
       child: Container(
         height: 45,
@@ -193,7 +215,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
             children: [
               Text('Backup'),
               FlutterSwitch(
-                  activeColor: Colors.red,
+                  activeColor: selectionColor,
                   value: backupMemberID == userId,
                   height: 20,
                   toggleSize: 10,
@@ -215,11 +237,11 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
                       if (val) {
                         veGoalController.userGoalPerInfo?.goalInfo.backup = userId;
                         showSuccess(
-                            title: "Success", message: "Backup Switched on");
+                            title: "Success", message: "Backup Switched on",backgroundColor: AppColors.makeColorDarker(selectionColor, AppIntegers.colorDarkerValue));
                       } else {
                         veGoalController.userGoalPerInfo?.goalInfo.backup = "";
                         showSuccess(
-                            title: "Success", message: "Backup Switched off");
+                            title: "Success", message: "Backup Switched off",backgroundColor: AppColors.makeColorDarker(selectionColor, AppIntegers.colorDarkerValue));
                       }
                     }
                     setState(() {});
@@ -237,7 +259,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
             var status = await veGoalController.mutationGoalMemberRemove(userId, index);
             if (status) {
               showSuccess(
-                  title: "Success", message: "Member Removed Successfully");
+                  title: "Success", message: "Member Removed Successfully",backgroundColor: AppColors.makeColorDarker(selectionColor, AppIntegers.colorDarkerValue));
             } else {
               showError(title: "Error", message: "Failed to remove member");
             }
@@ -246,7 +268,81 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
   }
 
   void showMentorDialog(String memberId, int position) async {
-    await showModalBottomSheet(
+    final permissionManager = PermissionManager(context);
+
+    var response = await permissionManager.askForPermissionAndNavigate(null);
+    if(!response){
+      return;
+    }
+
+    try {
+      //Show Single Select
+      showPLoader();
+      List<Contact> contactList = await ContactsService.getContacts(
+          withThumbnails: false,
+          photoHighResolution: false,
+          iOSLocalizedLabels: false,
+          androidLocalizedLabels: false);
+
+      //await Future.delayed(Duration(seconds: 5));
+      hidePLoader();
+      final AnimationController controller = AnimationController(
+        vsync: Navigator.of(context),
+        duration: Duration(milliseconds: 500),
+      );
+
+      //Add Me
+      Contact selfContact = Contact(displayName: "${veGoalController.userName}",givenName: "self_selected",phones: [Item(value: "",label: "self")]);
+      contactList.insert(0, selfContact);
+      var result = await showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          isDismissible: true,
+          elevation: 15,
+          transitionAnimationController: controller,
+          builder: (context) {
+            return Container(
+                height: 80.h,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20))),
+                child: MultiSelectContacts(
+                    contactsList: contactList,
+                    staticText: "Add Mentor",
+                    isSingleSelect: true,
+                    selectedColor: HexColor(GoalIconandColorStatic.getColorName(selectedGoal))
+                ));
+          });
+
+      print("Single Select contact result ${result.runtimeType}");
+      if (result != null) {
+        log("Single Select Result is ${result}");
+        if( result is Set){
+          print("Selected Contact is ${(result as Set<Contact>).first.displayName}");
+          var name = (result as Set<Contact>).first.displayName ?? "";
+          var phone = (result as Set<Contact>).first.phones?.first.value ?? "";
+          var tempNetworkResult = await veGoalController.mutationGoalMemberMentorV1(memberId,name,phone);
+          if(tempNetworkResult != null){
+            print("Mentor Id is $tempNetworkResult");
+            veGoalController.selectedGoalMemberList.elementAt(position)?.mentor = IndividualGoalMemberModel(fullname: name,id: tempNetworkResult);
+            setState(() {
+
+            });
+          }
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+
+    print("Element Position is $position");
+
+/*    await showModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
         isScrollControlled: true,
@@ -261,7 +357,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20))),
               child: showMentorList(memberId, position));
-        });
+        });*/
   }
 
   Widget showMentorList(String memberId, int position) {
@@ -311,7 +407,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
                           }
                           setState(() {
                             Get.back();
-                            showSuccess(title: "Success", message: "Mentor Updated Successfully");
+                            showSuccess(title: "Success", message: "Mentor Updated Successfully",backgroundColor: AppColors.makeColorDarker(selectionColor, AppIntegers.colorDarkerValue));
                           });
                         },
                         child: Row(
@@ -319,7 +415,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
                             localMentorId.isEmpty
                                 ? Icon(
                               Icons.circle,
-                              color: Colors.red,
+                              color: selectionColor,
                             )
                                 : Icon(Icons.circle_outlined),
                             SizedBox(
@@ -362,7 +458,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
                                   }
                                   setState(() {
                                     Get.back();
-                                    showSuccess(title: "Success", message: "Mentor Updated Successfully");
+                                    showSuccess(title: "Success", message: "Mentor Updated Successfully",backgroundColor: AppColors.makeColorDarker(selectionColor, AppIntegers.colorDarkerValue));
                                   });
                                 },
                                 child: Row(
@@ -370,7 +466,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
                                     shouldMemberId
                                         ? Icon(
                                       Icons.circle,
-                                      color: Colors.red,
+                                      color: selectionColor,
                                     )
                                         : Icon(Icons.circle_outlined),
                                     SizedBox(

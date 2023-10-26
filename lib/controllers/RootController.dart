@@ -122,7 +122,7 @@ class RootController extends GetxController{
   }
 }
 ''';
-    showLoader();
+    showPLoader();
     var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: gql(mutation)));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
