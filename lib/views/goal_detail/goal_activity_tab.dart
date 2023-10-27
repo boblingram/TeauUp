@@ -20,7 +20,7 @@ class GoalActivityTabPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: isEditingEnabled ?  Container(
+      bottomNavigationBar: isEditingEnabled ? Container(
         height: 5.h,
         width: double.infinity,
         margin:  EdgeInsets.fromLTRB(5.w,2.w,5.w,3.h),
@@ -45,7 +45,7 @@ class GoalActivityTabPage extends StatelessWidget {
             ),
           ),
         ),
-      ) : Container(),
+      ) : null,
       body: Container(
         color: Colors.white,
         child: GetBuilder<VEGoalController>(
@@ -109,7 +109,7 @@ class GoalActivityTabPage extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Flexible(
-                                    flex: 2,
+                                    flex: 1,
                                     child: getActivityDetails(Icons.calendar_month, veGoalController.convertFrequencyToAppropriate(item.freq)),
                                   ),
                                   Flexible(
@@ -180,16 +180,19 @@ class GoalActivityTabPage extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Icon(
-          icon,
-          color: Colors.grey,
+        Expanded(
+          flex: 1,
+          child: Icon(
+            icon,
+            color: Colors.grey,
+          ),
         ),
-        const SizedBox(
-          width: 5,
-        ),
-        Text(
-          title,
-          style: GoogleFonts.openSans(color: Colors.black, fontSize: 12),
+        Expanded(
+          flex: 2,
+          child: Text(
+            title,
+            style: GoogleFonts.openSans(color: Colors.black, fontSize: 12),
+          ),
         ),
       ],
     );

@@ -151,9 +151,8 @@ class GraphQLService {
 
   static void parseName() {
     try{
-      print("Token is ${jwtToken}");
+      //print("Token is ${jwtToken}");
       var result = JwtDecoder.decode(jwtToken);
-      print("Name is ");
       var localStorage = GetStorage();
       localStorage.write(AppStrings.localClientNameValue, "${result["name"]}");
     }catch(onError){

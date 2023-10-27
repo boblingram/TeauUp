@@ -13,7 +13,8 @@ class Journey_View extends StatefulWidget {
   final bool isGoalTab;
   final String goalId;
   final String? participantId;
-  const Journey_View({super.key, this.isGoalTab = false, this.goalId = "", this.participantId});
+  final bool showJourney;
+  const Journey_View({super.key, this.isGoalTab = false, this.goalId = "", this.participantId, this.showJourney = true});
 
   @override
   State<Journey_View> createState() => _Journey_ViewState();
@@ -36,7 +37,11 @@ class _Journey_ViewState extends State<Journey_View> {
   }
 
   void postUIBuild(){
-    veGoalController.getJourneyData(localGoalId: widget.goalId,newUserId: widget.participantId);
+    if(widget.showJourney){
+      veGoalController.getJourneyData(localGoalId: widget.goalId,newUserId: widget.participantId);
+    }else{
+      veGoalController.restrictedJourneyAccess();
+    }
     //veGoalController.getFromJourneyJson(localIsJourney: widget.isGoalTab);
   }
 
@@ -160,7 +165,7 @@ class _Journey_ViewState extends State<Journey_View> {
                     taskId: item.id.toString() ?? "",
                   );
                 })
-                : ErrorListWidget(text: "Empty Journey Data");
+                : ErrorListWidget(text: veGoalController.journeyErrorText);
           })
     );
   }

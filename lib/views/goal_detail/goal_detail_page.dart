@@ -20,7 +20,8 @@ class GoalDetailPage extends StatefulWidget {
   final UserGoalPerInfo userGoalPerInfo;
   final bool isEditingEnabled;
   final int itemIndex;
-  const GoalDetailPage({Key? key, required this.userGoalPerInfo, this.isEditingEnabled = true, required this.itemIndex}) : super(key: key);
+  final bool showJourney;
+  const GoalDetailPage({Key? key, required this.userGoalPerInfo, this.isEditingEnabled = true, required this.itemIndex, this.showJourney = true}) : super(key: key);
 
   @override
   State<GoalDetailPage> createState() => _GoalDetailPageState();
@@ -248,8 +249,8 @@ class _GoalDetailPageState extends State<GoalDetailPage>
           body: _selectedTabValue == 0
               ? GoalActivityTabPage(isEditingEnabled: widget.isEditingEnabled, localGoalType: localGoalType)
               : _selectedTabValue == 1
-              ? GoalParticipantsTabPage()
-              : Journey_View(isGoalTab: true,goalId: veGoalController.goalId,)),
+              ? GoalParticipantsTabPage(isEditingEnabled: widget.isEditingEnabled)
+              : Journey_View(isGoalTab: true,goalId: veGoalController.goalId,showJourney: widget.showJourney)),
     );
   }
 }

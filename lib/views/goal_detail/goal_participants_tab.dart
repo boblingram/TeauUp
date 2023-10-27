@@ -22,7 +22,8 @@ import '../../utils/app_colors.dart';
 import '../../widgets/MultipleSelectContactView.dart';
 
 class GoalParticipantsTabPage extends StatefulWidget {
-  const GoalParticipantsTabPage({super.key});
+  final bool isEditingEnabled;
+  const GoalParticipantsTabPage({super.key, required this.isEditingEnabled});
 
   @override
   State<GoalParticipantsTabPage> createState() => _GoalParticipantsTabPageState();
@@ -111,7 +112,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
   }
 
   Widget addMoreWidget() {
-    return InkWell(
+    return widget.isEditingEnabled ? InkWell(
       onTap: (){
         veGoalController.addMoreParticipants(selectedColor : selectionColor);
       },
@@ -135,7 +136,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
           ],
         ),
       ),
-    );
+    ) : Container();
   }
 
   Widget getInvitedMembers(IndividualGoalMemberModel item, int index) {
@@ -166,8 +167,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
                   "${item.fullname}",
                   style: GoogleFonts.openSans(
                       color: Colors.black,
-                      fontWeight:
-                      index == 0 ? FontWeight.w700 : FontWeight.w400),
+                      fontWeight: FontWeight.w400),
                 ),
                 Text(
                   veGoalController.convertStringToNotNull(item.mentor).isEmpty ? "" :"You are mentored by ${veGoalController.convertStringToNotNull(item.mentor?.fullname)}",
@@ -179,7 +179,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
               ],
             ),
           ),
-          QudsPopupButton(
+          widget.isEditingEnabled ? QudsPopupButton(
             // backgroundColor: Colors.red,
             tooltip: 'T',
             items: getMenuItems(index),
@@ -188,7 +188,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
               color: Colors.grey,
               size: 20,
             ),
-          ),
+          ) : Container(),
         ],
       ),
     );

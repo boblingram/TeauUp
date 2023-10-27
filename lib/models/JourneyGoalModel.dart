@@ -1,8 +1,7 @@
 /*
 {__typename: Query, userJourney: [{__typename: Task, date: 1, id: 1, name: 1, status: SKIP, time: 1}]}*/
 
-
-class JourneyGoalModel{
+class JourneyGoalModel {
   String typename;
   List<JourneyGoalDataModel> journeyModelList;
 
@@ -11,17 +10,23 @@ class JourneyGoalModel{
     required this.journeyModelList,
   });
 
-  factory JourneyGoalModel.fromJson(Map<String, dynamic> json) => JourneyGoalModel(
-    typename: json["__typename"] ?? "",
-    journeyModelList: List<JourneyGoalDataModel>.from(json["userJourney"].map((x) => JourneyGoalDataModel.fromJson(x))),
-  );
+  factory JourneyGoalModel.fromJson(Map<String, dynamic> json) =>
+      JourneyGoalModel(
+        typename: json["__typename"] ?? "",
+        journeyModelList: json["userJourney"] == null
+            ? List<JourneyGoalDataModel>.from(json["userJourneyByGoal"]
+                .map((x) => JourneyGoalDataModel.fromJson(x)))
+            : List<JourneyGoalDataModel>.from(json["userJourney"]
+                .map((x) => JourneyGoalDataModel.fromJson(x))),
+      );
 
 /*Map<String, dynamic> toJson() => {
     "__typename": typename,
     "goalDetailModel": List<dynamic>.from(goalDetailList.map((x) => x.toJson())),
   };*/
 }
-class JourneyGoalDataModel{
+
+class JourneyGoalDataModel {
   //List of ISO String Dates
   var date;
   var id;
@@ -39,15 +44,14 @@ class JourneyGoalDataModel{
     this.desc,
   });
 
-  factory JourneyGoalDataModel.fromJson(Map<String, dynamic> json) => JourneyGoalDataModel(
-    id: json["id"],
-    name: json["name"],
-    time: json["time"],
-    date: json["date"],
-    status: json["status"],
-    desc: json["desc"]
-  );
-
+  factory JourneyGoalDataModel.fromJson(Map<String, dynamic> json) =>
+      JourneyGoalDataModel(
+          id: json["id"],
+          name: json["name"],
+          time: json["time"],
+          date: json["date"],
+          status: json["status"],
+          desc: json["desc"]);
 }
 //Sample
 /*

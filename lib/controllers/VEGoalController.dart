@@ -233,7 +233,7 @@ class VEGoalController extends GetxController {
     var result = await GraphQLService.makeGraphQLRequest(QueryOptions( document: query));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
     //It can have exception or data
-    log(result.data.toString());
+    //log(result.data.toString());
     //json.encode(result.data);
     //Hide Progress Bar
     hidePLoader();
@@ -245,14 +245,19 @@ class VEGoalController extends GetxController {
     try {
       JourneyGoalModel journeyGoalModel =
           JourneyGoalModel.fromJson(result.data!);
-      print("Length of List is ${journeyGoalModel.journeyModelList.length}");
+      if(journeyGoalModel.journeyModelList.isEmpty){
+        journeyErrorText = AppStrings.errorJourneyData;
+        update();
+        return;
+      }
       journeyGoalList.clear();
       journeyGoalList = journeyGoalModel.journeyModelList;
       // Sort the list based on the 'date' attribute in ascending order.
       journeyGoalList.sort((a, b) => a.date.compareTo(b.date));
+
       update();
     } catch (onError, stackTrace) {
-      print("Error while parsing Journey Goal Model $onError");
+      print("Error while parsing Journey Goal Model $onError and Stack trace is $stackTrace");
     }
   }
 
@@ -818,6 +823,7 @@ class VEGoalController extends GetxController {
       if(response){
         GraphQLService.tempWAClient.resetStore(refetchQueries: false);
         getGoalMembershipData(goalId);
+        getAEGoal();
       }
     }
   }
@@ -1105,6 +1111,12 @@ setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID")
           ),*/
           child: Journey_View(goalId: goalId,participantId: participantId,));
     });
+  }
+
+  String journeyErrorText = AppStrings.errorJourneyData;
+  void restrictedJourneyAccess() {
+    journeyErrorText = "You do not have any activities to do as you are not a participant in this goal";
+    update();
   }
 
 }

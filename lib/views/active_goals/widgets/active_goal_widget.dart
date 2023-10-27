@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
+import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/models/GoalMetaDataModel.dart';
 import 'package:teamup/utils/GoalIconandColorStatic.dart';
@@ -12,18 +14,68 @@ import 'package:teamup/views/goal_detail/goal_detail_page.dart';
 import '../../../utils/app_colors.dart';
 
 class ActiveGoalWidget extends StatelessWidget with BaseClass {
-
   final UserGoalPerInfo userGoalPerInfo;
   final int itemIndex;
-  const ActiveGoalWidget({Key? key, required this.userGoalPerInfo, required this.itemIndex}) : super(key: key);
+  final VEGoalController veGoalController = Get.find();
+
+  ActiveGoalWidget(
+      {Key? key, required this.userGoalPerInfo, required this.itemIndex})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    //Check if they are participants or not
+    var createdBy = userGoalPerInfo.goalInfo.createdBy ?? "";
+    var backup = userGoalPerInfo.goalInfo.backup ?? "";
+    var loginUserId = veGoalController.userId;
+    /*print(
+        "Created By Id ${userGoalPerInfo.goalInfo.createdBy} && Backup Info ${userGoalPerInfo.goalInfo.backup}");
+    print("Size of member is ${userGoalPerInfo.goalInfo.members?.length}");*/
+
+    var editingEnabled = false;
+    var isLoginUserAdmin = false;
+    var isLoginUserParticipant = false;
+    var isLoginUserMentor = false;
+    var sizeOfMembers = 0;
+    var sizeOfMentors = 0;
+    if (loginUserId == createdBy || loginUserId == backup) {
+      isLoginUserAdmin = true;
+      editingEnabled = true;
+    }
+
+    if (userGoalPerInfo.goalInfo.members != null) {
+      //Check whether user exists in participants or not?
+      sizeOfMembers = userGoalPerInfo.goalInfo.members!.length;
+      var tempParticipantData = userGoalPerInfo.goalInfo.members!
+          .firstWhereOrNull((element) => element.userId == loginUserId);
+      var tempMentorData = userGoalPerInfo.goalInfo.members!
+          .firstWhereOrNull((element) => element.mentorId == loginUserId);
+
+      var usersWithMentorId24 = userGoalPerInfo.goalInfo.members!
+          .where((userMentor) => userMentor.mentorId == loginUserId)
+          .toList();
+
+      sizeOfMentors = usersWithMentorId24.length;
+
+      if (tempParticipantData != null) {
+        isLoginUserParticipant = true;
+      }
+
+      if (tempMentorData != null) {
+        isLoginUserMentor = true;
+      }
+    }
+
     return InkWell(
       onTap: () {
         pushToNextScreen(
           context: context,
-          destination: GoalDetailPage(userGoalPerInfo: userGoalPerInfo, itemIndex: itemIndex,),
+          destination: GoalDetailPage(
+            userGoalPerInfo: userGoalPerInfo,
+            itemIndex: itemIndex,
+            isEditingEnabled: editingEnabled,
+            showJourney: !isLoginUserParticipant,
+          ),
         );
       },
       child: Container(
@@ -34,6 +86,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
             borderRadius: BorderRadius.circular(5)),
         margin: const EdgeInsets.only(bottom: 15),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -43,12 +96,14 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
                     height: 11.w,
                     width: 11.w,
                     decoration: BoxDecoration(
-                      color: HexColor(GoalIconandColorStatic.getColorName(userGoalPerInfo.goalInfo.type ?? "Custom")),
+                      color: HexColor(GoalIconandColorStatic.getColorName(
+                          userGoalPerInfo.goalInfo.type ?? "Custom")),
                       shape: BoxShape.circle,
                     ),
                     child: Padding(
                         padding: EdgeInsets.all(1.w),
-                        child: Image.asset(GoalIconandColorStatic.getImageName(userGoalPerInfo.goalInfo.type ?? "Custom"))),
+                        child: Image.asset(GoalIconandColorStatic.getImageName(
+                            userGoalPerInfo.goalInfo.type ?? "Custom"))),
                   ),
                   const SizedBox(
                     width: 10,
@@ -107,25 +162,43 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: IndividualDetailsActiveGoalWidget(textToShow: "${userGoalPerInfo.perInfo.totalDays ?? "0"} days spent", assetStringName: AppImages.weekly_GIcon,),
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  Expanded(
-                    child: IndividualDetailsActiveGoalWidget(textToShow: "${userGoalPerInfo.perInfo.mainStreak ?? "0"} days streak", assetStringName: AppImages.streak_GIcon,),
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  Expanded(
-                    child: IndividualDetailsActiveGoalWidget(textToShow: "${userGoalPerInfo.perInfo.totalXP ?? "0"} xp points", assetStringName: AppImages.star_GIcon,),
-                  ),
-                ],
-              ),
+              child: (isLoginUserAdmin && !isLoginUserParticipant)
+                  ? AccessoryTextActiveGoalWidget(
+                      text: "$sizeOfMembers members participating in this goal")
+                  : (isLoginUserMentor && !isLoginUserParticipant)
+                      ? AccessoryTextActiveGoalWidget(
+                  text: "$sizeOfMentors participants mentored by you.")
+                      : Row(
+                          children: [
+                            Expanded(
+                              child: IndividualDetailsActiveGoalWidget(
+                                textToShow:
+                                    "${userGoalPerInfo.perInfo.totalDays ?? "0"} days spent",
+                                assetStringName: AppImages.weekly_GIcon,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                              child: IndividualDetailsActiveGoalWidget(
+                                textToShow:
+                                    "${userGoalPerInfo.perInfo.mainStreak ?? "0"} days streak",
+                                assetStringName: AppImages.streak_GIcon,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                              child: IndividualDetailsActiveGoalWidget(
+                                textToShow:
+                                    "${userGoalPerInfo.perInfo.totalXP ?? "0"} xp points",
+                                assetStringName: AppImages.star_GIcon,
+                              ),
+                            ),
+                          ],
+                        ),
             ),
             /*Container(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
@@ -158,7 +231,9 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
 class IndividualDetailsActiveGoalWidget extends StatelessWidget {
   final String textToShow;
   final String assetStringName;
-  const IndividualDetailsActiveGoalWidget({super.key, required this.textToShow,required this.assetStringName });
+
+  const IndividualDetailsActiveGoalWidget(
+      {super.key, required this.textToShow, required this.assetStringName});
 
   @override
   Widget build(BuildContext context) {
@@ -169,8 +244,7 @@ class IndividualDetailsActiveGoalWidget extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(5),
       ),
-      padding: const EdgeInsets.symmetric(
-          horizontal: 5, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -181,19 +255,31 @@ class IndividualDetailsActiveGoalWidget extends StatelessWidget {
               width: 12,
             ),
           ),
-
           Expanded(
             child: Text(
               textToShow,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.openSans(
-                  color: AppColors.black, fontSize: 12),
+              style: GoogleFonts.openSans(color: AppColors.black, fontSize: 12),
               maxLines: 1,
             ),
             flex: 4,
           ),
         ],
       ),
+    );
+  }
+}
+
+class AccessoryTextActiveGoalWidget extends StatelessWidget {
+  final String text;
+
+  const AccessoryTextActiveGoalWidget({super.key, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(13.w, 0, 0, 0),
+      child: Text(text),
     );
   }
 }

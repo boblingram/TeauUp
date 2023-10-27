@@ -1,5 +1,7 @@
 
 
+import 'SuccessGoalMentorDataModel.dart';
+
 class GoalMetaDataModel{
   String typename;
   List<UserGoalPerInfo> userGoalPerList;
@@ -69,6 +71,8 @@ class UserGoalInfo{
   var desc;
   var backup;
   var createdByName;
+  var createdBy;
+  List<UserMentorData>? members;
 
   UserGoalInfo({
     this.id,
@@ -78,7 +82,9 @@ class UserGoalInfo{
     this.type,
     this.desc,
     this.backup,
-    this.createdByName
+    this.createdByName,
+    this.createdBy,
+    this.members
 });
 
   factory UserGoalInfo.fromJson(Map<String, dynamic> json) => UserGoalInfo(
@@ -89,7 +95,11 @@ class UserGoalInfo{
     type: json["type"],
     desc: json["desc"],
     backup: json["backup"],
-    createdByName: json["createdByName"]
+    createdByName: json["createdByName"],
+    createdBy: json["createdBy"],
+    members: List<UserMentorData>.from(
+        json["members"]
+            .map((x) => UserMentorData.fromJson(x)))
   );
 
 }

@@ -65,4 +65,6 @@ class AppStrings {
   static const String localClientIdValue = "clientIdLS";
   static const String localClientNameValue = "nameLS";
 
+  static String errorJourneyData = "Empty Journey Data";
+
 }
