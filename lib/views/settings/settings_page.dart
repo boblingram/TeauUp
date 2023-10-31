@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:teamup/bottom_sheets/contact_us_bottom_sheet.dart';
 import 'package:teamup/bottom_sheets/faq_bottom_sheet.dart';
 import 'package:teamup/bottom_sheets/privacy_policy_bottom_sheet.dart';
@@ -313,8 +312,8 @@ class SettingsPage extends StatelessWidget with BaseClass {
               width: 15,
             ),
             onTap: () {
-              Share.share(
-                  'Hey download Teamp Up from this link \nhttps://play.google.com/store/apps/details?id=com.orbision');
+              /*Share.share(
+                  'Hey download Teamp Up from this link \nhttps://play.google.com/store/apps/details?id=com.orbision');*/
             },
           ),
           _getDivider(),

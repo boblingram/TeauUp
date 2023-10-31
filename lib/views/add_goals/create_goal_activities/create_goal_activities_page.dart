@@ -11,10 +11,12 @@ import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/utils/GoalIconandColorStatic.dart';
 import 'package:teamup/utils/app_colors.dart';
 import 'package:teamup/utils/app_integers.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../bottom_sheets/date_picker.dart';
 import '../../../controllers/GoalController.dart';
 import '../../../models/IndividualGoalActivityModel.dart';
+import '../../../utils/Constants.dart';
 import '../../../widgets/edittext_with_hint.dart';
 import '../../../widgets/rounded_edge_button.dart';
 
@@ -62,7 +64,8 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
     selectionColor =
         HexColor(GoalIconandColorStatic.getColorName(widget.selectedGoal));
     unSelectedColor = HexColor(AppColors.nonActivitySelectedBGColor);
-    hexSelectedColorString = GoalIconandColorStatic.getColorName(widget.selectedGoal);
+    hexSelectedColorString =
+        GoalIconandColorStatic.getColorName(widget.selectedGoal);
     super.initState();
   }
 
@@ -150,7 +153,8 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                         InkWell(
                                           onTap: () {
                                             activityGC.editGoalActivitySheet(
-                                                item, index,selectedColor: selectionColor);
+                                                item, index,
+                                                selectedColor: selectionColor);
                                           },
                                           child: Text(
                                             "Edit",
@@ -459,8 +463,10 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                                   child: Center(
                                                     child: Text(
                                                       "AM",
-                                                      style: GoogleFonts.openSans(
-                                                          color: Colors.black),
+                                                      style:
+                                                          GoogleFonts.openSans(
+                                                              color:
+                                                                  Colors.black),
                                                     ),
                                                   ),
                                                 ),
@@ -484,8 +490,10 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                                   child: Center(
                                                     child: Text(
                                                       "PM",
-                                                      style: GoogleFonts.openSans(
-                                                          color: Colors.black),
+                                                      style:
+                                                          GoogleFonts.openSans(
+                                                              color:
+                                                                  Colors.black),
                                                     ),
                                                   ),
                                                 ),
@@ -649,45 +657,52 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(child: activityGC.isReminderToggleOn
-                                  ? Text.rich(
-                                TextSpan(
-                                  style: GoogleFonts.openSans(
-                                    color: Colors.grey.shade700,
-                                    fontSize: 10.5.sp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  children: [
-                                    TextSpan(text: 'Remind me '),
-                                    TextSpan(
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                          // Handle the tap action here
-                                          _focusNode.unfocus();
-                                          CupertinoTimePickerBottomSheet()
-                                              .cupertinoTimePicker(context,
-                                                  (selectedTime) {
-                                                popToPreviousScreen(
-                                                    context: context);
-                                                // Split the custom time string into hours, minutes, and seconds
-                                                activityGC.updateReminderTime(
-                                                    selectedTime);
-                                              });
-                                        },
-                                      text: activityGC.reminderTime,
-                                    ),
-                                    TextSpan(text: ' before that task starts'),
-                                  ],
-                                ),
-                              )
-                                  : Text(
-                                "Do not remind me",
-                                style: GoogleFonts.openSans(
-                                  color: Colors.grey.shade700,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),flex: 7,),
+                              Expanded(
+                                child: activityGC.isReminderToggleOn
+                                    ? Text.rich(
+                                        TextSpan(
+                                          style: GoogleFonts.openSans(
+                                            color: Colors.grey.shade700,
+                                            fontSize: 10.5.sp,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          children: [
+                                            TextSpan(text: 'Remind me '),
+                                            TextSpan(
+                                              recognizer: TapGestureRecognizer()
+                                                ..onTap = () {
+                                                  // Handle the tap action here
+                                                  _focusNode.unfocus();
+                                                  CupertinoTimePickerBottomSheet()
+                                                      .cupertinoTimePicker(
+                                                          context,
+                                                          (selectedTime) {
+                                                    popToPreviousScreen(
+                                                        context: context);
+                                                    // Split the custom time string into hours, minutes, and seconds
+                                                    activityGC
+                                                        .updateReminderTime(
+                                                            selectedTime);
+                                                  });
+                                                },
+                                              text: activityGC.reminderTime,
+                                            ),
+                                            TextSpan(
+                                                text:
+                                                    ' before that task starts'),
+                                          ],
+                                        ),
+                                      )
+                                    : Text(
+                                        "Do not remind me",
+                                        style: GoogleFonts.openSans(
+                                          color: Colors.grey.shade700,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                flex: 7,
+                              ),
                               Expanded(
                                 flex: 1,
                                 child: FlutterSwitch(
@@ -712,6 +727,95 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                               ),
                             ],
                           ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Instructions",
+                                style: GoogleFonts.openSans(
+                                  color: HexColor(
+                                      AppColors.staticActivityTextColor),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  activityGC.selectAndUploadFile();
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Upload",
+                                      style: GoogleFonts.openSans(
+                                        color: HexColor(
+                                            AppColors.staticActivityTextColor),
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: selectionColor),
+                                        padding: EdgeInsets.all(1),
+                                        margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                        child: Icon(
+                                          Icons.file_upload_outlined,
+                                          color: Colors.white,
+                                        )),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            child: activityGC.selectedFileList.isEmpty
+                                ? Text("No Files Uploaded")
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    padding: EdgeInsets.zero,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: activityGC
+                                        .selectedFileList.length,
+                                    itemBuilder: (context, position) {
+                                      var item = activityGC.selectedFileList.elementAt(position);
+                                      var itemName;
+                                      try{
+                                        itemName = item.split("__")[2];
+                                      }catch(onError){
+                                        print("Error while Splitting file $onError");
+                                        itemName = "";
+                                      }
+
+                                      return Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          InkWell(onTap: (){
+                                            try {
+                                              launch("${Constants.STORAGEURL}$item");
+                                            } catch (onError, stacktrace) {
+                                              print(
+                                                  "Unable to launch the file $onError\nStacktrace is $stacktrace");
+                                            }
+                                          }, child: Text("${position+1}. $itemName")),
+                                          IconButton(
+                                            alignment: Alignment.centerRight,
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                              onPressed: (){
+                                            activityGC.removeFileFromList(position);
+                                          }, icon: Icon(Icons.remove_circle,color: selectionColor,))
+                                        ],
+                                      );
+                                    }),
+                          ),
                           const Divider(),
                           InkWell(
                             onTap: () async {
@@ -728,7 +832,8 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                   .activityNameController.text
                                   .trim());
                               var response =
-                                  await activityGC.validationOfAddActivity(selectedColor: selectionColor);
+                                  await activityGC.validationOfAddActivity(
+                                      selectedColor: selectionColor);
                               if (!response) {
                                 showError(
                                     title: "Error",
@@ -777,10 +882,13 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                               bottomMargin: 20,
                               onPressed: () async {
                                 _focusNode.unfocus();
-                                if(activityGC.successfullyCreatedActivityList.isNotEmpty){
+                                if (activityGC.successfullyCreatedActivityList
+                                    .isNotEmpty) {
                                   pushToNextScreen(
                                       context: context,
-                                      destination: InviteToGoalPage(selectedGoal: widget.selectedGoal,));
+                                      destination: InviteToGoalPage(
+                                        selectedGoal: widget.selectedGoal,
+                                      ));
                                   return;
                                 }
                                 if (activityGC.activityNameController.text
@@ -795,7 +903,8 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                     .activityNameController.text
                                     .trim());
                                 var response =
-                                    await activityGC.validationOfAddActivity(selectedColor: selectionColor);
+                                    await activityGC.validationOfAddActivity(
+                                        selectedColor: selectionColor);
                                 if (!response) {
                                   showError(
                                       title: "Error",
@@ -804,7 +913,9 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                 }
                                 pushToNextScreen(
                                     context: context,
-                                    destination: InviteToGoalPage(selectedGoal: widget.selectedGoal,));
+                                    destination: InviteToGoalPage(
+                                      selectedGoal: widget.selectedGoal,
+                                    ));
                               },
                               context: context)
                         ],

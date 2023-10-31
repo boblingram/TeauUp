@@ -24,9 +24,12 @@ import 'package:teamup/utils/app_integers.dart';
 import 'package:teamup/views/HomeView.dart';
 
 import '../models/IndividualGoalActivityModel.dart';
+import '../utils/APIService.dart';
 import '../utils/Constants.dart';
 import '../utils/app_strings.dart';
 import '../widgets/EditGoalActivityView.dart';
+
+import 'package:dio/dio.dart' as Dio;
 
 class GoalController extends GetxController {
   var userId = "1";
@@ -259,6 +262,8 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     activityNameController.clear();
     _selectedDate = "";
     selectedDaysText = "";
+    //Instruction
+    selectedFileList.clear();
     for (var item in selectWeeklyDays) {
       item["isSelected"] = false;
     }
@@ -706,13 +711,18 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
   }
 
   Future<bool> initiateCreateActivityMutation({Color? selectedColor}) async {
+    String instructionFiles = "";
+    if(selectedFileList.isNotEmpty){
+      instructionFiles = selectedFileList.join(",");
+    }
+    print("Instructed Files is $instructionFiles");
     var mutation = gql(
         '''mutation MyMutation( \$customDay: [String] = ${json.encode(initialActivityModel.customDay)}, \$monthDay: [String] = ${json.encode(initialActivityModel.monthDay)}, \$weekDay: [String] = ${json.encode(initialActivityModel.weekDay)}) {
   addGoalActivity(activity: {customDay: \$customDay, desc: "${initialActivityModel.desc}", 
   duration: "${initialActivityModel.duration.toString()}", endDt: "${initialActivityModel.endDt}", 
   freq: "${initialActivityModel.freq}", monthDay: \$monthDay, 
   name: "${initialActivityModel.name}", reminder: "${initialActivityModel.reminder}", 
-  time: "${initialActivityModel.time}", weekDay: \$weekDay, instrFile : ""}, goalId: "$tempGoalId") {
+  time: "${initialActivityModel.time}", weekDay: \$weekDay, instrFile : "${instructionFiles.toString()}"}, goalId: "$tempGoalId") {
     customDay
     desc
     duration
@@ -724,6 +734,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     reminder
     time
     weekDay
+    instrFile
   }
   postNotification(notice: {frm: "1", to: "1", msg: "A new activity ${initialActivityModel.name} has been assigned to your goal $newGoalName", status: "NEW", type: "New activity added"}) {
     createdDt
@@ -769,6 +780,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     tempNewModel.desc = result.data?["addGoalActivity"]["desc"];
     tempNewModel.endDt = result.data?["addGoalActivity"]["endDt"];
     tempNewModel.freq = result.data?["addGoalActivity"]["freq"];
+    tempNewModel.instrFile = result.data?["addGoalActivity"]["instrFile"];
     print("Activity ID is ${tempNewModel.toString()}");
     successfullyCreatedActivityList.add(tempNewModel);
     resetData();
@@ -834,7 +846,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
   duration: "${tempModel.duration.toString()}", endDt: "${tempModel.endDt}", 
   freq: "${tempModel.freq}", monthDay: \$monthDay, 
   name: "${tempModel.name}", reminder: "${tempModel.reminder}", 
-  time: "${tempModel.time}", weekDay: \$weekDay, id: "${tempModel.id}"}) {
+  time: "${tempModel.time}", weekDay: \$weekDay, id: "${tempModel.id}", instrFile : "${tempModel.instrFile.toString()}"}) {
     customDay
     desc
     duration
@@ -846,8 +858,10 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     reminder
     time
     weekDay
+    instrFile
   }
 }''');
+
 
     showPLoader();
     /*var result = await GraphQLService.tempClient
@@ -876,6 +890,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     initialActivityModel.weekDay = [];
     initialActivityModel.reminder = "";
     initialActivityModel.time = "";
+    initialActivityModel.instrFile = "";
     initialActivityModel.id = null;
   }
 
@@ -1287,13 +1302,39 @@ setMemberMentor(goalId: "$tempGoalId", memberId: "$memberID", mentorId: "$mentor
     }
   }
 
+  final _apiService = APIService();
+  List<String> selectedFileList = [];
+
   void selectAndUploadFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
-      print("File Name is ${result.files.first.name}");
+      //print("File Name is ${result.files.first.name} && ${DateTime.now().millisecond} && ${DateTime.now().millisecondsSinceEpoch}");
+      var fileName = "${userId}__${DateTime.now().millisecondsSinceEpoch}__${result.files.first.name}";
+      var extension = result.files.first.extension ?? "jpg";
+      try{
+        showPLoader();
+        Dio.Response data = await _apiService
+            .uploadMediaDataServer("${Constants.STORAGEURL}$fileName", result.files.first.path!,extension);
+        print("Response is ${data.statusCode}");
+        print("Response is ${data.statusMessage}");
+        hidePLoader();
+        if(data.statusCode!=null && data.statusCode == 200){
+          selectedFileList.add(fileName);
+          update();
+        }
+      }catch(onError, stackTrace){
+        hidePLoader();
+        print("While Uploading file error occured $onError");
+        print("Stack trace is $stackTrace");
+        //_apiService.handleDioError(onError);
+      }
     } else {
       // User canceled the picker
     }
+  }
 
+  void removeFileFromList(int position) {
+    selectedFileList.removeAt(position);
+    update();
   }
 }

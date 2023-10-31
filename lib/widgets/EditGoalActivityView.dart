@@ -4,15 +4,18 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:open_file/open_file.dart';
 import 'package:sizer/sizer.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:teamup/controllers/GoalActivityController.dart';
 import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/models/IndividualGoalActivityModel.dart';
+import 'package:teamup/utils/Constants.dart';
 import 'package:teamup/utils/app_colors.dart';
 import 'package:teamup/widgets/edittext_with_hint.dart';
 import 'package:teamup/widgets/rounded_edge_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../bottom_sheets/date_picker.dart';
 
@@ -533,7 +536,7 @@ class _EditGoalNDViewState extends State<EditGoalActivityView> with BaseClass {
                   ),
                   Text(
                     "Reminder",
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.openSans(
                       color: Colors.grey.shade700,
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
@@ -563,12 +566,12 @@ class _EditGoalNDViewState extends State<EditGoalActivityView> with BaseClass {
                                           CupertinoTimePickerBottomSheet()
                                               .cupertinoTimePicker(context,
                                                   (selectedTime) {
-                                                popToPreviousScreen(
-                                                    context: context);
-                                                // Split the custom time string into hours, minutes, and seconds
-                                                activityGC.updateReminderTime(
-                                                    selectedTime);
-                                              });
+                                            popToPreviousScreen(
+                                                context: context);
+                                            // Split the custom time string into hours, minutes, and seconds
+                                            activityGC.updateReminderTime(
+                                                selectedTime);
+                                          });
                                         },
                                       text: activityGC.reminderTime,
                                     ),
@@ -604,6 +607,101 @@ class _EditGoalNDViewState extends State<EditGoalActivityView> with BaseClass {
                         },
                       ),
                     ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Instructions",
+                        style: GoogleFonts.openSans(
+                          color: Colors.grey.shade700,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          activityGC.selectAndUploadFile();
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              "Upload",
+                              style: GoogleFonts.openSans(
+                                color:
+                                    HexColor(AppColors.staticActivityTextColor),
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: widget.selectedColor),
+                                padding: EdgeInsets.all(1),
+                                margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                child: Icon(
+                                  Icons.file_upload_outlined,
+                                  color: Colors.white,
+                                )),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    child: activityGC.selectedFileList.isEmpty
+                        ? Text("No Files Uploaded")
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: activityGC.selectedFileList.length,
+                            itemBuilder: (context, position) {
+                              var item = activityGC.selectedFileList
+                                  .elementAt(position);
+                              var itemName;
+                              try {
+                                itemName = item.split("__")[2];
+                              } catch (onError) {
+                                print("Error while Splitting file $onError");
+                                itemName = "";
+                              }
+
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  InkWell(
+                                      onTap: () async {
+                                        try {
+                                          launch("${Constants.STORAGEURL}$item");
+                                        } catch (onError, stacktrace) {
+                                          print(
+                                              "Unable to launch the file $onError\nStacktrace is $stacktrace");
+                                        }
+                                      },
+                                      child:
+                                          Text("${position + 1}. $itemName")),
+                                  IconButton(
+                                      alignment: Alignment.centerRight,
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                      onPressed: () {
+                                        activityGC.removeFileFromList(position);
+                                      },
+                                      icon: Icon(
+                                        Icons.remove_circle,
+                                        color: widget.selectedColor,
+                                      ))
+                                ],
+                              );
+                            }),
                   ),
                   const Divider(),
                   RoundedEdgeButton(

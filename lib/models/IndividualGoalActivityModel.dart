@@ -55,6 +55,8 @@ class IndividualGoalActivityModel {
   //List of days [n1,n2….nz] where 1>=n<=7 selected in Weekly days
   var weekDay;
 
+  var instrFile;
+
   IndividualGoalActivityModel(
       {this.id,
       this.customDay,
@@ -66,7 +68,8 @@ class IndividualGoalActivityModel {
       this.monthDay,
       this.reminder,
       this.time,
-      this.weekDay});
+      this.weekDay,
+      this.instrFile});
 
   factory IndividualGoalActivityModel.fromJson(Map<String, dynamic> json) =>
       IndividualGoalActivityModel(
@@ -81,6 +84,7 @@ class IndividualGoalActivityModel {
         reminder: json["reminder"],
         time: json["time"],
         weekDay: json["weekDay"],
+          instrFile: json["instrFile"]
       );
 
   @override
@@ -90,7 +94,7 @@ class IndividualGoalActivityModel {
         "endDt is ${endDt.toString()}, desc is ${desc.toString()}, "
         "freq is ${freq.toString()}, monthDay is ${monthDay.toString()}, "
         "reminder is ${reminder.toString()}, time is ${time.toString()}"
-        "week day is ${weekDay.toString()}";
+        "week day is ${weekDay.toString()} InstrucFile is ${instrFile.toString()}";
   }
 }
 //Sample

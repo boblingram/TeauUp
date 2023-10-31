@@ -1,13 +1,19 @@
 import 'dart:collection';
 
+import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as Dio;
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../models/IndividualGoalActivityModel.dart';
+import '../utils/APIService.dart';
 import '../utils/Constants.dart';
+import '../utils/app_strings.dart';
 
 class GoalActivityController extends GetxController {
   var initialActivityModel = IndividualGoalActivityModel();
@@ -333,6 +339,7 @@ class GoalActivityController extends GetxController {
     initialActivityModel.time = activityModel.time;
     initialActivityModel.freq = activityModel.freq;
     initialActivityModel.endDt = activityModel.endDt;
+    initialActivityModel.instrFile = activityModel.instrFile;
 
     //Name
     activityNameTEC.text = initialActivityModel.name;
@@ -464,6 +471,12 @@ class GoalActivityController extends GetxController {
     } else {
       updateReminderTime(initialActivityModel.reminder, isEReminderTime: true);
     }
+
+    //instructions
+    //THis is a comma Separated String
+    if(initialActivityModel.instrFile != null){
+      selectedFileList = initialActivityModel.instrFile.split(',').map((item) => item.trim()).toList();
+    }
     update();
   }
 
@@ -547,6 +560,7 @@ class GoalActivityController extends GetxController {
       DateTime dateTime = DateTime(0, 1, 1, hours, minutes);
       initialActivityModel.time = dateTime.toIso8601String();
     }
+    editTheInstructionSection();
 
     print("Initial Activity Generated is ${initialActivityModel.toString()}");
 
@@ -559,5 +573,51 @@ class GoalActivityController extends GetxController {
     return true;
   }
 
+  void editTheInstructionSection(){
+    if(selectedFileList.isNotEmpty){
+      initialActivityModel.instrFile = selectedFileList.join(",");
+    }else{
+      initialActivityModel.instrFile = "";
+    }
+  }
 
+
+  //Instructions.
+  var selectedFileList = [];
+  final _apiService = APIService();
+
+  void selectAndUploadFile() async {
+    var userId = GetStorage().read(AppStrings.localClientIdValue) ??
+        AppStrings.defaultUserId;
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      //print("File Name is ${result.files.first.name} && ${DateTime.now().millisecond} && ${DateTime.now().millisecondsSinceEpoch}");
+      var fileName = "${userId}__${DateTime.now().millisecondsSinceEpoch}__${result.files.first.name}";
+      var extension = result.files.first.extension ?? "jpg";
+      try{
+        showPLoader();
+        Dio.Response data = await _apiService
+            .uploadMediaDataServer("${Constants.STORAGEURL}$fileName", result.files.first.path!,extension);
+        print("Response is ${data.statusCode}");
+        print("Response is ${data.statusMessage}");
+        hidePLoader();
+        if(data.statusCode!=null && data.statusCode == 200){
+          selectedFileList.add(fileName);
+          update();
+        }
+      }catch(onError, stackTrace){
+        hidePLoader();
+        print("While Uploading file error occured $onError");
+        print("Stack trace is $stackTrace");
+        //_apiService.handleDioError(onError);
+      }
+    } else {
+      // User canceled the picker
+    }
+  }
+
+  void removeFileFromList(int position) {
+    selectedFileList.removeAt(position);
+    update();
+  }
 }

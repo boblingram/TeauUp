@@ -298,7 +298,7 @@ class VEGoalController extends GetxController {
   }
 
   void editGoalActivitySheet(IndividualGoalActivityModel activityModel, int listIndex, {Color selectedColor = Colors.red}) async {
-    print("Edit Individual Activity Sheet");
+    print("Edit Individual Activity Sheet ${activityModel.toString()}");
     if (Get.context == null) {
       return;
     }
@@ -349,7 +349,7 @@ class VEGoalController extends GetxController {
   duration: "${tempModel.duration.toString()}", endDt: "${tempModel.endDt}", 
   freq: "${tempModel.freq}", monthDay: \$monthDay, 
   name: "${tempModel.name}", reminder: "${tempModel.reminder}", 
-  time: "${tempModel.time}", weekDay: \$weekDay, id: "${tempModel.id}"}) {
+  time: "${tempModel.time}", weekDay: \$weekDay, id: "${tempModel.id}", instrFile : "${tempModel.instrFile.toString()}"}) {
     customDay
     desc
     duration
@@ -361,6 +361,7 @@ class VEGoalController extends GetxController {
     reminder
     time
     weekDay
+    instrFile
   }
 }''');
 
@@ -576,6 +577,7 @@ class VEGoalController extends GetxController {
     reminder
     time
     weekDay
+    instrFile
   }
 }
 ''');
