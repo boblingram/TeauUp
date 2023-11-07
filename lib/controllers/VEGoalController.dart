@@ -57,7 +57,8 @@ class VEGoalController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    userId = localStorage.read(AppStrings.localClientIdValue) ?? AppStrings.defaultUserId;
+    userId = localStorage.read(AppStrings.localClientIdValue) ??
+        AppStrings.defaultUserId;
     userName = localStorage.read(AppStrings.localClientNameValue) ?? "";
     print("UserId is $userId");
   }
@@ -200,7 +201,7 @@ class VEGoalController extends GetxController {
 ''';
     } else {
       print("Goal Id is Called");
-      if(newUserId != null){
+      if (newUserId != null) {
         queryData = '''query MyQuery {
   userJourneyByGoal(goalId: "$localGoalId", userId: "$newUserId") {
     date
@@ -211,7 +212,7 @@ class VEGoalController extends GetxController {
   }
 }
 ''';
-      }else{
+      } else {
         queryData = '''query MyQuery {
   userJourneyByGoal(goalId: "$localGoalId", userId: "$userId") {
     date
@@ -230,7 +231,8 @@ class VEGoalController extends GetxController {
 
     /*var result = await GraphQLService.tempClient
         .query(QueryOptions(document: query));*/
-    var result = await GraphQLService.makeGraphQLRequest(QueryOptions( document: query));
+    var result =
+        await GraphQLService.makeGraphQLRequest(QueryOptions(document: query));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
     //It can have exception or data
     //log(result.data.toString());
@@ -245,7 +247,7 @@ class VEGoalController extends GetxController {
     try {
       JourneyGoalModel journeyGoalModel =
           JourneyGoalModel.fromJson(result.data!);
-      if(journeyGoalModel.journeyModelList.isEmpty){
+      if (journeyGoalModel.journeyModelList.isEmpty) {
         journeyErrorText = AppStrings.errorJourneyData;
         update();
         return;
@@ -257,7 +259,8 @@ class VEGoalController extends GetxController {
 
       update();
     } catch (onError, stackTrace) {
-      print("Error while parsing Journey Goal Model $onError and Stack trace is $stackTrace");
+      print(
+          "Error while parsing Journey Goal Model $onError and Stack trace is $stackTrace");
     }
   }
 
@@ -297,7 +300,9 @@ class VEGoalController extends GetxController {
         backgroundColor: Colors.white);
   }
 
-  void editGoalActivitySheet(IndividualGoalActivityModel activityModel, int listIndex, {Color selectedColor = Colors.red}) async {
+  void editGoalActivitySheet(
+      IndividualGoalActivityModel activityModel, int listIndex,
+      {Color selectedColor = Colors.red}) async {
     print("Edit Individual Activity Sheet ${activityModel.toString()}");
     if (Get.context == null) {
       return;
@@ -324,27 +329,33 @@ class VEGoalController extends GetxController {
 
     print("Updated InitialActivity is ${result.toString()}");
 
-    if(result == null){
+    if (result == null) {
       return;
     }
 
-    try{
-      var errorResponse = await mutateActivityCreated(result as IndividualGoalActivityModel);
-      if(errorResponse != null){
+    try {
+      var errorResponse =
+          await mutateActivityCreated(result as IndividualGoalActivityModel);
+      if (errorResponse != null) {
         showErrorWOTitle(errorResponse);
         return;
       }
       selectedGoalActivityList[listIndex] = result;
       update();
 
-      showPSuccess("Activity Edited Successfully",selectedColor: AppColors.makeColorDarker(selectedColor, AppIntegers.colorDarkerValue));
-    }catch(onError, Stacktrace){
-      print("Failed to UpdateActivity this is response $onError Error Stack Trace $Stacktrace");
+      showPSuccess("Activity Edited Successfully",
+          selectedColor: AppColors.makeColorDarker(
+              selectedColor, AppIntegers.colorDarkerValue));
+    } catch (onError, Stacktrace) {
+      print(
+          "Failed to UpdateActivity this is response $onError Error Stack Trace $Stacktrace");
     }
   }
 
-  Future<String?> mutateActivityCreated(IndividualGoalActivityModel tempModel) async{
-    var mutation = gql('''mutation MyMutation( \$customDay: [String] = ${json.encode(tempModel.customDay)}, \$monthDay: [String] = ${json.encode(tempModel.monthDay)}, \$weekDay: [String] = ${json.encode(tempModel.weekDay)}) {
+  Future<String?> mutateActivityCreated(
+      IndividualGoalActivityModel tempModel) async {
+    var mutation = gql(
+        '''mutation MyMutation( \$customDay: [String] = ${json.encode(tempModel.customDay)}, \$monthDay: [String] = ${json.encode(tempModel.monthDay)}, \$weekDay: [String] = ${json.encode(tempModel.weekDay)}) {
   updateActivity(activity: {customDay: \$customDay, desc: "${tempModel.desc}", 
   duration: "${tempModel.duration.toString()}", endDt: "${tempModel.endDt}", 
   freq: "${tempModel.freq}", monthDay: \$monthDay, 
@@ -368,7 +379,8 @@ class VEGoalController extends GetxController {
     showPLoader();
     /*var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: mutation));*/
-    var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+    var result = await GraphQLService.makeGraphMRequest(
+        MutationOptions(document: mutation));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
     //It can have exception or data
     log(result.data.toString());
@@ -380,7 +392,6 @@ class VEGoalController extends GetxController {
     }
     return null;
   }
-
 
   /*
   {__typename: Mutation, updateGoalMeta: {__typename: Goal, id: f9f004da-d869-4a6b-b530-ff15956d1f8b, name: Goal - Cycling, desc: This goal will help us to focus on improving health. Focus would be on the topic such as stamina.}}
@@ -402,7 +413,8 @@ class VEGoalController extends GetxController {
     showPLoader();
     /*var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: mutation));*/
-    var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+    var result = await GraphQLService.makeGraphMRequest(
+        MutationOptions(document: mutation));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
     //It can have exception or data
     log(result.data.toString());
@@ -422,14 +434,16 @@ class VEGoalController extends GetxController {
     goalDesc.value = successGoalMetaDataModel.goalMetaDataModel.desc;
     Get.back();
 
-    try{
-      print("Selected Index item ${activeGoalList.elementAt(selectedGoalListIndex)}");
-      activeGoalList.elementAt(selectedGoalListIndex).goalInfo = successGoalMetaDataModel.goalMetaDataModel;
+    try {
+      print(
+          "Selected Index item ${activeGoalList.elementAt(selectedGoalListIndex)}");
+      activeGoalList.elementAt(selectedGoalListIndex).goalInfo =
+          successGoalMetaDataModel.goalMetaDataModel;
       update();
-    }catch(onError, stackTrace){
-      print("Failed Updating the Goal Active List $onError and StackTrace is $stackTrace");
+    } catch (onError, stackTrace) {
+      print(
+          "Failed Updating the Goal Active List $onError and StackTrace is $stackTrace");
     }
-
   }
 
   bool shouldContinueFurther(
@@ -463,7 +477,8 @@ class VEGoalController extends GetxController {
     showPLoader();
 /*    var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: mutation));*/
-    var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+    var result = await GraphQLService.makeGraphMRequest(
+        MutationOptions(document: mutation));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
     //It can have exception or data
     log(result.data.toString());
@@ -475,7 +490,7 @@ class VEGoalController extends GetxController {
       return;
     }
 
-    try{
+    try {
       var item = activeGoalList.removeAt(selectedGoalListIndex);
       print("Item is ${item.goalInfo.name}");
       endedGoalList.add(item);
@@ -483,15 +498,18 @@ class VEGoalController extends GetxController {
       update();
       Get.back();
       showPSuccess("${item.goalInfo.name ?? ""} Successfully Archived");
-    }catch(onError, stackTrace){
-      print("Failed Updating active goal to end goal $onError, StackTrace is $stackTrace");
+    } catch (onError, stackTrace) {
+      print(
+          "Failed Updating active goal to end goal $onError, StackTrace is $stackTrace");
     }
   }
 
   void updateUserGoalPerInfo(UserGoalPerInfo tempUserInfo) {
     userGoalPerInfo = tempUserInfo;
-    goalName.value = userGoalPerInfo?.goalInfo.name ?? AppStrings.defaultDescription;
-    goalDesc.value = userGoalPerInfo?.goalInfo.desc ?? AppStrings.defaultDescription;
+    goalName.value =
+        userGoalPerInfo?.goalInfo.name ?? AppStrings.defaultDescription;
+    goalDesc.value =
+        userGoalPerInfo?.goalInfo.desc ?? AppStrings.defaultDescription;
   }
 
   void updateSelectedItemIndex(int itemIndex) {
@@ -535,7 +553,8 @@ class VEGoalController extends GetxController {
 
     /*var result =
         await GraphQLService.tempClient.query(QueryOptions(document: query));*/
-    var result = await GraphQLService.makeGraphQLRequest(QueryOptions( document: query));
+    var result =
+        await GraphQLService.makeGraphQLRequest(QueryOptions(document: query));
     //print("Temporary Results are $tempResult");
 
     //It can have exception or data
@@ -584,7 +603,8 @@ class VEGoalController extends GetxController {
 
     /*var result =
         await GraphQLService.tempClient.query(QueryOptions(document: query));*/
-    var result = await GraphQLService.makeGraphQLRequest(QueryOptions( document: query));
+    var result =
+        await GraphQLService.makeGraphQLRequest(QueryOptions(document: query));
     //It can have exception or data
     //log(result.data.toString());
     //json.encode(result.data);
@@ -635,7 +655,8 @@ class VEGoalController extends GetxController {
 
     /*var result =
         await GraphQLService.tempClient.query(QueryOptions(document: query));*/
-    var result = await GraphQLService.makeGraphQLRequest(QueryOptions( document: query));
+    var result =
+        await GraphQLService.makeGraphQLRequest(QueryOptions(document: query));
     //It can have exception or data
     log(result.data.toString());
     //json.encode(result.data);
@@ -691,8 +712,11 @@ class VEGoalController extends GetxController {
   /*
   {__typename: Mutation, completeTask: null}
    */
-  void updateJourneyMutation(JourneyMutationEnum tempJEnum, int index,
-      {String taskId = "",}) async {
+  void updateJourneyMutation(
+    JourneyMutationEnum tempJEnum,
+    int index, {
+    String taskId = "",
+  }) async {
     print("Mutation Called is ${tempJEnum}");
 
     String mutationData = '';
@@ -730,7 +754,8 @@ class VEGoalController extends GetxController {
     showPLoader();
     /*var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: mutation));*/
-    var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+    var result = await GraphQLService.makeGraphMRequest(
+        MutationOptions(document: mutation));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
     //It can have exception or data
     log(result.data.toString());
@@ -742,7 +767,7 @@ class VEGoalController extends GetxController {
       return;
     }
 
-    switch(tempJEnum){
+    switch (tempJEnum) {
       case JourneyMutationEnum.SkipIt:
         journeyGoalList.elementAt(index).status = "skipped";
         break;
@@ -751,7 +776,6 @@ class VEGoalController extends GetxController {
         break;
     }
     update();
-
   }
 
   JourneyStatus convertJStatusToJourney(var tempStatus, var tempDate) {
@@ -786,23 +810,36 @@ class VEGoalController extends GetxController {
     getGoalActivitiesData(goalId);
   }
 
+  void refreshAEGoalList(){
+    GraphQLService.tempWAClient.resetStore(refetchQueries: false);
+    getAEGoal();
+  }
+
   void addMoreParticipants({required Color selectedColor}) async {
-    if(Get.context == null){
+    if (Get.context == null) {
       return;
     }
 
     final permissionManager = PermissionManager(Get.context!);
 
     var response = await permissionManager.askForPermissionAndNavigate(null);
-    if(!response){
+    if (!response) {
       return;
     }
 
-    List<Contact> contactList = await ContactsService.getContacts(withThumbnails: false,photoHighResolution: false,iOSLocalizedLabels: false,androidLocalizedLabels: false);
+    List<Contact> contactList = await ContactsService.getContacts(
+        withThumbnails: false,
+        photoHighResolution: false,
+        iOSLocalizedLabels: false,
+        androidLocalizedLabels: false);
 
     //Add Me
-    var localName = localStorage.read(AppStrings.localClientNameValue) ?? AppStrings.emptyName;
-    Contact selfContact = Contact(displayName: "$localName",givenName: "self_selected",phones: [Item(value: "",label: "self")]);
+    var localName = localStorage.read(AppStrings.localClientNameValue) ??
+        AppStrings.emptyName;
+    Contact selfContact = Contact(
+        displayName: "$localName",
+        givenName: "self_selected",
+        phones: [Item(value: "", label: "self")]);
     contactList.insert(0, selfContact);
     var result = await showModalBottomSheet(
         context: Get.context!,
@@ -815,14 +852,18 @@ class VEGoalController extends GetxController {
               height: 80.h,
               decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
-              ),
-              child: MultiSelectContacts(contactsList: contactList,selectedColor: selectedColor,));
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20))),
+              child: MultiSelectContacts(
+                contactsList: contactList,
+                selectedColor: selectedColor,
+              ));
         });
     print("Multi Select contact result ${result.runtimeType}");
-    if(result != null){
+    if (result != null) {
       var response = await createGroupGoalMemberMutation(result);
-      if(response){
+      if (response) {
         GraphQLService.tempWAClient.resetStore(refetchQueries: false);
         getGoalMembershipData(goalId);
         getAEGoal();
@@ -831,10 +872,8 @@ class VEGoalController extends GetxController {
   }
 
   Future<bool> createGroupGoalMemberMutation(List<Contact?> contact) async {
-
-    List<IndividualGoalMemberModel> groupMembers = contact
-        .map((e) {
-      if(e != null && e.givenName != null && e.givenName == "self_selected"){
+    List<IndividualGoalMemberModel> groupMembers = contact.map((e) {
+      if (e != null && e.givenName != null && e.givenName == "self_selected") {
         print("Self Was Selected");
         return IndividualGoalMemberModel(
           createdBy: userId,
@@ -856,10 +895,9 @@ class VEGoalController extends GetxController {
         modifiedDt: currentDateTime.toIso8601String(),
         ph: e?.phones?[0].value ?? "",
       );
-    })
-        .toList();
-    var mutation =
-    gql('''mutation MyMutation(\$goalId: String!, \$goalMembers: [UserIP]!) {
+    }).toList();
+    var mutation = gql(
+        '''mutation MyMutation(\$goalId: String!, \$goalMembers: [UserIP]!) {
       addGoalMembers(goalId: \$goalId, goalMembers: \$goalMembers) {
         createdBy
         fullname
@@ -889,9 +927,12 @@ class VEGoalController extends GetxController {
         'goalMembers': groupMembers.map((member) => member.toJson()).toList(), // Set the value for \$goalMembers
       }));*/
 
-      var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation,variables: {
-      'goalId': goalId, // Set the value for \$goalId
-      'goalMembers': groupMembers.map((member) => member.toJson()).toList(), // Set the value for \$goalMembers
+      var result = await GraphQLService.makeGraphMRequest(
+          MutationOptions(document: mutation, variables: {
+        'goalId': goalId, // Set the value for \$goalId
+        'goalMembers': groupMembers
+            .map((member) => member.toJson())
+            .toList(), // Set the value for \$goalMembers
       }));
       //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
       //It can have exception or data
@@ -900,7 +941,8 @@ class VEGoalController extends GetxController {
       hidePLoader();
       if (result.data == null && result.exception != null) {
         //No Data Received from Server;
-        GraphQLService.parseError(result.exception, "Add Member to Participants Mutation");
+        GraphQLService.parseError(
+            result.exception, "Add Member to Participants Mutation");
         return false;
       }
     } catch (onError, stacktrace) {
@@ -914,12 +956,11 @@ class VEGoalController extends GetxController {
   }
 
   //Goal
-  Future<bool> mutationGoalMemberRemove(String memberID, int positionIndex) async{
+  Future<bool> mutationGoalMemberRemove(
+      String memberID, int positionIndex) async {
     print("Member Remove Mutation is $memberID");
 
-
-    var mutation =
-    gql('''mutation MyMutation {
+    var mutation = gql('''mutation MyMutation {
   removeGoalMember(goalId: "$goalId", userId: "$memberID") {
     activities
     id
@@ -930,7 +971,8 @@ class VEGoalController extends GetxController {
     try {
       /*var result = await GraphQLService.tempClient
           .mutate(MutationOptions(document: mutation));*/
-      var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+      var result = await GraphQLService.makeGraphMRequest(
+          MutationOptions(document: mutation));
       //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
       //It can have exception or data
       log(result.data.toString());
@@ -938,7 +980,8 @@ class VEGoalController extends GetxController {
       hidePLoader();
       if (result.data == null && result.exception != null) {
         //No Data Received from Server;
-        GraphQLService.parseError(result.exception, "Remove Group Member Mutation");
+        GraphQLService.parseError(
+            result.exception, "Remove Group Member Mutation");
         return false;
       }
 
@@ -953,11 +996,10 @@ class VEGoalController extends GetxController {
     }
   }
 
-  Future<bool> mutationGoalMemberBackup(String tempId) async{
+  Future<bool> mutationGoalMemberBackup(String tempId) async {
     print("Member Remove Mutation is $tempId");
 
-    var mutation =
-    gql('''mutation MyMutation {
+    var mutation = gql('''mutation MyMutation {
   setBackup(goalId: "$goalId", userId: "$tempId") {
     id
     mentor
@@ -969,7 +1011,8 @@ class VEGoalController extends GetxController {
     try {
       /*var result = await GraphQLService.tempClient
           .mutate(MutationOptions(document: mutation));*/
-      var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+      var result = await GraphQLService.makeGraphMRequest(
+          MutationOptions(document: mutation));
       //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
       //It can have exception or data
       log(result.data.toString());
@@ -977,7 +1020,8 @@ class VEGoalController extends GetxController {
       hidePLoader();
       if (result.data == null && result.exception != null) {
         //No Data Received from Server;
-        GraphQLService.parseError(result.exception, "Backup Group Member Mutation");
+        GraphQLService.parseError(
+            result.exception, "Backup Group Member Mutation");
         return false;
       }
     } catch (onError, stacktrace) {
@@ -989,7 +1033,8 @@ class VEGoalController extends GetxController {
     return true;
   }
 
-  Future<bool> mutationGoalMemberMentor(String memberID, String mentorID) async{
+  Future<bool> mutationGoalMemberMentor(
+      String memberID, String mentorID) async {
     print("Member Mentor Mutation is $memberID $mentorID");
 
     var mutation = gql('''mutation MyMutation {
@@ -1008,7 +1053,8 @@ setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID")
     try {
       /*var result = await GraphQLService.tempClient
           .mutate(MutationOptions(document: mutation));*/
-      var result = await GraphQLService.makeGraphMRequest(MutationOptions( document: mutation));
+      var result = await GraphQLService.makeGraphMRequest(
+          MutationOptions(document: mutation));
       //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
       //It can have exception or data
       log(result.data.toString());
@@ -1016,7 +1062,8 @@ setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID")
       hidePLoader();
       if (result.data == null && result.exception != null) {
         //No Data Received from Server;
-        GraphQLService.parseError(result.exception, "Mentor Group Member Mutation");
+        GraphQLService.parseError(
+            result.exception, "Mentor Group Member Mutation");
         return false;
       }
       return true;
@@ -1026,7 +1073,6 @@ setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID")
       hidePLoader();
       return false;
     }
-
   }
 
   Future<String?> mutationGoalMemberMentorV1(
@@ -1039,13 +1085,8 @@ setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID")
     if (givenName == "self_selected") {
       mutationString = '''mutation MyMutation {
   setMemberMentor_v1(goalId: "$goalId", memberId: "$memberID", mentor: {createdBy: "$userId", createdDt: "${currentDateTime.toIso8601String()}", deviceId: "$localDeviceId", fullname: "$name", modifiedBy: "$userId", modifiedDt: "${currentDateTime.toIso8601String()}", ph: "-1", id: "$userId"}) {
-    id
-    desc
-    name
-    members {
       mentorId
       userId
-    }
   }
 }
 
@@ -1053,13 +1094,8 @@ setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID")
     } else {
       mutationString = '''mutation MyMutation {
   setMemberMentor_v1(goalId: "$goalId", memberId: "$memberID", mentor: {createdBy: "$userId", createdDt: "${currentDateTime.toIso8601String()}", deviceId: "$localDeviceId", fullname: "$name", modifiedBy: "$userId", modifiedDt: "${currentDateTime.toIso8601String()}", ph: "$phone"}) {
-    id
-    desc
-    name
-    members {
       mentorId
       userId
-    }
   }
 }
 
@@ -1085,9 +1121,13 @@ setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID")
             result.exception, "Mentor Group Member Mutation");
         return null;
       }
-      SuccessGoalMentorDataModel successGoalMentorDataModel = SuccessGoalMentorDataModel.fromJson(result.data!);
-      print("Mentor Id is ${successGoalMentorDataModel.setMemberMentorModel.members.last.mentorId}");
-      return successGoalMentorDataModel.setMemberMentorModel.members.last.mentorId ?? "";
+      SuccessGoalMentorDataModel successGoalMentorDataModel =
+          SuccessGoalMentorDataModel.fromJson(result.data!);
+      print(
+          "Mentor Id is ${successGoalMentorDataModel.setMemberMentorModel.mentorId}");
+      return successGoalMentorDataModel
+              .setMemberMentorModel.mentorId ??
+          "";
     } catch (onError, stacktrace) {
       print("Mentor Group Member Mutation is $onError");
       print("Failed at $stacktrace");
@@ -1096,29 +1136,33 @@ setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID")
     }
   }
 
-  void showJourneyBottomSheet({required participantId}) async{
+  void showJourneyBottomSheet({required participantId}) async {
     await showModalBottomSheet(
-    context: Get.context!,
-    backgroundColor: Colors.transparent,
-    isScrollControlled: true,
-    isDismissible: true,
-    elevation: 15,
-    builder: (context) {
-      return Container(
-          height: 80.h,
-          color: Colors.white,
-          /*decoration: BoxDecoration(
+        context: Get.context!,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        isDismissible: true,
+        elevation: 15,
+        builder: (context) {
+          return Container(
+              height: 80.h,
+              color: Colors.white,
+              /*decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
           ),*/
-          child: Journey_View(goalId: goalId,participantId: participantId,));
-    });
+              child: Journey_View(
+                goalId: goalId,
+                participantId: participantId,
+              ));
+        });
   }
 
   String journeyErrorText = AppStrings.errorJourneyData;
+
   void restrictedJourneyAccess() {
-    journeyErrorText = "You do not have any activities to do as you are not a participant in this goal";
+    journeyErrorText =
+        "You do not have any activities to do as you are not a participant in this goal";
     update();
   }
-
 }

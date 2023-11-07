@@ -160,7 +160,7 @@ class _HomeViewState extends State<HomeView> with BaseClass {
                   padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                   child: Icon(
                     Icons.add_circle_outline_sharp,
-                    size: 30,
+                    size: 34,
                   ),
                 ),
                 label: '',

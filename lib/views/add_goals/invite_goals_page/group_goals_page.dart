@@ -170,7 +170,7 @@ class _GroupGoalPageState extends State<GroupGoalPage> with BaseClass {
                       }
                       //No Need for Confirm Create Goal Page
                       pushToNextScreen(
-                          context: context, destination: GoalCreatedPage());
+                          context: context, destination: GoalCreatedPage(selectedColor: selectedColor));
                     },
                     context: context),
               ],

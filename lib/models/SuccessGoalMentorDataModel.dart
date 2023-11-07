@@ -1,7 +1,7 @@
 class SuccessGoalMentorDataModel{
   String typename;
   //ONLY ID, Name, Desc are there
-  SetMemberMentorModel setMemberMentorModel;
+  UserMentorData setMemberMentorModel;
 
   SuccessGoalMentorDataModel({
     required this.typename,
@@ -10,10 +10,10 @@ class SuccessGoalMentorDataModel{
 
   factory SuccessGoalMentorDataModel.fromJson(Map<String, dynamic> json) => SuccessGoalMentorDataModel(
       typename: json["__typename"] ?? "",
-      setMemberMentorModel: SetMemberMentorModel.fromJson(json["setMemberMentor_v1"]));
+      setMemberMentorModel: UserMentorData.fromJson(json["setMemberMentor_v1"]));
 }
 
-class SetMemberMentorModel {
+/*class SetMemberMentorModel {
   List<UserMentorData> members;
 
   SetMemberMentorModel({
@@ -24,7 +24,7 @@ class SetMemberMentorModel {
       members: List<UserMentorData>.from(
           json["members"]
               .map((x) => UserMentorData.fromJson(x))));
-}
+}*/
 
 class UserMentorData{
   String? mentorId;

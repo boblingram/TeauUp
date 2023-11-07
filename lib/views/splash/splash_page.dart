@@ -27,7 +27,7 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void postUIBuildTask()async{
-    await firebaseNotification();
+    firebaseNotification();
     await rootController.checkAndNavigate();
   }
 

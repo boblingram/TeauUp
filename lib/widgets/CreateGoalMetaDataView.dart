@@ -162,7 +162,7 @@ class SliderWidget extends StatelessWidget {
               width: sliderValue,
               height: 5,
               decoration: BoxDecoration(
-                color: sliderColor,
+                color: sliderColor.withOpacity(0.6),
                 borderRadius: BorderRadius.circular(5),
               ),
             ),

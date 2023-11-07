@@ -61,7 +61,7 @@ class RootController extends GetxController{
   Future<void> checkAndNavigate() async {
     var localAuthKey = localStorage.read(AppStrings.localAuthkeyValue) ?? "";
     var localClientId = localStorage.read(AppStrings.localClientIdValue) ?? "";
-    //print("Local Auth is $localAuthKey and local Client is $localClientId");
+    print("Local Auth is $localAuthKey and local Client is $localClientId");
     if(localClientId.toString().isNotEmpty && localAuthKey.toString().isNotEmpty){
       navigateToHomeView();
       return;

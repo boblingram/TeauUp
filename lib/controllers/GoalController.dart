@@ -146,8 +146,6 @@ class GoalController extends GetxController {
     newGoalDescription = description;
     newSelectedGoalType = selectedGoalType;
 
-    //TODO Comment this
-    return true;
     var result = await createGoalMutation(selectedGoalType, name, description);
     return result;
   }
@@ -712,7 +710,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 
   Future<bool> initiateCreateActivityMutation({Color? selectedColor}) async {
     String instructionFiles = "";
-    if(selectedFileList.isNotEmpty){
+    if (selectedFileList.isNotEmpty) {
       instructionFiles = selectedFileList.join(",");
     }
     print("Instructed Files is $instructionFiles");
@@ -861,7 +859,6 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     instrFile
   }
 }''');
-
 
     showPLoader();
     /*var result = await GraphQLService.tempClient
@@ -1087,6 +1084,12 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 
     if (!Get.isOverlaysOpen) {
       Get.to(() => HomeView());
+      try{
+        VEGoalController veGoalController = Get.find();
+        veGoalController.refreshAEGoalList();
+      }catch(onError, stacktrace){
+        print("Failed to refresh home page list after creating goal $onError, Stacktrace is $stacktrace");
+      }
     }
   }
 
@@ -1172,13 +1175,8 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     if (givenName == "self_selected") {
       mutationString = '''mutation MyMutation {
   setMemberMentor_v1(goalId: "$tempGoalId", memberId: "$memberID", mentor: {createdBy: "$userId", createdDt: "${currentTime.toIso8601String()}", deviceId: "$localDeviceId", fullname: "$name", modifiedBy: "$userId", modifiedDt: "${currentTime.toIso8601String()}", ph: "-1", id: "$userId"}) {
-    id
-    desc
-    name
-    members {
       mentorId
       userId
-    }
   }
 }
 
@@ -1186,13 +1184,8 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
     } else {
       mutationString = '''mutation MyMutation {
   setMemberMentor_v1(goalId: "$tempGoalId", memberId: "$memberID", mentor: {createdBy: "$userId", createdDt: "${currentTime.toIso8601String()}", deviceId: "$localDeviceId", fullname: "$name", modifiedBy: "$userId", modifiedDt: "${currentTime.toIso8601String()}", ph: "$phone"}) {
-    id
-    desc
-    name
-    members {
       mentorId
       userId
-    }
   }
 }
 
@@ -1309,20 +1302,23 @@ setMemberMentor(goalId: "$tempGoalId", memberId: "$memberID", mentorId: "$mentor
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       //print("File Name is ${result.files.first.name} && ${DateTime.now().millisecond} && ${DateTime.now().millisecondsSinceEpoch}");
-      var fileName = "${userId}__${DateTime.now().millisecondsSinceEpoch}__${result.files.first.name}";
+      var fileName =
+          "${userId}__${DateTime.now().millisecondsSinceEpoch}__${result.files.first.name}";
       var extension = result.files.first.extension ?? "jpg";
-      try{
+      try {
         showPLoader();
-        Dio.Response data = await _apiService
-            .uploadMediaDataServer("${Constants.STORAGEURL}$fileName", result.files.first.path!,extension);
+        Dio.Response data = await _apiService.uploadMediaDataServer(
+            "${Constants.STORAGEURL}$fileName",
+            result.files.first.path!,
+            extension);
         print("Response is ${data.statusCode}");
         print("Response is ${data.statusMessage}");
         hidePLoader();
-        if(data.statusCode!=null && data.statusCode == 200){
+        if (data.statusCode != null && data.statusCode == 200) {
           selectedFileList.add(fileName);
           update();
         }
-      }catch(onError, stackTrace){
+      } catch (onError, stackTrace) {
         hidePLoader();
         print("While Uploading file error occured $onError");
         print("Stack trace is $stackTrace");

@@ -170,7 +170,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
                       fontWeight: FontWeight.w400),
                 ),
                 Text(
-                  veGoalController.convertStringToNotNull(item.mentor).isEmpty ? "" :"You are mentored by ${veGoalController.convertStringToNotNull(item.mentor?.fullname)}",
+                  veGoalController.convertStringToNotNull(item.mentor).isEmpty ? "" :"Mentored by ${veGoalController.convertStringToNotNull(item.mentor?.fullname)}",
                   style: GoogleFonts.openSans(
                       color: Colors.black,
                       fontWeight:

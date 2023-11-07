@@ -115,7 +115,7 @@ class _IndividualGoalPageState extends State<IndividualGoalPage> with BaseClass 
 
   void navigateToFinishpage() {
     pushToNextScreen(
-        context: context, destination: GoalCreatedPage());
+        context: context, destination: GoalCreatedPage(selectedColor: selectedColor));
   }
 
   Color selectedColor = Colors.red;

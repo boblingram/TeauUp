@@ -10,7 +10,8 @@ import '../../../controllers/GoalController.dart';
 import '../../../utils/app_colors.dart';
 
 class GoalCreatedPage extends StatelessWidget with BaseClass{
-  GoalCreatedPage({Key? key}) : super(key: key);
+  final Color selectedColor;
+  GoalCreatedPage({Key? key, this.selectedColor = Colors.red}) : super(key: key);
 
   final GoalController goalController = Get.find();
 
@@ -27,7 +28,7 @@ class GoalCreatedPage extends StatelessWidget with BaseClass{
           width: double.infinity,
           margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
           decoration: BoxDecoration(
-            color: Colors.red,
+            color: selectedColor,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Center(
