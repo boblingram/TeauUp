@@ -34,7 +34,8 @@ class VEGoalController extends GetxController {
   String userId = "1";
 
   var activeGoalList = <UserGoalPerInfo>[];
-  var endedGoalList = <UserGoalPerInfo>[].obs;
+  var endedGoalList = <UserGoalPerInfo>[];
+  var showNotifDot = false.obs;
 
   String goalId = "";
   UserGoalPerInfo? userGoalPerInfo;
@@ -186,6 +187,13 @@ class VEGoalController extends GetxController {
   /*[{"date":"2023-06-01T10:15:55.469427Z","id":"1","time":"2023-06-01T10:15:55.469427Z","name":"One","status":"COMPLETED"},{"date":"2023-06-01T10:15:55.469427Z","id":"1","time":"2023-06-01T10:15:55.469427Z","name":"One","status":"COMPLETED"}]*/
   /*[{"date":,"id":,"time":,"name":,"status":}]*/
 
+  NetworkCallEnum journeyNetworkEnum = NetworkCallEnum.Loading;
+
+  void updateJouneyNetworkEnum(NetworkCallEnum tempValue) {
+    journeyNetworkEnum = tempValue;
+    update();
+  }
+
   void getJourneyData({String localGoalId = "", String? newUserId}) async {
     String queryData = "";
     if (localGoalId.isEmpty) {
@@ -227,8 +235,9 @@ class VEGoalController extends GetxController {
     }
 
     var query = gql(queryData);
-    showPLoader();
+    //showPLoader();
 
+    updateJouneyNetworkEnum(NetworkCallEnum.Loading);
     /*var result = await GraphQLService.tempClient
         .query(QueryOptions(document: query));*/
     var result =
@@ -238,15 +247,17 @@ class VEGoalController extends GetxController {
     //log(result.data.toString());
     //json.encode(result.data);
     //Hide Progress Bar
-    hidePLoader();
+    //hidePLoader();
     if (!shouldContinueFurther("GetJourneyData", result)) {
       showErrorWOTitle("Failed to Get Journey Data");
+      updateJouneyNetworkEnum(NetworkCallEnum.Error);
       return;
     }
 
     try {
       JourneyGoalModel journeyGoalModel =
           JourneyGoalModel.fromJson(result.data!);
+      updateJouneyNetworkEnum(NetworkCallEnum.Completed);
       if (journeyGoalModel.journeyModelList.isEmpty) {
         journeyErrorText = AppStrings.errorJourneyData;
         update();
@@ -261,6 +272,7 @@ class VEGoalController extends GetxController {
     } catch (onError, stackTrace) {
       print(
           "Error while parsing Journey Goal Model $onError and Stack trace is $stackTrace");
+      updateJouneyNetworkEnum(NetworkCallEnum.Error);
     }
   }
 
@@ -516,12 +528,23 @@ class VEGoalController extends GetxController {
     selectedGoalListIndex = itemIndex;
   }
 
+  NetworkCallEnum aeGoalNetworkEnum = NetworkCallEnum.Loading;
+
+  void updateAEGoalNetworkEnum(NetworkCallEnum tempValue) {
+    aeGoalNetworkEnum = tempValue;
+    update();
+  }
+
   //Get Active or Ended Goal
   void getAEGoal() async {
     ///View Goal - Active
     final query = gql('''query MyQuery {
+    userNotifyInfo(userId: "4e5d361f-1242-4e73-ab98-fe27196ab09a") {
+     read
+     unread
+  }
   userGoalsWithPerfInfo(userId: "$userId") {
-    goalInfo {
+     goalInfo {
       activities
       backup
       collabType
@@ -551,6 +574,7 @@ class VEGoalController extends GetxController {
 }
 ''');
 
+    updateAEGoalNetworkEnum(NetworkCallEnum.Loading);
     /*var result =
         await GraphQLService.tempClient.query(QueryOptions(document: query));*/
     var result =
@@ -558,11 +582,12 @@ class VEGoalController extends GetxController {
     //print("Temporary Results are $tempResult");
 
     //It can have exception or data
-    //log(result.data.toString());
+    log(result.data.toString());
     //json.encode(result.data);
     if (result.data == null && result.exception != null) {
       //No Data Received from Server;
       parseError(result.exception, "FetchActiveEndedGoalList");
+      updateAEGoalNetworkEnum(NetworkCallEnum.Error);
       return;
     }
 
@@ -571,10 +596,27 @@ class VEGoalController extends GetxController {
           GoalMetaDataModel.fromJson(result.data!);
       print("Length of List is ${goalActivityModel.userGoalPerList.length}");
       parseIntoAEGoalList(goalActivityModel.userGoalPerList);
+      updateAEGoalNetworkEnum(NetworkCallEnum.Completed);
+      try{
+        if(goalActivityModel.userNotifyInfo != null && goalActivityModel.userNotifyInfo!.unread != null && goalActivityModel.userNotifyInfo!.unread != "0"){
+          showNotifDot.value = true;
+        }
+      }catch(onError, stack){
+        print("Failed updating the userNotification Info $onError");
+      }
+
     } catch (onError, stackTrace) {
       print("Error while parsing GoalActivityModel $onError");
+      updateAEGoalNetworkEnum(NetworkCallEnum.Error);
     }
     GraphQLService.parseName();
+  }
+
+  NetworkCallEnum goalActivityNetworkEnum = NetworkCallEnum.Loading;
+
+  void updateGoalActivityNetworkEnum(NetworkCallEnum tempValue) {
+    goalActivityNetworkEnum = tempValue;
+    update();
   }
 
   //Get Individual Goal Activities
@@ -601,6 +643,7 @@ class VEGoalController extends GetxController {
 }
 ''');
 
+    updateGoalActivityNetworkEnum(NetworkCallEnum.Loading);
     /*var result =
         await GraphQLService.tempClient.query(QueryOptions(document: query));*/
     var result =
@@ -610,6 +653,7 @@ class VEGoalController extends GetxController {
     //json.encode(result.data);
     if (!shouldContinueFurther("FetchGoalActivitiesData", result)) {
       showErrorWOTitle("Failed to Fetch Goal Activities");
+      updateGoalActivityNetworkEnum(NetworkCallEnum.Error);
       return;
     }
 
@@ -620,13 +664,21 @@ class VEGoalController extends GetxController {
       selectedGoalActivityList.clear();
       selectedGoalActivityList = goalActivityModel.goalActivityList;
       update();
+      updateGoalActivityNetworkEnum(NetworkCallEnum.Completed);
     } catch (onError, stackTrace) {
       print("Error while parsing FetchGoalActivitiesData $onError");
+      updateGoalActivityNetworkEnum(NetworkCallEnum.Error);
     }
   }
 
-  //Get Membership Goal Data
-  void getGoalMembershipData(String goalId) async {
+  var participantNetworkEnum = NetworkCallEnum.Loading.obs;
+
+  void updateParticipantNetworkEnum(NetworkCallEnum tempValue) {
+    participantNetworkEnum.value = tempValue;
+  }
+
+  //Get Participants Goal Data
+  void getGoalParticipantData(String goalId) async {
     //TO Check place goalID = 1
     ///View Goal - Active
     final query = gql('''query MyQuery {
@@ -653,6 +705,7 @@ class VEGoalController extends GetxController {
 }
 ''');
 
+    updateParticipantNetworkEnum(NetworkCallEnum.Loading);
     /*var result =
         await GraphQLService.tempClient.query(QueryOptions(document: query));*/
     var result =
@@ -660,8 +713,9 @@ class VEGoalController extends GetxController {
     //It can have exception or data
     log(result.data.toString());
     //json.encode(result.data);
-    if (!shouldContinueFurther("FetchGoalMembershipData", result)) {
-      showErrorWOTitle("Failed to Update Goal Membership");
+    if (!shouldContinueFurther("FetchGoalParticipantData", result)) {
+      showErrorWOTitle("Failed to Update Goal Participant");
+      updateParticipantNetworkEnum(NetworkCallEnum.Error);
       return;
     }
 
@@ -670,8 +724,10 @@ class VEGoalController extends GetxController {
       print("Length of List is ${goalMemberModel.goalMemberList.length}");
       selectedGoalMemberList.value.clear();
       selectedGoalMemberList.value = goalMemberModel.goalMemberList;
+      updateParticipantNetworkEnum(NetworkCallEnum.Completed);
     } catch (onError, stackTrace) {
       print("Error while parsing FetchGoalMembershipData $onError");
+      updateParticipantNetworkEnum(NetworkCallEnum.Error);
     }
   }
 
@@ -810,7 +866,7 @@ class VEGoalController extends GetxController {
     getGoalActivitiesData(goalId);
   }
 
-  void refreshAEGoalList(){
+  void refreshAEGoalList() {
     GraphQLService.tempWAClient.resetStore(refetchQueries: false);
     getAEGoal();
   }
@@ -865,7 +921,7 @@ class VEGoalController extends GetxController {
       var response = await createGroupGoalMemberMutation(result);
       if (response) {
         GraphQLService.tempWAClient.resetStore(refetchQueries: false);
-        getGoalMembershipData(goalId);
+        getGoalParticipantData(goalId);
         getAEGoal();
       }
     }
@@ -1125,9 +1181,7 @@ setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID")
           SuccessGoalMentorDataModel.fromJson(result.data!);
       print(
           "Mentor Id is ${successGoalMentorDataModel.setMemberMentorModel.mentorId}");
-      return successGoalMentorDataModel
-              .setMemberMentorModel.mentorId ??
-          "";
+      return successGoalMentorDataModel.setMemberMentorModel.mentorId ?? "";
     } catch (onError, stacktrace) {
       print("Mentor Group Member Mutation is $onError");
       print("Failed at $stacktrace");
@@ -1164,5 +1218,10 @@ setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID")
     journeyErrorText =
         "You do not have any activities to do as you are not a participant in this goal";
     update();
+  }
+
+  void refreshJourneyData({required String localGoalId, String? newUserId}) {
+    GraphQLService.tempWAClient.resetStore(refetchQueries: false);
+    getJourneyData(localGoalId: localGoalId, newUserId: newUserId);
   }
 }

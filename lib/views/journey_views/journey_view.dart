@@ -54,67 +54,74 @@ class _Journey_ViewState extends State<Journey_View> {
     return Container(
         child: GetBuilder<VEGoalController>(
           builder: (veGoalController){
-            return veGoalController.journeyGoalList.isNotEmpty
-                ? ListView.builder(
-                itemCount: veGoalController.journeyGoalList.length,
-                itemBuilder: (context, index) {
-                  var item = veGoalController.journeyGoalList.elementAt(index);
-                  DateTime newDate = DateTime.tryParse(item.date) ??
-                      veGoalController.currentDateTime;
-                  if (index == 0) {
-                    showJourneyDate = true;
-                  } else {
-                    DateTime oldDate = DateTime.tryParse(veGoalController
-                        .journeyGoalList
-                        .elementAt(index - 1)
-                        .date) ??
-                        veGoalController.currentDateTime;
-                    showJourneyDate =
-                    !veGoalController.checkJDate(oldDate, newDate);
-                  }
+            switch (veGoalController.journeyNetworkEnum) {
+              case NetworkCallEnum.Completed:
+                return veGoalController.journeyGoalList.isNotEmpty
+                    ? RefreshIndicator(
+                  onRefresh: ()async{
+                    veGoalController.refreshJourneyData(localGoalId: widget.goalId,newUserId: widget.participantId);
+                  },
+                  color: Colors.red,
+                      child: ListView.builder(
+                      itemCount: veGoalController.journeyGoalList.length,
+                      itemBuilder: (context, index) {
+                        var item = veGoalController.journeyGoalList.elementAt(index);
+                        DateTime newDate = DateTime.tryParse(item.date) ??
+                            veGoalController.currentDateTime;
+                        if (index == 0) {
+                          showJourneyDate = true;
+                        } else {
+                          DateTime oldDate = DateTime.tryParse(veGoalController
+                              .journeyGoalList
+                              .elementAt(index - 1)
+                              .date) ??
+                              veGoalController.currentDateTime;
+                          showJourneyDate =
+                          !veGoalController.checkJDate(oldDate, newDate);
+                        }
 
-                  String section =
-                      ""; // Initialize section for the current item.
+                        String section =
+                            ""; // Initialize section for the current item.
 
-                  if (veGoalController.checkJDate(
-                      veGoalController.currentDateTime, newDate)) {
-                    //This is Today
-                    section = "Today";
-                  } else if (newDate
-                      .isAfter(veGoalController.currentDateTime)) {
-                    //This is Upcoming
-                    section = "Upcoming";
-                    if (!hasUpcomingDateAssigned) {
-                      upcomingDate = newDate;
-                      hasUpcomingDateAssigned = true;
-                    }
-                  } else if (veGoalController.checkJDate(
-                      veGoalController.currentDateTime
-                          .subtract(Duration(days: 1)),
-                      newDate)) {
-                    //This is Yesterday
-                    section = "Yesterday";
-                  }
+                        if (veGoalController.checkJDate(
+                            veGoalController.currentDateTime, newDate)) {
+                          //This is Today
+                          section = "Today";
+                        } else if (newDate
+                            .isAfter(veGoalController.currentDateTime)) {
+                          //This is Upcoming
+                          section = "Upcoming";
+                          if (!hasUpcomingDateAssigned) {
+                            upcomingDate = newDate;
+                            hasUpcomingDateAssigned = true;
+                          }
+                        } else if (veGoalController.checkJDate(
+                            veGoalController.currentDateTime
+                                .subtract(Duration(days: 1)),
+                            newDate)) {
+                          //This is Yesterday
+                          section = "Yesterday";
+                        }
 
-                  // Check if the section has changed, and update currentSection accordingly.
-                  if (section != currentSection) {
-                    currentSection = section;
-                    //showJourneyDate = true;
-                  } else {
-                    //showJourneyDate = false;
-                  }
+                        // Check if the section has changed, and update currentSection accordingly.
+                        if (section != currentSection) {
+                          currentSection = section;
+                          //showJourneyDate = true;
+                        } else {
+                          //showJourneyDate = false;
+                        }
 
-                  // Determine if the section text should be displayed.
-                  bool showSectionText = showJourneyDate && section.isNotEmpty;
+                        // Determine if the section text should be displayed.
+                        bool showSectionText = showJourneyDate && section.isNotEmpty;
 
-                  if (showSectionText && section == "Upcoming") {
-                    if (upcomingDate != null &&
-                        veGoalController.checkJDate(upcomingDate!, newDate)) {
-                    } else {
-                      showSectionText = false;
-                    }
-                  }
-                  /*var showSortedText = false;
+                        if (showSectionText && section == "Upcoming") {
+                          if (upcomingDate != null &&
+                              veGoalController.checkJDate(upcomingDate!, newDate)) {
+                          } else {
+                            showSectionText = false;
+                          }
+                        }
+                        /*var showSortedText = false;
       var sortedTextValue = "";
       if(newDate.isAfter(veGoalController.currentDateTime)){
         //This is Upcoming
@@ -141,31 +148,38 @@ class _Journey_ViewState extends State<Journey_View> {
           journeyDateSorted["Yesterday"] = true;
         }
       }*/
-                  var journeyStatus = veGoalController.convertJStatusToJourney(
-                      item.status, item.date);
+                        var journeyStatus = veGoalController.convertJStatusToJourney(
+                            item.status, item.date);
 
-                  return IndividualJourneyItemWidget(
-                    rowIndex: index,
-                    showButtons: journeyStatus != JourneyStatus.Failed &&
-                        journeyStatus != JourneyStatus.Success,
-                    showDate: showJourneyDate,
-                    timeText:
-                    veGoalController.convertJTimeToTimeText(item.time),
-                    dateText:
-                    veGoalController.convertJDatetoDateText(item.date),
-                    weekDayText:
-                    veGoalController.convertJDateToDayText(item.date),
-                    nameText:
-                    veGoalController.convertStringToNotNull(item.name),
-                    descText:
-                    veGoalController.convertStringToNotNull(item.desc),
-                    journeyStatus: journeyStatus,
-                    showDateSorted: showSectionText,
-                    dateSortedText: section,
-                    taskId: item.id.toString() ?? "",
-                  );
-                })
-                : ErrorListWidget(text: veGoalController.journeyErrorText);
+                        return IndividualJourneyItemWidget(
+                          rowIndex: index,
+                          showButtons: journeyStatus != JourneyStatus.Failed &&
+                              journeyStatus != JourneyStatus.Success,
+                          showDate: showJourneyDate,
+                          timeText:
+                          veGoalController.convertJTimeToTimeText(item.time),
+                          dateText:
+                          veGoalController.convertJDatetoDateText(item.date),
+                          weekDayText:
+                          veGoalController.convertJDateToDayText(item.date),
+                          nameText:
+                          veGoalController.convertStringToNotNull(item.name),
+                          descText:
+                          veGoalController.convertStringToNotNull(item.desc),
+                          journeyStatus: journeyStatus,
+                          showDateSorted: showSectionText,
+                          dateSortedText: section,
+                          taskId: item.id.toString() ?? "",
+                        );
+                      }),
+                    )
+                    : ListErrorWidget(text: veGoalController.journeyErrorText);
+              case NetworkCallEnum.Error:
+                return ListErrorWidget(
+                    text: "Failed to retrieve journey data.");
+              case NetworkCallEnum.Loading:
+                return ListLoadingWidget();
+            }
           })
     );
   }

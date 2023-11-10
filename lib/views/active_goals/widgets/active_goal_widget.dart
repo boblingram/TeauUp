@@ -74,7 +74,7 @@ class ActiveGoalWidget extends StatelessWidget with BaseClass {
             userGoalPerInfo: userGoalPerInfo,
             itemIndex: itemIndex,
             isEditingEnabled: editingEnabled,
-            showJourney: !isLoginUserParticipant,
+            showJourney: (isLoginUserAdmin && !isLoginUserParticipant),
           ),
         );
       },

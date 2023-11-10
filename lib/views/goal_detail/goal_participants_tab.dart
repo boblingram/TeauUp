@@ -12,8 +12,10 @@ import 'package:sizer/sizer.dart';
 import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/models/IndividualGoalMemberModel.dart';
+import 'package:teamup/utils/Enums.dart';
 import 'package:teamup/utils/app_integers.dart';
 import 'package:teamup/utils/app_strings.dart';
+import 'package:teamup/widgets/ErrorListWidget.dart';
 
 import '../../utils/Constants.dart';
 import '../../utils/GoalIconandColorStatic.dart';
@@ -46,6 +48,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Container(
         color: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -89,7 +92,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
               margin: const EdgeInsets.only(bottom: 5),
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               child:
-              Obx(() => veGoalController.selectedGoalMemberList.isNotEmpty
+              Obx(() => veGoalController.participantNetworkEnum.value == NetworkCallEnum.Loading ? ListLoadingWidget() : veGoalController.participantNetworkEnum.value == NetworkCallEnum.Completed ? veGoalController.selectedGoalMemberList.isNotEmpty
                   ? ListView.builder(
                   itemCount: veGoalController.selectedGoalMemberList.length + 1,
                   physics: const NeverScrollableScrollPhysics(),
@@ -103,7 +106,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
                         ? addMoreWidget()
                         : getInvitedMembers(item, index);
                   })
-                  : addMoreWidget()),
+                  : addMoreWidget() : ListErrorWidget(text: "Failed to retreive participant data")),
             )
           ],
         ),
@@ -140,6 +143,11 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
   }
 
   Widget getInvitedMembers(IndividualGoalMemberModel item, int index) {
+    var loginUserId = veGoalController.userId;
+    var showMemberJourney = false;
+    if (item.mentor != null && item.mentor!.id == loginUserId){
+      showMemberJourney = true;
+    }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Row(
@@ -179,7 +187,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
               ],
             ),
           ),
-          widget.isEditingEnabled ? QudsPopupButton(
+          (widget.isEditingEnabled || showMemberJourney) ? QudsPopupButton(
             // backgroundColor: Colors.red,
             tooltip: 'T',
             items: getMenuItems(index),
@@ -209,7 +217,14 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
     }
 
     return [
-      QudsPopupMenuItem(
+      showJourneyOption ? QudsPopupMenuItem(
+          leading: Icon(Icons.calendar_month),
+          title: Text('Jounery'),
+          onPressed: () async {
+            veGoalController.showJourneyBottomSheet(participantId: participantsId);
+          }) : QudsPopupMenuDivider(),
+      QudsPopupMenuDivider(),
+      showJourneyOption ? QudsPopupMenuDivider() : QudsPopupMenuItem(
           leading: const Icon(Icons.person),
           title: Text('Assign Mentor'),
           onPressed: () {
@@ -217,7 +232,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
             showMentorDialog(participantsId.toString(), index);
           }),
       QudsPopupMenuDivider(),
-      QudsPopupMenuItem(
+      showJourneyOption ? QudsPopupMenuDivider() : QudsPopupMenuItem(
           leading: Icon(Icons.group),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -261,7 +276,7 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
             //   showToast('Feedback Pressed!');
           }),
       QudsPopupMenuDivider(),
-      QudsPopupMenuItem(
+      showJourneyOption ? QudsPopupMenuDivider() : QudsPopupMenuItem(
           leading: Icon(Icons.remove_circle),
           title: Text('Remove'),
           onPressed: () async {
@@ -273,13 +288,6 @@ class _GoalParticipantsTabPageState extends State<GoalParticipantsTabPage> with 
               showError(title: "Error", message: "Failed to remove member");
             }
           }),
-      QudsPopupMenuDivider(),
-      showJourneyOption ? QudsPopupMenuItem(
-          leading: Icon(Icons.calendar_month),
-          title: Text('Jounery'),
-          onPressed: () async {
-            veGoalController.showJourneyBottomSheet(participantId: participantsId);
-          }) : QudsPopupMenuDivider(),
     ];
   }
 

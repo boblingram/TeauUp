@@ -37,6 +37,7 @@ class _NotificationViewState extends State<NotificationView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: HexColor(AppColors.notificationColor),
         elevation: 0,
@@ -62,17 +63,28 @@ class _NotificationViewState extends State<NotificationView> {
       body: Container(
         child: GetBuilder<GoalController>(
           builder: (goalController){
-            return goalController.notificationList.isEmpty
-                ? ErrorListWidget(text: "No Notification Found")
-                : ListView.builder(
-                itemCount: goalController.notificationList.length,
-                itemBuilder: (context, index) {
-                  var item = goalController.notificationList.elementAt(index);
-                  return IndividualNotificationView(
-                    item: item, selectedIndex: index,
+            switch(goalController.notificationNetworkEnum){
+              case NetworkCallEnum.Completed:
+                return goalController.notificationList.isNotEmpty ? RefreshIndicator(
+                  onRefresh: () async{
+                    goalController.refreshNotification();
+                  },
+                  color: Colors.red,
+                  child: ListView.builder(
+                      itemCount: goalController.notificationList.length,
+                      itemBuilder: (context, index) {
+                        var item = goalController.notificationList.elementAt(index);
+                        return IndividualNotificationView(
+                          item: item, selectedIndex: index,
 
-                  );
-                });
+                        );
+                      }),
+                ) : ListErrorWidget(text: "No notifications found.");
+              case NetworkCallEnum.Error:
+                return ListErrorWidget(text: "Failed to retrieve notifications.");
+              case NetworkCallEnum.Loading:
+                return ListLoadingWidget();
+            }
           },
         ),
       ),

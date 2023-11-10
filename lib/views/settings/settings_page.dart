@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:teamup/bottom_sheets/contact_us_bottom_sheet.dart';
 import 'package:teamup/bottom_sheets/faq_bottom_sheet.dart';
 import 'package:teamup/bottom_sheets/privacy_policy_bottom_sheet.dart';
+import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/controllers/settings_profile/settings_profile_controller.dart';
 import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/utils/app_Images.dart';
@@ -17,6 +18,7 @@ class SettingsPage extends StatelessWidget with BaseClass {
   SettingsPage({Key? key}) : super(key: key);
   final SettingsProfileController _settingsProfileController =
       Get.put(SettingsProfileController());
+  final VEGoalController veGoalController = Get.find();
 
   Widget _getDivider() {
     return const Divider(
@@ -73,28 +75,24 @@ class SettingsPage extends StatelessWidget with BaseClass {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    GetBuilder<SettingsProfileController>(
-                        init: _settingsProfileController,
-                        builder: (value) {
-                          return Text(
-                            value.getName,
-                            style: GoogleFonts.openSans(
-                              color: Colors.grey,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          );
-                        }),
+                    Text(
+                      veGoalController.userName,
+                      style: GoogleFonts.openSans(
+                        color: Colors.grey,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     const SizedBox(
                       height: 10,
                     ),
-                    Text(
+                    /*Text(
                       "joined 1st jul 2021  ",
                       style: GoogleFonts.openSans(
                         color: Colors.black,
                         fontWeight: FontWeight.w300,
                       ),
-                    ),
+                    ),*/
                   ],
                 )
               ],
@@ -113,44 +111,40 @@ class SettingsPage extends StatelessWidget with BaseClass {
             ),
           ),
           _getDivider(),
-          GetBuilder<SettingsProfileController>(
-              init: _settingsProfileController,
-              builder: (value) {
-                return OptionTile(
-                  title: "Name",
-                  trailingWidget: Row(
-                    children: [
-                      Text(
-                        value.getName,
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.openSans(
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color: Colors.grey,
-                        size: 12,
-                      ),
-                    ],
-                  ),
-                  onTap: () {
-                    UpdateAccountBottomSheet().accountBottomSheet(
-                      context: context,
-                    );
-                  },
-                );
-              }),
+        OptionTile(
+          title: "Name",
+          trailingWidget: Row(
+            children: [
+              Text(
+                veGoalController.userName,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.openSans(
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              const Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: Colors.grey,
+                size: 12,
+              ),
+            ],
+          ),
+          onTap: () {
+            UpdateAccountBottomSheet().accountBottomSheet(
+              context: context,
+            );
+          },
+        ),
           _getDivider(),
-          GetBuilder<SettingsProfileController>(
+          /*GetBuilder<SettingsProfileController>(
               init: _settingsProfileController,
               builder: (value) {
                 return OptionTile(
                   title: "Email",
-                  tileHeight: value.getEmail.isEmpty?50:70,
+                  tileHeight: value.getEmail.isEmpty ? 50 : 70,
                   subTitle: value.getEmail.isEmpty
                       ? ""
                       : "Verification link is sent on the above mentioned email address.",
@@ -187,7 +181,7 @@ class SettingsPage extends StatelessWidget with BaseClass {
                     );
                   },
                 );
-              }),
+              }),*/
           _getDivider(),
           Padding(
             padding: const EdgeInsets.only(left: 20, top: 35, bottom: 5),
@@ -330,7 +324,9 @@ class SettingsPage extends StatelessWidget with BaseClass {
               ),
             ),
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
         ],
       ),
     );

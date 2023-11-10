@@ -5,6 +5,12 @@ enum JourneyStatus {
   Overdue
 }
 
+enum NetworkCallEnum {
+  Completed,
+  Loading,
+  Error,
+}
+
 enum JourneyMutationEnum{
   MarkasComplete,
   SkipIt

@@ -39,6 +39,13 @@ class GoalController extends GetxController {
 
   var currentTime = DateTime.now();
 
+  NetworkCallEnum notificationNetworkEnum = NetworkCallEnum.Loading;
+
+  void updateNotificationNetworkEnum(NetworkCallEnum tempValue){
+    notificationNetworkEnum = tempValue;
+    update();
+  }
+
   void fetchNotificationData() async {
     var query = gql('''query MyQuery {
   toUserNotifications(userId: "$userId") {
@@ -51,6 +58,7 @@ class GoalController extends GetxController {
 }
 ''');
 
+    updateNotificationNetworkEnum(NetworkCallEnum.Loading);
     /*var result = await GraphQLService.tempClient
         .query(QueryOptions(document: query));*/
     var result =
@@ -60,6 +68,7 @@ class GoalController extends GetxController {
     if (result.data == null && result.exception != null) {
       //No Data Received from Server;
       GraphQLService.parseError(result.exception, "Fetch Notification List");
+      updateNotificationNetworkEnum(NetworkCallEnum.Error);
       return;
     }
 
@@ -72,8 +81,10 @@ class GoalController extends GetxController {
       notificationList = notificationDataModel.notificationDataList;
       notificationList.sort((a, b) => a.createdDt.compareTo(b.createdDt));
       update();
+      updateNotificationNetworkEnum(NetworkCallEnum.Completed);
     } catch (onError, stackTrace) {
       print("Error while parsing Notification Data Model $onError");
+      updateNotificationNetworkEnum(NetworkCallEnum.Error);
     }
   }
 
@@ -1332,5 +1343,10 @@ setMemberMentor(goalId: "$tempGoalId", memberId: "$memberID", mentorId: "$mentor
   void removeFileFromList(int position) {
     selectedFileList.removeAt(position);
     update();
+  }
+
+  void refreshNotification() {
+    GraphQLService.tempWAClient.resetStore(refetchQueries: false);
+    fetchNotificationData();
   }
 }

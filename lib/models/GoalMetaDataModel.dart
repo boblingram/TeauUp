@@ -5,21 +5,38 @@ import 'SuccessGoalMentorDataModel.dart';
 class GoalMetaDataModel{
   String typename;
   List<UserGoalPerInfo> userGoalPerList;
+  UserNotifyInfo? userNotifyInfo;
 
   GoalMetaDataModel({
     required this.typename,
     required this.userGoalPerList,
+    this.userNotifyInfo,
   });
 
   factory GoalMetaDataModel.fromJson(Map<String, dynamic> json) => GoalMetaDataModel(
     typename: json["__typename"] ?? "",
     userGoalPerList: List<UserGoalPerInfo>.from(json["userGoalsWithPerfInfo"].map((x) => UserGoalPerInfo.fromJson(x))),
+    userNotifyInfo:  json["userNotifyInfo"] == null ? null : UserNotifyInfo.fromJson(json["userNotifyInfo"])
   );
 
   /*Map<String, dynamic> toJson() => {
     "__typename": typename,
     "goalDetailModel": List<dynamic>.from(goalDetailList.map((x) => x.toJson())),
   };*/
+}
+
+class UserNotifyInfo{
+  String? read;
+  String? unread;
+  UserNotifyInfo({
+    this.read,
+    this.unread,
+  });
+
+  factory UserNotifyInfo.fromJson(Map<String, dynamic> json) => UserNotifyInfo(
+    read: json["read"],
+    unread: json["unread"],
+  );
 }
 
 class UserGoalPerInfo{

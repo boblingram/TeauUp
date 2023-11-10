@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:teamup/utils/Enums.dart';
+import 'package:teamup/widgets/ErrorListWidget.dart';
 
 import '../Controllers/PerformanceController.dart';
 import '../Model/LeaderboardItemExpansionModel.dart';
@@ -75,27 +77,47 @@ class _LeaderboardViewState extends State<LeaderboardView> {
               margin: EdgeInsets.fromLTRB(0, 5, 0, 8),
               color: Colors.grey.withOpacity(0.3),
             ),
-            Obx(() => performanceController.leaderboardList.value.isEmpty
-                ? Text("No Data")
-                : ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount:
-                        performanceController.leaderboardList.value.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, position) {
-                      var leaderboard = performanceController
-                          .leaderboardList.value
-                          .elementAt(position);
-                      return LeaderboardListItem(
-                          leaderboard: leaderboard,
-                          position: position,
-                          userId: performanceController.userID);
-                    },
-                  )),
+            Obx(() => performanceController.leaderboardNetworkEnum.value ==
+                    NetworkCallEnum.Loading
+                ? ListLoadingWidget()
+                : performanceController.leaderboardNetworkEnum.value ==
+                        NetworkCallEnum.Completed
+                    ? CompletedLeaderboardList()
+                    : ListErrorWidget(
+                        text: "Failed to retrieve leaderboard data")),
           ],
         ),
       ),
     );
+  }
+}
+
+class CompletedLeaderboardList extends StatelessWidget {
+  final PerformanceController performanceController = Get.find();
+
+  CompletedLeaderboardList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() => performanceController.leaderboardList.value.isEmpty
+        ? Text("No Data")
+        : RefreshIndicator(
+          onRefresh: () async{ performanceController.refreshLeaderboardList();  },
+      color: Colors.red,
+          child: ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+              itemCount: performanceController.leaderboardList.value.length,
+              shrinkWrap: true,
+              itemBuilder: (context, position) {
+                var leaderboard = performanceController.leaderboardList.value
+                    .elementAt(position);
+                return LeaderboardListItem(
+                    leaderboard: leaderboard,
+                    position: position,
+                    userId: performanceController.userID);
+              },
+            ),
+        ));
   }
 }
 
@@ -264,9 +286,9 @@ class IndividualLeaderItem extends StatelessWidget {
 
   IndividualLeaderItem(
       {Key? key,
-        required this.leaderBoard,
-        required this.position,
-        this.isYou = false})
+      required this.leaderBoard,
+      required this.position,
+      this.isYou = false})
       : super(key: key);
 
   Color getPositionColor(int position) {
@@ -321,12 +343,12 @@ class IndividualLeaderItem extends StatelessWidget {
           ),
           child: Center(
               child: Text(
-                position.toString(),
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.bold),
-              )),
+            position.toString(),
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.bold),
+          )),
         ),
         /*Column(
           children: [
@@ -338,69 +360,69 @@ class IndividualLeaderItem extends StatelessWidget {
           width: 10,
         ),
         Obx(
-              () => Expanded(
+          () => Expanded(
               child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("${leaderBoard.fnln} ${isYou ? "(You)" : ""}"),
-                      Row(
-                        children: [
-                          Text(getPosPoints(
-                              performanceController.timelineFilter.value)
-                              .toString()),
-                          Text("-"),
-                          Text(getNegPoints(
-                              performanceController.timelineFilter.value)
-                              .toString())
-                        ],
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 1.h,
-                  ),
+                  Text("${leaderBoard.fnln} ${isYou ? "(You)" : ""}"),
                   Row(
                     children: [
-                      Expanded(
-                          flex: getPosPoints(
-                              performanceController.timelineFilter.value),
-                          child: Container(
-                            height: 10,
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: getNegPoints(performanceController
-                                  .timelineFilter.value) !=
-                                  0
-                                  ? BorderRadius.only(
-                                topLeft: Radius.circular(3),
-                                bottomLeft: Radius.circular(3),
-                              )
-                                  : BorderRadius.circular(3),
-                            ),
-                          )),
-                      Expanded(
-                          flex: getNegPoints(
-                              performanceController.timelineFilter.value),
-                          child: Container(
-                            height: 10,
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: getPosPoints(performanceController
-                                  .timelineFilter.value) !=
-                                  0
-                                  ? BorderRadius.only(
-                                topRight: Radius.circular(3),
-                                bottomRight: Radius.circular(3),
-                              )
-                                  : BorderRadius.circular(3),
-                            ),
-                          ))
+                      Text(getPosPoints(
+                              performanceController.timelineFilter.value)
+                          .toString()),
+                      Text("-"),
+                      Text(getNegPoints(
+                              performanceController.timelineFilter.value)
+                          .toString())
                     ],
-                  ),
+                  )
                 ],
-              )),
+              ),
+              SizedBox(
+                height: 1.h,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                      flex: getPosPoints(
+                          performanceController.timelineFilter.value),
+                      child: Container(
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: getNegPoints(performanceController
+                                      .timelineFilter.value) !=
+                                  0
+                              ? BorderRadius.only(
+                                  topLeft: Radius.circular(3),
+                                  bottomLeft: Radius.circular(3),
+                                )
+                              : BorderRadius.circular(3),
+                        ),
+                      )),
+                  Expanded(
+                      flex: getNegPoints(
+                          performanceController.timelineFilter.value),
+                      child: Container(
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: getPosPoints(performanceController
+                                      .timelineFilter.value) !=
+                                  0
+                              ? BorderRadius.only(
+                                  topRight: Radius.circular(3),
+                                  bottomRight: Radius.circular(3),
+                                )
+                              : BorderRadius.circular(3),
+                        ),
+                      ))
+                ],
+              ),
+            ],
+          )),
         )
       ],
     );

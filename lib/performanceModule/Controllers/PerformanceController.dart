@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:teamup/utils/Enums.dart';
 import '../../utils/Constants.dart';
 import '../../utils/GraphQLService.dart';
 import '../../utils/app_strings.dart';
@@ -70,6 +71,17 @@ class PerformanceController extends GetxController{
     fetchMyPerformance();
   }
 
+  var leaderboardNetworkEnum = NetworkCallEnum.Loading.obs;
+
+  void updateLeaderboardNetworkEnum(NetworkCallEnum temp){
+    leaderboardNetworkEnum.value = temp;
+  }
+
+  void refreshLeaderboardList(){
+    GraphQLService.tempWAClient.resetStore(refetchQueries: false);
+    fetchLeaderboardList();
+  }
+
   void fetchLeaderboardList()async{
     //Graphql
     final query = gql('''query MyQuery {
@@ -82,6 +94,7 @@ class PerformanceController extends GetxController{
     thirtyDayStats
   }
 }''');
+    updateLeaderboardNetworkEnum(NetworkCallEnum.Loading);
     var result = await GraphQLService.makeGraphQLRequest(QueryOptions( document: query));
     //It can have exception or data
     //log(result.data.toString());
@@ -89,12 +102,13 @@ class PerformanceController extends GetxController{
     if(result.data == null && result.exception != null){
       //No Data Received from Server;
       parseError(result.exception,"FetchLeaderboardList");
+      updateLeaderboardNetworkEnum(NetworkCallEnum.Error);
       return;
     }
     var leaderList = LeardboardListModel.fromJson(result.data!);
     leaderboardList.value = leaderList.leaderBoard;
     print("Length of List is ${leaderList.leaderBoard.length}");
-
+    updateLeaderboardNetworkEnum(NetworkCallEnum.Completed);
   }
 
 

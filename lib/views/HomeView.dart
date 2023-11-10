@@ -102,9 +102,52 @@ class _HomeViewState extends State<HomeView> with BaseClass {
         actions: [
           IconButton(
             onPressed: (){
+              veGoalController.showNotifDot.value = false;
               Get.to(()=>NotificationView());
             },
-            icon: Icon(Icons.notifications),
+            icon: Stack(
+              alignment: Alignment.topRight,
+              children: [
+                Icon(Icons.notifications),
+                Obx(()=> veGoalController.showNotifDot.value ? Container(
+                  width: 2.7.w,
+                  height: 2.7.w,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white
+                  ),
+                  child: Center(
+                    child: Container(
+                      padding: EdgeInsets.all(2),
+                      width: 1.7.w,
+                      height: 1.7.w,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.red
+                      ),
+                    ),
+                  ),
+                ) : Container(
+                  width: 2.7.w,
+                  height: 2.7.w,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.transparent
+                  ),
+                  child: Center(
+                    child: Container(
+                      padding: EdgeInsets.all(2),
+                      width: 1.7.w,
+                      height: 1.7.w,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.transparent
+                      ),
+                    ),
+                  ),
+                )),
+              ],
+            ),
             color: AppColors.greyWithShade900,
           ),
           const SizedBox(

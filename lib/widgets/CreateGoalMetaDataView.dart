@@ -75,7 +75,6 @@ class CreateGoalMetaDataView extends StatelessWidget {
               color: Colors.white.withOpacity(0.6),
               fontSize: 18.sp,
               fontWeight: FontWeight.w500,
-
             ),
           ),
           const SizedBox(
