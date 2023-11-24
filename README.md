@@ -1,6 +1,11 @@
 # teamup
 
 ## Getting Started
+Dated: 24th November 23
+This project has been discontinued here and new development for same would be carried out in 
+client repository which is 
+https://git-codecommit.us-west-2.amazonaws.com/v1/repos/TU_Main"
+
 
 ## Steps to Compile, Build and Deploy the app 
 
