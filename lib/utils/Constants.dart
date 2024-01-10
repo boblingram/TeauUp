@@ -12,6 +12,7 @@ class Constants{
   static String API_KEY = "da2-l3lglx2ihbajlbdenx56njjzbu";
 
   static String STORAGEURL = "https://ndp1u8b9n4.execute-api.us-west-2.amazonaws.com/v1/teamup-pub/";
+  static String SENDBIRDCONSTANT = "BCD6DF14-603E-4CA4-828B-B05FA986A007";
 }
 
 int getHashCode(DateTime key) {

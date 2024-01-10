@@ -1,5 +1,6 @@
 
 class AppImages {
+
   static const String imagePath = "assets/images/";
   static String userIcon = "${imagePath}user.png";
   static String cancelIcon = "${imagePath}close.png";
@@ -18,6 +19,8 @@ class AppImages {
   //Performance Module
   static String compareActivitiesImage = "${imagePath}compare_activities.png";
 
+  //Connect
+  static String noConversationImage = "${imagePath}no_conversation.png";
 
   //Invite Member
   static String add_member_3Icon = "${imagePath}add_member_icon.png";

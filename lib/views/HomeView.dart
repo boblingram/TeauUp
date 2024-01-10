@@ -1,16 +1,16 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
+import 'package:teamup/controllers/ConnectController.dart';
 import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/mixins/baseClass.dart';
 import 'package:teamup/performanceModule/Views/PerformanceView.dart';
 import 'package:teamup/utils/app_Images.dart';
 import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/views/GoalView.dart';
+import 'package:teamup/views/connect_views/ConnectView.dart';
 import 'package:teamup/views/journey_views/journey_view.dart';
 import 'package:teamup/views/settings/settings_page.dart';
 
@@ -32,6 +32,7 @@ class _HomeViewState extends State<HomeView> with BaseClass {
 
   late GoalController goalController;
   VEGoalController veGoalController = Get.put(VEGoalController());
+  ConnectController connectController = Get.put(ConnectController());
 
   void _onItemTapped(int index) {
     print("Index is $index");
@@ -55,7 +56,7 @@ class _HomeViewState extends State<HomeView> with BaseClass {
         return Journey_View();
       case 3:
         pageTitle.value = "Connect";
-        return Container();
+        return ChannelListView();
       case 4:
         pageTitle.value = "Performance";
         return Sizer(
