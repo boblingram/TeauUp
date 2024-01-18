@@ -104,7 +104,9 @@ class _HomeViewState extends State<HomeView> with BaseClass {
           IconButton(
             onPressed: (){
               veGoalController.showNotifDot.value = false;
-              Get.to(()=>NotificationView());
+              connectController.startVideoCall();
+              //TODO Reactivate the same
+              //Get.to(()=>NotificationView());
             },
             icon: Stack(
               alignment: Alignment.topRight,

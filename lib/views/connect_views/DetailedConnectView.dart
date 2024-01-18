@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
+import 'package:get/get.dart';
 import 'package:sendbird_sdk/sendbird_sdk.dart';
 import 'dart:async';
+
+import 'package:teamup/controllers/ConnectController.dart';
 
 class GroupChannelView extends StatefulWidget {
   final GroupChannel groupChannel;
@@ -15,6 +18,8 @@ class GroupChannelView extends StatefulWidget {
 class GroupChannelViewState extends State<GroupChannelView>
     with ChannelEventHandler {
   List<BaseMessage> _messages = [];
+  ConnectController connectController = Get.find();
+
   @override
   void initState() {
     super.initState();
@@ -75,7 +80,7 @@ class GroupChannelViewState extends State<GroupChannelView>
       actions: [
         InkWell(
           onTap: (){
-            print("Video Call Tapped");
+            connectController.startVideoCall();
           },
           child: Container(
             decoration: BoxDecoration(

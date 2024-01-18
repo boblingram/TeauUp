@@ -13,6 +13,10 @@ class Constants{
 
   static String STORAGEURL = "https://ndp1u8b9n4.execute-api.us-west-2.amazonaws.com/v1/teamup-pub/";
   static String SENDBIRDCONSTANT = "BCD6DF14-603E-4CA4-828B-B05FA986A007";
+
+  //Method Channels
+  static String VIDEOCALLMETHODCHANNEL = 'video_call_method_channel';
+  static String VIDEOCALLSTARTFUNC = 'video_call_start_function';
 }
 
 int getHashCode(DateTime key) {

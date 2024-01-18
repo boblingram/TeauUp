@@ -16,6 +16,24 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		C046D7532B57EEA200A70563 /* FlutterCommunicationVideoCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D7522B57EEA200A70563 /* FlutterCommunicationVideoCall.swift */; };
+		C046D7552B57F30900A70563 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D7542B57F30900A70563 /* SignInViewController.swift */; };
+		C046D7572B57F31900A70563 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D7562B57F31800A70563 /* MainViewController.swift */; };
+		C046D75B2B57F34100A70563 /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D75A2B57F34100A70563 /* SettingsTableViewController.swift */; };
+		C046D75D2B57F34700A70563 /* ApplicationInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D75C2B57F34700A70563 /* ApplicationInfoViewController.swift */; };
+		C046D7632B57F37800A70563 /* ParticipantCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C046D75F2B57F37800A70563 /* ParticipantCollectionViewCell.xib */; };
+		C046D7652B57F37800A70563 /* ParticipantCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D7612B57F37800A70563 /* ParticipantCollectionViewCell.swift */; };
+		C046D7662B57F37800A70563 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D7622B57F37800A70563 /* FlowLayout.swift */; };
+		C046D7692B57F39300A70563 /* String+QuickStart.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D7682B57F39300A70563 /* String+QuickStart.swift */; };
+		C046D76E2B57F39F00A70563 /* UIViewController+QuickStart.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D76A2B57F39F00A70563 /* UIViewController+QuickStart.swift */; };
+		C046D76F2B57F39F00A70563 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D76B2B57F39F00A70563 /* ImageCache.swift */; };
+		C046D7702B57F39F00A70563 /* UIView+QuickStart.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D76C2B57F39F00A70563 /* UIView+QuickStart.swift */; };
+		C046D7712B57F39F00A70563 /* Bundle+QuickStart.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D76D2B57F39F00A70563 /* Bundle+QuickStart.swift */; };
+		C046D7752B57F59E00A70563 /* JoinRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D7742B57F59E00A70563 /* JoinRoomViewController.swift */; };
+		C046D7792B57F5DA00A70563 /* ShareRoomIdViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D7782B57F5DA00A70563 /* ShareRoomIdViewController.swift */; };
+		C046D77B2B57F5E000A70563 /* RoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D77A2B57F5E000A70563 /* RoomViewController.swift */; };
+		C046D77D2B57F5E400A70563 /* RoomInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D77C2B57F5E400A70563 /* RoomInformationViewController.swift */; };
+		C046D77F2B57F5E800A70563 /* ParticipantsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D77E2B57F5E700A70563 /* ParticipantsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +79,24 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C046D7522B57EEA200A70563 /* FlutterCommunicationVideoCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlutterCommunicationVideoCall.swift; sourceTree = "<group>"; };
+		C046D7542B57F30900A70563 /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
+		C046D7562B57F31800A70563 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		C046D75A2B57F34100A70563 /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
+		C046D75C2B57F34700A70563 /* ApplicationInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInfoViewController.swift; sourceTree = "<group>"; };
+		C046D75F2B57F37800A70563 /* ParticipantCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ParticipantCollectionViewCell.xib; sourceTree = "<group>"; };
+		C046D7612B57F37800A70563 /* ParticipantCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParticipantCollectionViewCell.swift; sourceTree = "<group>"; };
+		C046D7622B57F37800A70563 /* FlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
+		C046D7682B57F39300A70563 /* String+QuickStart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+QuickStart.swift"; sourceTree = "<group>"; };
+		C046D76A2B57F39F00A70563 /* UIViewController+QuickStart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+QuickStart.swift"; sourceTree = "<group>"; };
+		C046D76B2B57F39F00A70563 /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		C046D76C2B57F39F00A70563 /* UIView+QuickStart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+QuickStart.swift"; sourceTree = "<group>"; };
+		C046D76D2B57F39F00A70563 /* Bundle+QuickStart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+QuickStart.swift"; sourceTree = "<group>"; };
+		C046D7742B57F59E00A70563 /* JoinRoomViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JoinRoomViewController.swift; sourceTree = "<group>"; };
+		C046D7782B57F5DA00A70563 /* ShareRoomIdViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareRoomIdViewController.swift; sourceTree = "<group>"; };
+		C046D77A2B57F5E000A70563 /* RoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomViewController.swift; sourceTree = "<group>"; };
+		C046D77C2B57F5E400A70563 /* RoomInformationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomInformationViewController.swift; sourceTree = "<group>"; };
+		C046D77E2B57F5E700A70563 /* ParticipantsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantsViewController.swift; sourceTree = "<group>"; };
 		C0E51D812AAAF6200052DF2D /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		C94A039702BF7C81FBED7519 /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
 		CBE7C43676F4DAF925D944AB /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
@@ -144,6 +180,9 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				C046D7732B57F59100A70563 /* Room */,
+				C046D7672B57F38500A70563 /* Extensions */,
+				C046D75E2B57F36100A70563 /* View */,
 				C0E51D812AAAF6200052DF2D /* Runner.entitlements */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
@@ -152,7 +191,12 @@
 				1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */,
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
+				C046D7542B57F30900A70563 /* SignInViewController.swift */,
+				C046D7562B57F31800A70563 /* MainViewController.swift */,
+				C046D75A2B57F34100A70563 /* SettingsTableViewController.swift */,
+				C046D75C2B57F34700A70563 /* ApplicationInfoViewController.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
+				C046D7522B57EEA200A70563 /* FlutterCommunicationVideoCall.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -164,6 +208,40 @@
 				194C0140642AD867697B8C1F /* Pods_RunnerTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C046D75E2B57F36100A70563 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				C046D75F2B57F37800A70563 /* ParticipantCollectionViewCell.xib */,
+				C046D7612B57F37800A70563 /* ParticipantCollectionViewCell.swift */,
+				C046D7622B57F37800A70563 /* FlowLayout.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		C046D7672B57F38500A70563 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				C046D76D2B57F39F00A70563 /* Bundle+QuickStart.swift */,
+				C046D76B2B57F39F00A70563 /* ImageCache.swift */,
+				C046D76C2B57F39F00A70563 /* UIView+QuickStart.swift */,
+				C046D76A2B57F39F00A70563 /* UIViewController+QuickStart.swift */,
+				C046D7682B57F39300A70563 /* String+QuickStart.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		C046D7732B57F59100A70563 /* Room */ = {
+			isa = PBXGroup;
+			children = (
+				C046D7742B57F59E00A70563 /* JoinRoomViewController.swift */,
+				C046D7782B57F5DA00A70563 /* ShareRoomIdViewController.swift */,
+				C046D77A2B57F5E000A70563 /* RoomViewController.swift */,
+				C046D77E2B57F5E700A70563 /* ParticipantsViewController.swift */,
+				C046D77C2B57F5E400A70563 /* RoomInformationViewController.swift */,
+			);
+			path = Room;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -262,6 +340,7 @@
 			files = (
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
+				C046D7632B57F37800A70563 /* ParticipantCollectionViewCell.xib in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 			);
@@ -377,8 +456,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C046D75D2B57F34700A70563 /* ApplicationInfoViewController.swift in Sources */,
+				C046D77F2B57F5E800A70563 /* ParticipantsViewController.swift in Sources */,
+				C046D76F2B57F39F00A70563 /* ImageCache.swift in Sources */,
+				C046D76E2B57F39F00A70563 /* UIViewController+QuickStart.swift in Sources */,
+				C046D7692B57F39300A70563 /* String+QuickStart.swift in Sources */,
+				C046D7552B57F30900A70563 /* SignInViewController.swift in Sources */,
+				C046D7752B57F59E00A70563 /* JoinRoomViewController.swift in Sources */,
+				C046D7792B57F5DA00A70563 /* ShareRoomIdViewController.swift in Sources */,
+				C046D7702B57F39F00A70563 /* UIView+QuickStart.swift in Sources */,
+				C046D77D2B57F5E400A70563 /* RoomInformationViewController.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				C046D7652B57F37800A70563 /* ParticipantCollectionViewCell.swift in Sources */,
+				C046D75B2B57F34100A70563 /* SettingsTableViewController.swift in Sources */,
+				C046D7712B57F39F00A70563 /* Bundle+QuickStart.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				C046D77B2B57F5E000A70563 /* RoomViewController.swift in Sources */,
+				C046D7532B57EEA200A70563 /* FlutterCommunicationVideoCall.swift in Sources */,
+				C046D7662B57F37800A70563 /* FlowLayout.swift in Sources */,
+				C046D7572B57F31900A70563 /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

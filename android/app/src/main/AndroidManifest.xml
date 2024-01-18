@@ -16,6 +16,18 @@
         android:label="teamup"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+       <activity
+           android:name=".groupcall.preview.PreviewActivity"
+           android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+       <activity
+           android:name=".groupcall.room.RoomActivity"
+           android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+       <activity
+           android:name=".groupcall.signin.SignInActivity"
+           android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+       <activity
+           android:name=".groupcall.main.VideoCallMainActivity"
+           android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
