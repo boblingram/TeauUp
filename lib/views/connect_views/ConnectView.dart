@@ -218,6 +218,7 @@ class ChannelListViewState extends State<ChannelListView>
 
   void gotoChannel(String channelUrl) {
 
+    print("Channel URL is $channelUrl");
     //Navigate to Chat View
     GroupChannel.getChannel(channelUrl).then((channel) {
       Get.to(()=>GroupChannelView(groupChannel: channel));
