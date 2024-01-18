@@ -25,12 +25,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1862" y="130"/>
+            <point key="canvasLocation" x="-1663" y="-25"/>
         </scene>
         <!--Sign in manually-->
         <scene sceneID="fwX-sG-UyE">
             <objects>
-                <viewController id="9c5-Qw-2qF" customClass="SignInViewController" customModule="Runner" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="IKDetailVC" id="9c5-Qw-2qF" customClass="SignInViewController" customModule="Runner" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="m32-Vj-PC7">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -195,7 +195,7 @@
         <!--Enter room-->
         <scene sceneID="RPu-oD-jhx">
             <objects>
-                <viewController id="fZ7-JC-y6Y" customClass="JoinRoomViewController" customModule="Runner" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="joinRoomVC" id="fZ7-JC-y6Y" customClass="JoinRoomViewController" customModule="Runner" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="mdb-5h-IoB">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1544,7 +1544,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="fGX-ap-gDA"/>
+        <segue reference="Aif-39-Ap3"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="btnAudioOff" width="64" height="64"/>
@@ -1570,7 +1570,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGray3Color">
-            <color red="0.7803921568627451" green="0.7803921568627451" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.78039215689999997" green="0.78039215689999997" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
