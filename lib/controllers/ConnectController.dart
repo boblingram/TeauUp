@@ -43,6 +43,36 @@ class ConnectController extends GetxController{
       print('login_view: connect: ERROR: $e');
       rethrow;
     }
+    activateTheListeners();
+  }
+
+  void activateTheListeners(){
+    _channel.setMethodCallHandler((call) async{
+      print("Method is called");
+      switch(call.method){
+        case "show_progress":
+          print("Show Progress Bar");
+          showPLoader();
+          break;
+        case "hide_progress":
+          print("Hid Progress Bar");
+          Get.back();
+          break;
+        case "createdRoomID":
+          log("Created Room ID ${call.arguments.toString()}");
+          //TODO Send this data in chat and push notification Group Channel, Room ID,
+          //Created Room ID {roomId: 0d9b18d0-b377-49c2-9ac7-dccebf03e80d}
+          try{
+            var roomId = call.arguments["roomId"];
+            sendVideoCallMessage(roomId);
+          }catch(onError,stacktrace){
+            print("Failed to parse the roomId");
+          }
+          break;
+        default:
+      }
+
+    });
   }
 
   //Communication from Flutter to kotlin
@@ -75,33 +105,6 @@ class ConnectController extends GetxController{
     }catch(onError, stacktrace){
       print("Video Call start failed some error $onError \n Stacktrace is $stacktrace");
     }
-
-    _channel.setMethodCallHandler((call) async{
-
-      switch(call.method){
-        case "show_progress":
-          print("Show Progress Bar");
-          showPLoader();
-          break;
-        case "hide_progress":
-          print("Hid Progress Bar");
-          Get.back();
-          break;
-        case "createdRoomID":
-          log("Created Room ID ${call.arguments.toString()}");
-          //TODO Send this data in chat and push notification Group Channel, Room ID,
-          //Created Room ID {roomId: 0d9b18d0-b377-49c2-9ac7-dccebf03e80d}
-          try{
-            var roomId = call.arguments["roomId"];
-            sendVideoCallMessage(roomId);
-          }catch(onError,stacktrace){
-            print("Failed to parse the roomId");
-          }
-          break;
-        default:
-      }
-
-    });
   }
 
   void joinTheVideoCall(String roomID)async {

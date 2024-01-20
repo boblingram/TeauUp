@@ -88,14 +88,32 @@ class JoinRoomViewController: UIViewController, RoomDataSource {
                 presentErrorAlert(message: error?.localizedDescription ?? "Failed to enter room")
                 return
             }
-            
-            performSegue(withIdentifier: "join", sender: room)
+            //Mark With Storyboard
+            let vc = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "roomVC") as? RoomViewController
+            vc?.room = room
+            vc?.isFromJoinRoom = true
+            if let navigationController = self.navigationController {
+                print("Navigation Controller Present")
+                navigationController.pushViewController(vc!, animated: true)
+              } else {
+                  // If there is no navigation controller, present the view controller
+                  print("Navigation Controller Not Present")
+                  self.present(vc!, animated: true, completion: nil)
+              }
+            //Mark: With Segue - Issue is setting the variable.
+            //performSegue(withIdentifier: "join", sender: room)
         }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination.children.first as? RoomDataSource {
             destination.room = sender as? Room
+        }
+        if let tempVC = segue.destination as? RoomViewController {
+            tempVC.isFromJoinRoom = true
+            print("JoinFromRoom Value is assigned successfully ")
+        }else{
+            print("JoinFromRoom Value is assigned unsucessfully ")
         }
     }
 }

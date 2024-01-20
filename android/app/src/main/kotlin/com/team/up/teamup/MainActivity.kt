@@ -103,17 +103,17 @@ class MainActivity : FlutterActivity() {
                 }
 
                 Status.SUCCESS -> {
+                    println("SendBird Authenticate Success")
+                    binaryMessenger?.let {
+                        MethodChannel(it, CHANNEL).invokeMethod(
+                            "hide_progress",
+                            ""
+                        )
+                    }
                     if(isJoinTheRoom){
                         dashboardViewModel.fetchRoomById(toJoinRoomId);
                     }else{
                         dashboardViewModel.createAndEnterRoom();
-                        println("SendBird Authenticate Success")
-                        binaryMessenger?.let {
-                            MethodChannel(it, CHANNEL).invokeMethod(
-                                "hide_progress",
-                                ""
-                            )
-                        }
                     }
                 }
 
@@ -134,20 +134,39 @@ class MainActivity : FlutterActivity() {
             Log.d("MAF Create Room", "observe() resource: $resource")
             when (resource.status) {
                 Status.LOADING -> {
-                    // TODO : show loading view
+                    binaryMessenger?.let {
+                        MethodChannel(it, CHANNEL).invokeMethod(
+                            "show_progress",
+                            ""
+                        )
+                    }
                 }
 
-                Status.SUCCESS -> resource.data?.let { it1 ->
-                    var roomSendArgument = mapOf("roomId" to it1)
-                    println("Room ID is $it1")
+                Status.SUCCESS -> {
                     binaryMessenger?.let {
-                        MethodChannel(it, CHANNEL).invokeMethod("createdRoomID",
-                            roomSendArgument)
+                        MethodChannel(it, CHANNEL).invokeMethod(
+                            "hide_progress",
+                            ""
+                        )
                     }
-                    goToRoomActivity(it1)
+                    resource.data?.let { it1 ->
+                        var roomSendArgument = mapOf("roomId" to it1)
+                        println("Room ID is $it1")
+                        binaryMessenger?.let {
+                            MethodChannel(it, CHANNEL).invokeMethod("createdRoomID",
+                                roomSendArgument)
+                        }
+                        goToRoomActivity(it1)
+                    }
                 }
 
                 Status.ERROR -> {
+                    binaryMessenger?.let {
+                        MethodChannel(it, CHANNEL).invokeMethod(
+                            "hide_progress",
+                            ""
+                        )
+                    }
                     val message = if (resource?.errorCode == SendBirdError.ERR_INVALID_PARAMS) {
                         getString(R.string.dashboard_invalid_room_params)
                     } else {
@@ -165,10 +184,29 @@ class MainActivity : FlutterActivity() {
             Log.d("MAF Fetch Room", "observe() resource: $resource")
             when (resource.status) {
                 Status.LOADING -> {
-                    // TODO : show loading view
+                    binaryMessenger?.let {
+                        MethodChannel(it, CHANNEL).invokeMethod(
+                            "show_progress",
+                            ""
+                        )
+                    }
                 }
-                Status.SUCCESS -> resource.data?.let { goToPreviewActivity(it) }
+                Status.SUCCESS -> {
+                    binaryMessenger?.let {
+                        MethodChannel(it, CHANNEL).invokeMethod(
+                            "hide_progress",
+                            ""
+                        )
+                    }
+                    resource.data?.let { goToPreviewActivity(it) }
+                }
                 Status.ERROR -> {
+                    binaryMessenger?.let {
+                        MethodChannel(it, CHANNEL).invokeMethod(
+                            "hide_progress",
+                            ""
+                        )
+                    }
                     activity?.showAlertDialog(
                         getString(R.string.dashboard_incorrect_room_id),
                         if (resource?.errorCode == 400200) {

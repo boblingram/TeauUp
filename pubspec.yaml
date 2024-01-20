@@ -57,8 +57,8 @@ dependencies:
   dio:
   file_picker: ^6.0.0
   open_file:
-  sendbird_sdk: ^3.2.11
-  dash_chat_2: 
+  sendbird_sdk: ^3.2.13
+  dash_chat_2:
 
   #Register _ Module
   device_info_plus:

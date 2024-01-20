@@ -21,6 +21,8 @@ class RoomViewController: UIViewController, RoomDataSource {
     @IBOutlet var audioRouteButton: UIButton!
     @IBOutlet weak var participantsCollectionView: UICollectionView!
     
+    var isFromJoinRoom = false;
+    
     var room: Room!
     var localParticipantIndex: [IndexPath] {
         if let index = self.room.participants.firstIndex(where: { $0 is LocalParticipant }) {
@@ -45,7 +47,7 @@ class RoomViewController: UIViewController, RoomDataSource {
             performSegue(withIdentifier: "shareRoomId", sender: nil)
         }
     }
-    
+
     override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -68,7 +70,33 @@ class RoomViewController: UIViewController, RoomDataSource {
     
     @IBAction func didTapExitButton(_ sender: UIButton) {
         try? room.exit()
-        self.performSegue(withIdentifier: "unwindToMainVC", sender: self)
+        //This is for Join View Controller as present view controller needs to be ended
+        // Assuming you are in a view controller that was presented
+        if let presentingVC = presentingViewController {
+            print("Presenting view controller: \(presentingVC)")
+        } else {
+            print("No presenting view controller")
+        }
+
+        // Assuming you are in a view controller that presented another view controller
+        if let presentedVC = presentedViewController {
+            print("Presented view controller: \(presentedVC)")
+        } else {
+            print("No presented view controller")
+        }
+        if isFromJoinRoom{
+            if let joinRoomVC = self.presentingViewController as? JoinRoomViewController {
+                    // Dismiss RoomVC
+                    self.dismiss(animated: true) {
+                        // Dismiss JoinRoomVC when RoomVC is dismissed
+                        joinRoomVC.dismiss(animated: true, completion: nil)
+                    }
+                }
+        }else{
+            self.dismiss(animated: true)
+        }
+        // Perform Segue is not Required
+        //self.performSegue(withIdentifier: "unwindToMainVC", sender: self)
     }
     
     @IBAction func didTapMicrophoneButton(_ sender: Any) {
@@ -90,9 +118,10 @@ class RoomViewController: UIViewController, RoomDataSource {
             room.localParticipant?.startVideo()
         }
         configureMediaButtons()
-        UIView.performWithoutAnimation {
-            participantsCollectionView.reloadItems(at: localParticipantIndex)
-        }
+//        Crashing the app to activate again
+//        UIView.performWithoutAnimation {
+//            participantsCollectionView.reloadItems(at: localParticipantIndex)
+//        }
     }
     
     @IBAction func didTapFlipCameraButton(_ sender: Any) {

@@ -604,7 +604,7 @@
         <!--Room View Controller-->
         <scene sceneID="i62-G4-lxY">
             <objects>
-                <viewController modalPresentationStyle="fullScreen" id="aYf-lY-xTV" customClass="RoomViewController" customModule="Runner" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="roomVC" modalPresentationStyle="fullScreen" id="aYf-lY-xTV" customClass="RoomViewController" customModule="Runner" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sh5-EG-gBQ">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1544,7 +1544,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Aif-39-Ap3"/>
+        <segue reference="fGX-ap-gDA"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="btnAudioOff" width="64" height="64"/>
