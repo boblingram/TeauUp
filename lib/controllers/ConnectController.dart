@@ -12,12 +12,10 @@ import '../utils/app_strings.dart';
 class ConnectController extends GetxController{
 
   //final String testingUserId2 = "Akash-7f2aba83-c210-4bfe-8763-edbd6323a8a3";
-  final String testingUserId2 = "Dr Rajan-6a764cf8-98ff-48e2-b158-9c201a3c4551";
-  final String testingUserId = 'Viv18Nov6-24c63baa-d589-494a-9969-8deb599ae4ef';
-  final String testingRoomId = "0d9b18d0-b377-49c2-9ac7-dccebf03e80d";
   GroupChannel? groupChannel;
 
   List<BaseMessage> messages = [];
+  String localSendBirdUserId = "";
 
   @override
   void onInit() {
@@ -32,9 +30,12 @@ class ConnectController extends GetxController{
         AppStrings.defaultUserId;
     var userName = GetStorage().read(AppStrings.localClientNameValue) ?? "";
     print("Required format is ${userId}-${userName}");
-    //TODO Reactivate old
-    //userId = "${userName}-${userId}";
-    userId = testingUserId;
+    if(Constants.isConnectLocalTesting){
+      userId = "${userName}-${userId}";
+    }else{
+      userId = Constants.loginSendBirdUserId;
+    }
+    localSendBirdUserId = userId;
     try {
       final sendbird = SendbirdSdk(appId: Constants.SENDBIRDAPPID);
       final user = await sendbird.connect(userId);
@@ -100,8 +101,11 @@ class ConnectController extends GetxController{
       Permission.bluetoothConnect
     ]);
     //Returns the future
+    if(localSendBirdUserId.isEmpty){
+      localSendBirdUserId = Constants.loginSendBirdUserId;
+    }
     try{
-      _channel.invokeMethod(Constants.VIDEOCALLSTARTFUNC,{'userId':testingUserId,"appId":Constants.SENDBIRDAPPID});
+      _channel.invokeMethod(Constants.VIDEOCALLSTARTFUNC,{'userId':localSendBirdUserId,"appId":Constants.SENDBIRDAPPID});
     }catch(onError, stacktrace){
       print("Video Call start failed some error $onError \n Stacktrace is $stacktrace");
     }
@@ -115,8 +119,26 @@ class ConnectController extends GetxController{
       Permission.bluetooth,
       Permission.bluetoothConnect
     ]);
+    if(localSendBirdUserId.isEmpty){
+      localSendBirdUserId = Constants.loginSendBirdUserId;
+    }
     try{
-      _channel.invokeMethod(Constants.VIDEOCALLJOINFUNC,{'roomId':roomID,"appId":Constants.SENDBIRDAPPID,'userId':testingUserId2});
+      _channel.invokeMethod(Constants.VIDEOCALLJOINFUNC,{'roomId':roomID,"appId":Constants.SENDBIRDAPPID,'userId':localSendBirdUserId});
+    }catch(onError, stacktrace){
+      print("Video Call start failed some error $onError \n Stacktrace is $stacktrace");
+    }
+  }
+
+  void joinTheVideoCallUser(String roomId, String userId) async{
+    //TODO Bluetooth Permission is pending
+    await _requestMultiplePermissions([
+      Permission.camera,
+      Permission.microphone,
+      Permission.bluetooth,
+      Permission.bluetoothConnect
+    ]);
+    try{
+      _channel.invokeMethod(Constants.VIDEOCALLJOINFUNC,{'roomId':roomId,"appId":Constants.SENDBIRDAPPID,'userId':userId});
     }catch(onError, stacktrace){
       print("Video Call start failed some error $onError \n Stacktrace is $stacktrace");
     }

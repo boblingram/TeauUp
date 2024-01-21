@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:teamup/controllers/ConnectController.dart';
 
 import 'enums.dart';
 
@@ -31,6 +33,10 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
     // ignore: avoid_print
     print(
         'notification action tapped with input: ${notificationResponse.input}');
+  }
+
+  if(notificationResponse.payload != null && notificationResponse.payload!.isNotEmpty){
+    startTheVideoCall(notificationResponse.payload!);
   }
 
   var payload = notificationResponse.payload;
@@ -92,15 +98,7 @@ class Notification_Service {
       android: androidNotificationDetails, iOS: iosNotificationDetails);
 
   void _onSelectNotification(String payload) {
-    try {
-      var temp = jsonDecode(payload);
-      print("Inside On Select Notification ${temp.runtimeType}");
-
-    } catch (onError, stacktrace) {
-      print("Json Error on Select Notification Error ${onError}");
-      print("StackTrace is ${stacktrace}");
-      print("PayLoad ${payload}");
-    }
+    startTheVideoCall(payload);
   }
 
   Future<void> init() async {
@@ -265,5 +263,24 @@ class Notification_Service {
             payload: jsonEncode(message.data));
       }*/
     });
+  }
+}
+
+void startTheVideoCall(String payload){
+  try {
+    var temp = jsonDecode(payload);
+
+    if (temp["roomId"] == null || temp["userId"] == null) {
+      print("Unable to start the video call as we don't have the the required data");
+      return;
+    }
+    print("Start the Video Call UserID ${temp["userId"]} \n roomId ${temp["roomId"]}");
+    ConnectController connectController = Get.find();
+    connectController.joinTheVideoCallUser(temp["roomId"].toString(), temp["userId"].toString());
+
+  } catch (onError, stacktrace) {
+    print("Json Error on Select Notification Error ${onError}");
+    print("StackTrace is ${stacktrace}");
+    print("PayLoad ${payload}");
   }
 }

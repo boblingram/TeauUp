@@ -30,3 +30,10 @@ For Android - Refer this "https://docs.flutter.dev/deployment/android#uploading-
 
 For iOS - Refer this 
     "https://docs.flutter.dev/deployment/ios#submitting-to-the-app-store"
+
+## Connect Module
+If you want to enable the dynamic testing. Please follow this steps
+Goto Constants.dart (in lib->utils folder) -> line number 22 make it false.
+
+Code is configured to run the local testing. If you want to change the login user id
+Goto Constants.dart (in lib->utils folder) -> line number 23 make it appropriate.
