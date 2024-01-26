@@ -67,9 +67,9 @@ class MainActivity : FlutterActivity() {
             if (call.method == "video_call_start_function") {
                 var userId = call.argument<String>("userId") ?: ""
                 var sendBirdID = call.argument<String>("appId") ?: ""
-                Toast.makeText(this, "Start Video Call $userId $sendBirdID, ", Toast.LENGTH_SHORT)
+                /*Toast.makeText(this, "Start Video Call $userId $sendBirdID, ", Toast.LENGTH_SHORT)
                     .show();
-                /*val intent = Intent(this, SignInActivity::class.java)
+                val intent = Intent(this, SignInActivity::class.java)
                 startActivity(intent)*/
                 SendBirdCall.init(applicationContext, sendBirdID)
                 //val userId = binding.editTextUserId.text.toString()
