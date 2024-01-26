@@ -26,30 +26,30 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>We need photo library access, to capture your photos</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>We need photo library access, to capture your photos</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>We need photo library access, to capture your photos</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>We need photo library access, to capture your photos</string>
 	<key>NSCameraUsageDescription</key>
 	<string>We need camera access, to capture photos.</string>
 	<key>NSContactsUsageDescription</key>
 	<string>This app requires contacts access to function properly.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We need photo library access, to capture your photos</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need photo library access, to capture your photos</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Please grant microphone access</string>
+	<key>NSMotionUsageDescription</key>
+	<string>We need photo library access, to capture your photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need photo library access, to capture your photos</string>
-    <key>NSCalendarsUsageDescription</key>
+	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>We need photo library access, to capture your photos</string>
-    <key>NSBluetoothPeripheralUsageDescription</key>
-	<string>We need photo library access, to capture your photos</string>
-    <key>NSAppleMusicUsageDescription</key>
-	<string>We need photo library access, to capture your photos</string>
-	<key>NSMotionUsageDescription</key>
-    <string>We need photo library access, to capture your photos</string>
-    <key>NSSpeechRecognitionUsageDescription</key>
-    <string>We need photo library access, to capture your photos</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>We need photo library access, to capture your photos</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>We need photo library access, to capture your photos</string>
-    <key>NSBluetoothAlwaysUsageDescription</key>
-    <string>We need photo library access, to capture your photos</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
@@ -58,7 +58,7 @@
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
+	<string></string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
