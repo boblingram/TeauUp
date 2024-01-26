@@ -31,9 +31,9 @@ class ConnectController extends GetxController{
     var userName = GetStorage().read(AppStrings.localClientNameValue) ?? "";
     print("Required format is ${userId}-${userName}");
     if(Constants.isConnectLocalTesting){
-      userId = "${userName}-${userId}";
-    }else{
       userId = Constants.loginSendBirdUserId;
+    }else{
+      userId = "${userName}-${userId}";
     }
     localSendBirdUserId = userId;
     try {
@@ -53,7 +53,7 @@ class ConnectController extends GetxController{
       switch(call.method){
         case "show_progress":
           print("Show Progress Bar");
-          showPLoader();
+          showPLoader(text: "Due to large number of users, there will be delay in rendering the video. Please do not close or press back. ",isExpanded: true);
           break;
         case "hide_progress":
           print("Hid Progress Bar");

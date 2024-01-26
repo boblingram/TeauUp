@@ -37,3 +37,6 @@ Goto Constants.dart (in lib->utils folder) -> line number 22 make it false.
 
 Code is configured to run the local testing. If you want to change the login user id
 Goto Constants.dart (in lib->utils folder) -> line number 23 make it appropriate.
+
+## Flutter Version on Which project is built
+Flutter Recommended == 3.10.0

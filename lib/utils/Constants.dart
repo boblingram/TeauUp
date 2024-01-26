@@ -20,7 +20,8 @@ class Constants{
   static String VIDEOCALLJOINFUNC = 'video_call_join_function';
 
   static bool isConnectLocalTesting = true;
-  static String loginSendBirdUserId = "Dr Rajan-6a764cf8-98ff-48e2-b158-9c201a3c4551";
+  //static String loginSendBirdUserId = "Dr Rajan-6a764cf8-98ff-48e2-b158-9c201a3c4551";
+  static String loginSendBirdUserId = "Viv18Nov6-24c63baa-d589-494a-9969-8deb599ae4ef";
   //static String testingUserId2 = 'Viv18Nov6-24c63baa-d589-494a-9969-8deb599ae4ef';
   //static String testingRoomId = "0d9b18d0-b377-49c2-9ac7-dccebf03e80d";
 }
@@ -29,10 +30,10 @@ int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
 }
 
-showPLoader({String text = "Please wait...", String? progressColor}) {
+showPLoader({String text = "Please wait...", String? progressColor, bool isExpanded = false}) {
   Get.dialog(
     Center(
-      child: ProgressBarWidget(text: "$text", progressColor: progressColor,),
+      child: ProgressBarWidget(text: "$text", progressColor: progressColor,isExpanded: isExpanded,),
     ),
     barrierDismissible: false,
   );

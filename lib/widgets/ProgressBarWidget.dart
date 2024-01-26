@@ -6,7 +6,8 @@ import 'package:teamup/utils/app_colors.dart';
 class ProgressBarWidget extends StatelessWidget {
   final String? text;
   final String? progressColor;
-  const ProgressBarWidget({Key? key, this.text, this.progressColor}) : super(key: key);
+  final bool isExpanded;
+  const ProgressBarWidget({Key? key, this.text, this.progressColor, this.isExpanded = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class ProgressBarWidget extends StatelessWidget {
                 color: HexColor(progressColor ?? AppColors.progressBarC),
               ),
               this.text != null ? SizedBox(width: 28) : Container(),
-              this.text != null ? Text("${this.text}") : Container(),
+              this.text != null ? isExpanded ? Expanded(child: Text("${this.text}")): Text("${this.text}")  : Container(),
             ],
           ),
         ),
