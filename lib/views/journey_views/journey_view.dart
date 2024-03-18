@@ -7,6 +7,8 @@ import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/widgets/ErrorListWidget.dart';
 
 import '../../controllers/VEGoalController.dart';
+import '../../utils/GoalIconandColorStatic.dart';
+import '../../utils/app_Images.dart';
 import '../../utils/app_colors.dart';
 
 class Journey_View extends StatefulWidget {
@@ -14,7 +16,13 @@ class Journey_View extends StatefulWidget {
   final String goalId;
   final String? participantId;
   final bool showJourney;
-  const Journey_View({super.key, this.isGoalTab = false, this.goalId = "", this.participantId, this.showJourney = true});
+
+  const Journey_View(
+      {super.key,
+      this.isGoalTab = false,
+      this.goalId = "",
+      this.participantId,
+      this.showJourney = true});
 
   @override
   State<Journey_View> createState() => _Journey_ViewState();
@@ -33,13 +41,16 @@ class _Journey_ViewState extends State<Journey_View> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {postUIBuild();});
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      postUIBuild();
+    });
   }
 
-  void postUIBuild(){
-    if(widget.showJourney){
-      veGoalController.getJourneyData(localGoalId: widget.goalId,newUserId: widget.participantId);
-    }else{
+  void postUIBuild() {
+    if (widget.showJourney) {
+      veGoalController.getJourneyData(
+          localGoalId: widget.goalId, newUserId: widget.participantId);
+    } else {
       veGoalController.restrictedJourneyAccess();
     }
     //veGoalController.getFromJourneyJson(localIsJourney: widget.isGoalTab);
@@ -52,36 +63,46 @@ class _Journey_ViewState extends State<Journey_View> {
     bool hasUpcomingDateAssigned = false;
 
     return Container(
-        child: GetBuilder<VEGoalController>(
-          builder: (veGoalController){
-            switch (veGoalController.journeyNetworkEnum) {
-              case NetworkCallEnum.Completed:
-                return veGoalController.journeyGoalList.isNotEmpty
-                    ? RefreshIndicator(
-                  onRefresh: ()async{
-                    veGoalController.refreshJourneyData(localGoalId: widget.goalId,newUserId: widget.participantId);
+        child: GetBuilder<VEGoalController>(builder: (veGoalController) {
+      switch (veGoalController.journeyNetworkEnum) {
+        case NetworkCallEnum.Completed:
+          return veGoalController.journeyGoalList.isNotEmpty
+              ? RefreshIndicator(
+                  onRefresh: () async {
+                    veGoalController.refreshJourneyData(
+                        localGoalId: widget.goalId,
+                        newUserId: widget.participantId);
                   },
                   color: Colors.red,
-                      child: ListView.builder(
+                  child: ListView.builder(
                       itemCount: veGoalController.journeyGoalList.length,
                       itemBuilder: (context, index) {
-                        var item = veGoalController.journeyGoalList.elementAt(index);
+                        var item =
+                            veGoalController.journeyGoalList.elementAt(index);
                         DateTime newDate = DateTime.tryParse(item.date) ??
                             veGoalController.currentDateTime;
                         if (index == 0) {
                           showJourneyDate = true;
                         } else {
                           DateTime oldDate = DateTime.tryParse(veGoalController
-                              .journeyGoalList
-                              .elementAt(index - 1)
-                              .date) ??
+                                  .journeyGoalList
+                                  .elementAt(index - 1)
+                                  .date) ??
                               veGoalController.currentDateTime;
                           showJourneyDate =
-                          !veGoalController.checkJDate(oldDate, newDate);
+                              !veGoalController.checkJDate(oldDate, newDate);
                         }
 
                         String section =
                             ""; // Initialize section for the current item.
+
+                        var dateDifference = newDate
+                            .difference(veGoalController.currentDateTime);
+                        print("Date Difference is ${dateDifference.inDays}");
+
+                        var isLastItem = (index + 1) ==
+                            veGoalController.journeyGoalList.length && dateDifference.inDays > 45;
+                        print("Last Item");
 
                         if (veGoalController.checkJDate(
                             veGoalController.currentDateTime, newDate)) {
@@ -112,11 +133,13 @@ class _Journey_ViewState extends State<Journey_View> {
                         }
 
                         // Determine if the section text should be displayed.
-                        bool showSectionText = showJourneyDate && section.isNotEmpty;
+                        bool showSectionText =
+                            showJourneyDate && section.isNotEmpty;
 
                         if (showSectionText && section == "Upcoming") {
                           if (upcomingDate != null &&
-                              veGoalController.checkJDate(upcomingDate!, newDate)) {
+                              veGoalController.checkJDate(
+                                  upcomingDate!, newDate)) {
                           } else {
                             showSectionText = false;
                           }
@@ -148,40 +171,41 @@ class _Journey_ViewState extends State<Journey_View> {
           journeyDateSorted["Yesterday"] = true;
         }
       }*/
-                        var journeyStatus = veGoalController.convertJStatusToJourney(
-                            item.status, item.date);
+                        var journeyStatus = veGoalController
+                            .convertJStatusToJourney(item.status, item.date);
 
                         return IndividualJourneyItemWidget(
                           rowIndex: index,
                           showButtons: journeyStatus != JourneyStatus.Failed &&
                               journeyStatus != JourneyStatus.Success,
+                          isDateBold: section.toLowerCase() == "upcoming" ||
+                              section.toLowerCase() == "today",
                           showDate: showJourneyDate,
-                          timeText:
-                          veGoalController.convertJTimeToTimeText(item.time),
-                          dateText:
-                          veGoalController.convertJDatetoDateText(item.date),
+                          showLastItem: isLastItem,
+                          timeText: veGoalController
+                              .convertJTimeToTimeText(item.time),
+                          dateText: veGoalController
+                              .convertJDatetoDateText(item.date),
                           weekDayText:
-                          veGoalController.convertJDateToDayText(item.date),
-                          nameText:
-                          veGoalController.convertStringToNotNull(item.name),
-                          descText:
-                          veGoalController.convertStringToNotNull(item.desc),
+                              veGoalController.convertJDateToDayText(item.date),
+                          nameText: veGoalController
+                              .convertStringToNotNull(item.name),
+                          descText: veGoalController
+                              .convertStringToNotNull(item.desc),
                           journeyStatus: journeyStatus,
                           showDateSorted: showSectionText,
                           dateSortedText: section,
                           taskId: item.id.toString() ?? "",
                         );
                       }),
-                    )
-                    : ListErrorWidget(text: veGoalController.journeyErrorText);
-              case NetworkCallEnum.Error:
-                return ListErrorWidget(
-                    text: "Failed to retrieve journey data.");
-              case NetworkCallEnum.Loading:
-                return ListLoadingWidget();
-            }
-          })
-    );
+                )
+              : ListErrorWidget(text: veGoalController.journeyErrorText);
+        case NetworkCallEnum.Error:
+          return ListErrorWidget(text: "Failed to retrieve journey data.");
+        case NetworkCallEnum.Loading:
+          return ListLoadingWidget();
+      }
+    }));
   }
 }
 
@@ -194,13 +218,16 @@ class IndividualJourneyItemWidget extends StatelessWidget {
   final bool showButtons;
   final bool showDate;
   final bool showDateSorted;
+  final bool isDateBold;
   final String dateSortedText;
   final JourneyStatus journeyStatus;
   final String taskId;
   final int rowIndex;
+  final bool showLastItem;
 
   IndividualJourneyItemWidget(
       {super.key,
+      this.showLastItem = false,
       this.showButtons = false,
       this.showDate = false,
       this.dateText = "",
@@ -212,6 +239,7 @@ class IndividualJourneyItemWidget extends StatelessWidget {
       this.showDateSorted = false,
       this.dateSortedText = "",
       this.taskId = "",
+      this.isDateBold = false,
       required this.rowIndex});
 
   final VEGoalController veGoalController = Get.find();
@@ -324,13 +352,21 @@ class IndividualJourneyItemWidget extends StatelessWidget {
                               dateText,
                               maxLines: 1,
                               textAlign: TextAlign.end,
-                              style: TextStyle(fontSize: 10.sp),
+                              style: TextStyle(
+                                  fontSize: 10.sp,
+                                  fontWeight: isDateBold
+                                      ? FontWeight.bold
+                                      : FontWeight.normal),
                             ),
                             Text(
                               weekDayText,
                               maxLines: 1,
                               textAlign: TextAlign.end,
-                              style: TextStyle(fontSize: 10.sp),
+                              style: TextStyle(
+                                  fontSize: 10.sp,
+                                  fontWeight: isDateBold
+                                      ? FontWeight.bold
+                                      : FontWeight.normal),
                             )
                           ],
                         )
@@ -338,26 +374,92 @@ class IndividualJourneyItemWidget extends StatelessWidget {
               //Activity Tick with Vertical
               Expanded(
                   flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      getJourneyStatus(),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      ConstrainedBox(
-                          constraints:
-                              BoxConstraints(minHeight: 35.0, maxHeight: 60),
-                          child: Container(
-                            width: 2,
-                            color: Colors.grey.shade300,
-                          ))
-                    ],
-                  )),
+                  child: showLastItem
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 10.w,
+                              width: 10.w,
+                              child: Image.asset(AppImages.selectedGoalB),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            getJourneyStatus(),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            ConstrainedBox(
+                                constraints: BoxConstraints(
+                                    minHeight: 35.0, maxHeight: 60),
+                                child: Container(
+                                  width: 2,
+                                  color: Colors.grey.shade300,
+                                ))
+                          ],
+                        )),
               //Name Description with Mark as Complete and Skip it
               Expanded(
                   flex: 6,
-                  child: Column(
+                  child: showLastItem ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: Text(
+                              "Showing activities of next 30 days",
+                              style: TextStyle(
+                                  fontSize: 11.sp, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: HexColor(AppColors.journeyColor),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 2, vertical: 2),
+                              child: ClipRRect(
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Icon(
+                                        Icons.access_time,
+                                        size: 9.sp,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 0.5.w,
+                                    ),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                        timeText,
+                                        style: TextStyle(fontSize: 9.sp),
+                                        maxLines: 1,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ): Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
@@ -419,8 +521,10 @@ class IndividualJourneyItemWidget extends StatelessWidget {
                                   text: AppStrings.defaultMarkasComplete,
                                   onTap: () {
                                     veGoalController.updateJourneyMutation(
-                                        JourneyMutationEnum.MarkasComplete, rowIndex,
-                                        taskId: taskId,);
+                                      JourneyMutationEnum.MarkasComplete,
+                                      rowIndex,
+                                      taskId: taskId,
+                                    );
                                   },
                                 ),
                                 SizedBox(
@@ -437,7 +541,8 @@ class IndividualJourneyItemWidget extends StatelessWidget {
                                       fontSize: 12, color: Colors.red),
                                   onTap: () {
                                     veGoalController.updateJourneyMutation(
-                                        JourneyMutationEnum.SkipIt,rowIndex,taskId: taskId);
+                                        JourneyMutationEnum.SkipIt, rowIndex,
+                                        taskId: taskId);
                                   },
                                 )
                               ],

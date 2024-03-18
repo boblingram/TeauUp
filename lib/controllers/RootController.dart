@@ -100,7 +100,7 @@ class RootController extends GetxController{
     navigateToHomeView(milliseconds: 100);
   }
 
-  void newRegistrationToServer(String name) async{
+  void newRegistrationToServer(String name, String phone) async{
     if(deviceId.isEmpty || fingerprint.isEmpty){
       print("Generation Aborted Due to Missing Data");
       return null;
@@ -108,7 +108,7 @@ class RootController extends GetxController{
     var fcmValue = localStorage.read(AppStrings.localFCMValue) ?? AppStrings.emptyValue;
     print("Name is $name, DeviceId is $deviceId, FingerPrint is $fingerprint, FCM is $fcmValue");
     String mutation = '''mutation MyMutation {
-  registerUser(deviceId: "$deviceId", fingerprint: "$fingerprint", fullname: "$name", FCMToken: "$fcmValue") {
+  registerUser(deviceId: "$deviceId", fingerprint: "$fingerprint", fullname: "$name", FCMToken: "$fcmValue", ph: "$phone") {
     authToken {
       JWTString
       authKey
@@ -122,6 +122,7 @@ class RootController extends GetxController{
   }
 }
 ''';
+    //print("Register Mutation is ${mutation}");
     showPLoader();
     var result = await GraphQLService.tempClient
         .mutate(MutationOptions(document: gql(mutation)));

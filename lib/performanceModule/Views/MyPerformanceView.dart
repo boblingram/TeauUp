@@ -54,7 +54,15 @@ class _MyPerformanceViewState extends State<MyPerformanceView> {
                 SizedBox(
                   width: 8,
                 ),
-                Obx(() => DropdownButton(
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  child: Text(
+                    "All Goals",
+                    style:
+                    TextStyle(fontSize: 12.sp),
+                  ),
+                ),
+                /*Obx(() => DropdownButton(
                       value:
                           performanceController.dropStreakSelectedValue.value,
                       items: performanceController.dropStreakDownList,
@@ -66,7 +74,7 @@ class _MyPerformanceViewState extends State<MyPerformanceView> {
                         height: 0,
                         color: Colors.transparent,
                       ),
-                    ))
+                    ))*/
               ],
             ),
             SeparatorSection(),
@@ -88,7 +96,7 @@ class _MyPerformanceViewState extends State<MyPerformanceView> {
             SeparatorSection(),
 
             ///Compare Activities
-            Row(
+            /*Row(
               children: [
                 Text(
                   "Compare Activities",
@@ -102,7 +110,7 @@ class _MyPerformanceViewState extends State<MyPerformanceView> {
               AppImages.compareActivitiesImage,
               width: 100.w,
             ),
-            SeparatorSection(),
+            SeparatorSection(),*/
 
             ///Earned
             Row(
@@ -115,13 +123,14 @@ class _MyPerformanceViewState extends State<MyPerformanceView> {
                 SizedBox(
                   width: 10,
                 ),
-                Obx(() => DropdownButton(
+                Container(margin:EdgeInsets.symmetric(vertical: 8),child: Text("All goals",style: TextStyle(fontSize: 12.sp),)),
+                /*Obx(() => DropdownButton(
                     value: performanceController.dropEarnedSelectedValue.value,
                     items: performanceController.dropEarnedDownList,
                     onChanged: (value) {
                       performanceController.dropEarnedSelectedValue.value =
                           value ?? 1;
-                    }))
+                    }))*/
               ],
             ),
             SeparatorSection(),

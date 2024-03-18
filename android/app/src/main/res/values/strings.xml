@@ -41,7 +41,7 @@
     <string name="preview_title">Enter room</string>
     <string name="preview_mute_my_audio">Mute my audio</string>
     <string name="preview_turn_off_my_video">Turn off my video</string>
-    <string name="preview_enter">Enter</string>
+    <string name="preview_enter">Join</string>
 
     <!-- GroupCallFragment -->
     <string name="group_call_settings">Settings</string>

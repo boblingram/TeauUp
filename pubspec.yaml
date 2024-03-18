@@ -58,6 +58,7 @@ dependencies:
   file_picker: ^6.0.0
   open_file:
   sendbird_sdk: ^3.2.13
+  country_picker:
   dash_chat_2:
 
   #Register _ Module

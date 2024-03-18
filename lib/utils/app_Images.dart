@@ -40,6 +40,8 @@ class AppImages {
   static String swimmingIcon = "${imagePath}swimming_icon.png";
   static String addIcon = "${imagePath}add_icon.png";
 
+  static String teampIcon = '${imagePath}teamup_round.png';
+
 
 
 }

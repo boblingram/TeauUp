@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:get/get.dart';
 import 'package:sendbird_sdk/sendbird_sdk.dart';
+import 'package:sizer/sizer.dart';
 import 'dart:async';
 
 import 'package:teamup/controllers/ConnectController.dart';
@@ -75,9 +76,38 @@ class GroupChannelViewState extends State<GroupChannelView>
       leading: BackButton(color: Colors.grey.shade700),
       title: Container(
         width: 250,
-        child: Text(
-          [for (final member in channel.members) member.nickname].join(", "),
-          style: TextStyle(color: Colors.grey.shade900),
+        child: InkWell(
+          onTap: (){
+            Get.bottomSheet(Container(
+              color: Colors.white,
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                children: [
+                  Row(children: [
+                    IconButton(onPressed: (){
+                      Get.back();
+                    }, icon: Icon(Icons.close)),
+                    Text("List of Participants",style: TextStyle(fontSize: 14.sp),)
+                  ],),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 13.0),
+                      child: ListView.builder(
+                        itemCount: channel.members.length,
+                          itemBuilder: (context,index){
+                          var name = channel.members;
+                        return Text("${name.elementAt(index).nickname}",style: TextStyle(fontSize: 12.sp),);
+                      }),
+                    ),
+                  ),
+                ],
+              ),
+            ));
+          },
+          child: Text(
+           channel.name ?? ( [for (final member in channel.members) member.nickname].join(", ")),
+            style: TextStyle(color: Colors.grey.shade900),
+          ),
         ),
       ),
       actions: [
@@ -123,7 +153,7 @@ class GroupChannelViewState extends State<GroupChannelView>
             inputOptions: InputOptions(
               sendOnEnter: true,
               alwaysShowSend: true,
-              sendButtonBuilder: defaultSendButton(color: Colors.red),
+              sendButtonBuilder: defaultSendButton(color: Colors.red.withOpacity(0.75)),
               textInputAction: TextInputAction.send,
               inputDecoration: InputDecoration(
                 isDense: true,
@@ -164,7 +194,7 @@ class GroupChannelViewState extends State<GroupChannelView>
             messageOptions: MessageOptions(
                 showCurrentUserAvatar: false,
                 showOtherUsersAvatar: true,
-                currentUserContainerColor: Colors.red,
+                currentUserContainerColor: Colors.red.withOpacity(0.75),
                 onPressMessage: (message) {
                   var roomId = message.customProperties?["roomId"];
                   if(roomId != null && message.text.toLowerCase().contains("click to join the video room")){
@@ -173,6 +203,7 @@ class GroupChannelViewState extends State<GroupChannelView>
                 },
                 messageTextBuilder: (chatMessage, previousMessage, nextMessage) {
                   var isOwnMessage = chatMessage.user.id == user.id;
+                  var firstName = chatMessage.user.firstName ?? "";
                   if (chatMessage.text.toLowerCase().contains("click to join the video room")) {
                     return Container(
                       child: Row(
@@ -186,7 +217,7 @@ class GroupChannelViewState extends State<GroupChannelView>
                           Expanded(
                               flex: 5,
                               child: Text(
-                                "Click to join the video room",
+                                "$firstName has started video call. Click to join the video room",
                                 style: TextStyle(color: isOwnMessage ? Colors.white: Colors.black),
                               ))
                         ],

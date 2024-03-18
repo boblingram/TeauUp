@@ -21,7 +21,7 @@ class AppColors {
   static String performanceFBC = "#5B5B5B";
 
   //Bottom Bar Color
-  static String nonSelectedColor = "#B4B4B4";
+  static String nonSelectedColor = "#000000";
   static String selectedColor = "#E52137";
 
   //Invite Goal Color
@@ -54,6 +54,7 @@ class AppColors {
   static String swimmingIconBG = "#559166";
   static String meditationIconBG = "#A9A78B";
   static String sadhanaIconBG = "#94C973";
+  static String teamupIconBG = "#FF0000BF";
 
   //Goal Screen 2
   static String describeGoalColor = "#429488";

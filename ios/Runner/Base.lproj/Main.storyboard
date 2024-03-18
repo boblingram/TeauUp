@@ -212,13 +212,13 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YkK-Jh-7iE">
+                            <button opaque="NO" alpha="0.75" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YkK-Jh-7iE">
                                 <rect key="frame" x="24" y="592" width="345" height="48"/>
-                                <color key="backgroundColor" red="0.45230805870000002" green="0.31918981670000002" blue="0.91377454999999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="backgroundColor" systemColor="systemRedColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="umg-Ut-sk6"/>
                                 </constraints>
-                                <state key="normal" title="Enter">
+                                <state key="normal" title="Join">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <userDefinedRuntimeAttributes>
@@ -954,10 +954,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VOg-K7-8xV">
-                                <rect key="frame" x="23.999999999999972" y="124" width="472.33333333333326" height="225"/>
+                                <rect key="frame" x="24" y="124" width="345" height="225"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start a group call in a room and share the room ID with others." lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tl7-6i-OLD">
-                                        <rect key="frame" x="24" y="94" width="416.33333333333331" height="35"/>
+                                        <rect key="frame" x="24" y="94" width="289" height="35"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="35" id="Ii2-ch-HkE"/>
                                         </constraints>
@@ -966,7 +966,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iKm-mK-vNr">
-                                        <rect key="frame" x="24" y="153" width="424.33333333333331" height="48"/>
+                                        <rect key="frame" x="24" y="153" width="297" height="48"/>
                                         <color key="backgroundColor" red="0.4549019608" green="0.18039215689999999" blue="0.86666666670000003" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="48" id="cKC-Xz-Jxa"/>
@@ -1035,10 +1035,10 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fzR-qp-eye">
-                                <rect key="frame" x="23.999999999999972" y="365" width="472.33333333333326" height="233"/>
+                                <rect key="frame" x="24" y="365" width="345" height="233"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter an existing room to participate in a group call." lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UY4-5x-8CZ">
-                                        <rect key="frame" x="24" y="94" width="416.33333333333331" height="35"/>
+                                        <rect key="frame" x="24" y="94" width="289" height="35"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="35" id="a4E-Ja-jlM"/>
                                         </constraints>
@@ -1047,7 +1047,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Room ID" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="yUg-C8-QXK">
-                                        <rect key="frame" x="24" y="153" width="424.33333333333331" height="56"/>
+                                        <rect key="frame" x="24" y="153" width="297" height="56"/>
                                         <color key="backgroundColor" red="0.94117647059999998" green="0.94117647059999998" blue="0.94117647059999998" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="56" id="AHO-Fr-Cg0"/>
@@ -1072,7 +1072,7 @@
                                         </connections>
                                     </textField>
                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zjr-1T-NPx">
-                                        <rect key="frame" x="396.33333333333331" y="165" width="40" height="32"/>
+                                        <rect key="frame" x="269" y="165" width="40" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="40" id="rZk-H7-ge1"/>
                                         </constraints>
@@ -1137,10 +1137,10 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OW0-Kz-ijW">
-                                <rect key="frame" x="0.0" y="44" width="520.33333333333337" height="56"/>
+                                <rect key="frame" x="0.0" y="44" width="393" height="56"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DTG-Cg-xKy">
-                                        <rect key="frame" x="0.0" y="56" width="520.33333333333337" height="1"/>
+                                        <rect key="frame" x="0.0" y="56" width="393" height="1"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.12" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="1" id="kDa-Qc-4TN"/>
@@ -1186,7 +1186,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bX3-GV-4RX">
-                                <rect key="frame" x="0.0" y="0.0" width="520.33333333333337" height="44"/>
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
                         </subviews>
@@ -1544,7 +1544,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="fGX-ap-gDA"/>
+        <segue reference="Aif-39-Ap3"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="btnAudioOff" width="64" height="64"/>
@@ -1571,6 +1571,9 @@
         </systemColor>
         <systemColor name="systemGray3Color">
             <color red="0.78039215689999997" green="0.78039215689999997" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

@@ -23,9 +23,10 @@ class CompareGoalWidget extends StatelessWidget {
         Row(children: [
           Text("Time Period:",style: TextStyle(fontSize: 14.sp),),
           SizedBox(width: 5),
-          Obx(()=>DropdownButton(value: performanceController.dropCTimePeriodValue.value, items: performanceController.dropCTimePeriodList, onChanged: (value){
+          Container(margin:EdgeInsets.symmetric(vertical: 8),child: Text("All time",style: TextStyle(fontSize: 12.sp),)),
+          /*Obx(()=>DropdownButton(value: performanceController.dropCTimePeriodValue.value, items: performanceController.dropCTimePeriodList, onChanged: (value){
             performanceController.dropCTimePeriodValue.value = value ?? 1;
-          }))
+          }))*/
         ],),
         SizedBox(height:30.h,child: BarChartHorizontal()),
         Row(

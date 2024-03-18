@@ -41,7 +41,7 @@ class SizedBadgedList extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           var item = badgeList.elementAt(index);
           return Container(
-            width: 10.h,
+            width: 17.h,
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Column(
               children: <Widget>[
@@ -52,7 +52,7 @@ class SizedBadgedList extends StatelessWidget {
                       return Image.network(IMAGEURL);
                     },),
                 ),
-                Text(item.name),
+                Text(item.name,maxLines: 1,),
               ],
             ),
           );

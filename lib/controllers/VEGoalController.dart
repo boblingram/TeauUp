@@ -196,6 +196,8 @@ class VEGoalController extends GetxController {
 
   void getJourneyData({String localGoalId = "", String? newUserId}) async {
     String queryData = "";
+    //Testing purpose
+    //userId = "7abb22f3-9520-468a-beb1-9903d253d088";
     if (localGoalId.isEmpty) {
       queryData = '''query MyQuery {
   userJourney(userId: "$userId") {

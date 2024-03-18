@@ -30,9 +30,10 @@ class EarnedWidget extends StatelessWidget {
             children: [
               Text("Time Period:",style: TextStyle(fontSize: 14.sp),),
               SizedBox(width: 5),
-              Obx(()=>DropdownButton(value: performanceController.dropETimePeriodValue.value, items: performanceController.dropETimePeriodList, onChanged: (value){
+              Container(margin:EdgeInsets.symmetric(vertical: 8),child: Text("All time",style: TextStyle(fontSize: 12.sp),)),
+              /*Obx(()=>DropdownButton(value: performanceController.dropETimePeriodValue.value, items: performanceController.dropETimePeriodList, onChanged: (value){
                 performanceController.dropETimePeriodValue.value = value ?? 1;
-              }))
+              }))*/
             ],
           ),
           Text("${performanceController.totalXP.value} XP")

@@ -130,6 +130,7 @@ class ChannelListViewState extends State<ChannelListView>
         }
         print("Channel Length is ${snapshot.data?.length}");
         List<GroupChannel> channels = snapshot.data as List<GroupChannel>;
+
         return Container(
           color: Colors.white,
           child: ListView.builder(
@@ -142,6 +143,13 @@ class ChannelListViewState extends State<ChannelListView>
                   var tempDate = DateTime.fromMillisecondsSinceEpoch(channel.lastMessage?.createdAt ?? 0);
                   timeAgoText = timeago.format(tempDate);
                 }
+
+                //channel.getMetaData(keys)
+                var channelGoalType = channel.getMetaData(['goaltype']);
+                if (channelGoalType.runtimeType != String || channelGoalType.toString().isEmpty){
+                }
+
+                print("Channel Goal Type is ${channelGoalType} and Channel name is ${channel.name}");
                 return InkWell(
                   onTap: (){
                     gotoChannel(channel.channelUrl);
@@ -155,15 +163,9 @@ class ChannelListViewState extends State<ChannelListView>
                           Expanded(
                             flex: 1,
                             child: Container(
-                              height: 11.w,
-                              width: 11.w,
-                              decoration: BoxDecoration(
-                                color: HexColor(GoalIconandColorStatic.getColorName("Wellness")),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Padding(
-                                  padding: EdgeInsets.all(1.w),
-                                  child: Image.asset(GoalIconandColorStatic.getImageName("Wellness"))),
+                              height: 12.w,
+                              width: 12.w,
+                              child: Image.asset(GoalIconandColorStatic.getImageName("Teamup")),
                             ),
                           ),
                           const SizedBox(
@@ -178,10 +180,11 @@ class ChannelListViewState extends State<ChannelListView>
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
+                                    //channel.getMetaData(keys) - goaltype is key name
                                     Expanded(
                                       flex: 2,
-                                      child: Text([for (final member in channel.members) member.nickname]
-                                          .join(", "),maxLines: 1,style: TextStyle(fontWeight: FontWeight.w500,fontSize: 14.sp),),
+                                      child: Text(channel.name ?? ([for (final member in channel.members) member.nickname]
+                                          .join(", ")),maxLines: 1,style: TextStyle(fontWeight: FontWeight.w500,fontSize: 14.sp),),
                                     ),
                                     Expanded(flex: 1,child: Text(timeAgoText,textAlign: TextAlign.right,))
                                   ],

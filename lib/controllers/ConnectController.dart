@@ -17,6 +17,8 @@ class ConnectController extends GetxController{
   List<BaseMessage> messages = [];
   String localSendBirdUserId = "";
 
+  var globalUserName = "";
+
   @override
   void onInit() {
     super.onInit();
@@ -29,6 +31,7 @@ class ConnectController extends GetxController{
     var userId = GetStorage().read(AppStrings.localClientIdValue) ??
         AppStrings.defaultUserId;
     var userName = GetStorage().read(AppStrings.localClientNameValue) ?? "";
+    globalUserName = userName;
     print("Required format is ${userId}-${userName}");
     if(Constants.isConnectLocalTesting){
       userId = Constants.loginSendBirdUserId;
@@ -147,10 +150,12 @@ class ConnectController extends GetxController{
   //Click to Join the video room
   void sendVideoCallMessage(String roomId){
     if(groupChannel != null){
-      UserMessageParams userMessageParams = UserMessageParams(message: "Click to Join the video room",data: roomId);
+      UserMessageParams userMessageParams = UserMessageParams(message: "$globalUserName has started a video call. Click to join the video room",data: roomId);
       var userMessage = groupChannel!.sendUserMessage(userMessageParams);
       messages.insert(0,userMessage);
       update();
     }
   }
 }
+
+//Old Message - Click to Join the video room

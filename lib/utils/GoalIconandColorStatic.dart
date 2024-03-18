@@ -15,6 +15,7 @@ class GoalIconandColorStatic{
     "Sadhana",
     "Meditation",
     "Swimming",
+    "Teamup",
     "Custom"
   ];
 
@@ -30,7 +31,8 @@ class GoalIconandColorStatic{
     AppColors.sadhanaIconBG,
     AppColors.meditationIconBG,
     AppColors.swimmingIconBG,
-    AppColors.customIconBG
+    AppColors.customIconBG,
+    AppColors.teamupIconBG
   ];
 
   static String getColorName(String selectedGoal) {
@@ -57,6 +59,8 @@ class GoalIconandColorStatic{
         return AppColors.meditationIconBG;
       case "Swimming":
         return AppColors.swimmingIconBG;
+      case "Teampup":
+        return AppColors.teamupIconBG;
       default:
         return AppColors.customIconBG;
     }
@@ -86,6 +90,8 @@ class GoalIconandColorStatic{
         return AppImages.swimmingIcon;
       case "Cycling":
         return AppImages.cyclingIcon;
+      case "Teamup":
+        return AppImages.teampIcon;
       default:
         return AppImages.addIcon;
     }

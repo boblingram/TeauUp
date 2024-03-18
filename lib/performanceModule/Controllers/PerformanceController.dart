@@ -109,6 +109,7 @@ class PerformanceController extends GetxController{
     leaderboardList.value = leaderList.leaderBoard;
     print("Length of List is ${leaderList.leaderBoard.length}");
     updateLeaderboardNetworkEnum(NetworkCallEnum.Completed);
+
   }
 
 

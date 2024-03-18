@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 
 mixin BaseClass {
   // Makes a screen to potrait only
@@ -182,6 +183,7 @@ mixin BaseClass {
     Get.snackbar(title, message,
         colorText: Colors.black,
         backgroundColor: Colors.red,
+        titleText: Text(title,style: TextStyle(fontStyle: FontStyle.italic,fontSize: 14.sp),),
         duration: const Duration(milliseconds: 1500));
   }
 
