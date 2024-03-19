@@ -196,7 +196,7 @@ class VEGoalController extends GetxController {
 
   void getJourneyData({String localGoalId = "", String? newUserId}) async {
     String queryData = "";
-    //TODO - Revert Testing purpose
+    //Revert Testing purpose
     //userId = "2e1a8f17-fde1-4cb7-9e81-41afb6c9f9ad";
     if (localGoalId.isEmpty) {
       queryData = '''query MyQuery {

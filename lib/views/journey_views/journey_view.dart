@@ -180,7 +180,7 @@ class _Journey_ViewState extends State<Journey_View> {
                         return IndividualJourneyItemWidget(
                           rowIndex: index,
                           showButtons: journeyStatus != JourneyStatus.Failed &&
-                              journeyStatus != JourneyStatus.Success,
+                              journeyStatus != JourneyStatus.Success && section.toString().toLowerCase() != "upcoming",
                           isDateBold: section.toLowerCase() == "upcoming" ||
                               section.toLowerCase() == "today",
                           showDate: showJourneyDate,
@@ -413,7 +413,7 @@ class IndividualJourneyItemWidget extends StatelessWidget {
               //Name Description with Mark as Complete and Skip it
               Expanded(
                   flex: 6,
-                  child: showLastItemLabel ? Column(
+                  child: showLastItem ? (showLastItemLabel ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
@@ -465,7 +465,7 @@ class IndividualJourneyItemWidget extends StatelessWidget {
                         ],
                       ),
                     ],
-                  ): Column(
+                  ) : Container()) : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(

@@ -43,7 +43,7 @@ class AppStrings {
 
   //Journey
   static const String defaultMarkasComplete = "Mark as Complete";
-  static const String defaultSkipText = "Skipped It";
+  static const String defaultSkipText = "Skip It";
 
   //Notification
   static const String notificationText = "Notifications";
