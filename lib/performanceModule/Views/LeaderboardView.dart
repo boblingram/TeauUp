@@ -102,22 +102,29 @@ class CompletedLeaderboardList extends StatelessWidget {
     return Obx(() => performanceController.leaderboardList.value.isEmpty
         ? Text("No Data")
         : RefreshIndicator(
-          onRefresh: () async{ performanceController.refreshLeaderboardList();  },
-      color: Colors.red,
-          child: ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-              itemCount: performanceController.leaderboardList.value.length,
-              shrinkWrap: true,
-              itemBuilder: (context, position) {
-                var leaderboard = performanceController.leaderboardList.value
-                    .elementAt(position);
-                return LeaderboardListItem(
-                    leaderboard: leaderboard,
-                    position: position,
-                    userId: performanceController.userID);
+            onRefresh: () async {
+              performanceController.refreshLeaderboardList();
+            },
+            color: Colors.red,
+            child: GetBuilder<PerformanceController>(
+              builder: (performanceController) {
+                return ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: performanceController.leaderboardList.value.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, position) {
+                    var leaderboard = performanceController
+                        .leaderboardList.value
+                        .elementAt(position);
+                    return LeaderboardListItem(
+                        leaderboard: leaderboard,
+                        position: position,
+                        userId: performanceController.userID);
+                  },
+                );
               },
             ),
-        ));
+          ));
   }
 }
 
@@ -207,7 +214,7 @@ class _LeaderboardListItemState extends State<LeaderboardListItem> {
         children: [
           GestureDetector(
             onTap: () async {
-              if (!isExpanded) {
+              /*if (!isExpanded) {
                 leaderboardItemExpansionModel = await performanceController
                     .fetchExpansionValue(widget.leaderboard.userId);
                 String newDescription = "OK Now";
@@ -220,7 +227,7 @@ class _LeaderboardListItemState extends State<LeaderboardListItem> {
                   description = null;
                   isExpanded = false;
                 });
-              }
+              }*/
             },
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),

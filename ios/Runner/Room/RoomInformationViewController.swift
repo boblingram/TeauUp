@@ -20,6 +20,7 @@ class RoomInformationViewController: UIViewController, RoomDataSource {
         
         roomIdLabel.text = room.roomId
         roomNameLabel.text = room.customItems["title"]
-        nicknameLabel.text = "User ID: \(room.createdBy)"
+        nicknameLabel.text = SendBirdCall.currentUser?.nickname ?? ""
+        //nicknameLabel.text = "User ID: \(room.createdBy)"
     }
 }

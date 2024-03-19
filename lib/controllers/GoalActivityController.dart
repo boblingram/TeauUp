@@ -474,8 +474,16 @@ class GoalActivityController extends GetxController {
 
     //instructions
     //THis is a comma Separated String
-    if(initialActivityModel.instrFile != null){
-      selectedFileList = initialActivityModel.instrFile.split(',').map((item) => item.trim()).toList();
+    print("Instructions received are ${initialActivityModel.instrFile.toString().isEmpty}");
+    if(initialActivityModel.instrFile.toString().isNotEmpty){
+      try{
+        selectedFileList = initialActivityModel.instrFile.split(',').map((item) => item.trim()).toList();
+      }catch(onError, stacktrace){
+        print("Failed to split the file into , separated $onError, Stacktrace is $stacktrace");
+        selectedFileList = [];
+      }
+    }else{
+      selectedFileList = [];
     }
     update();
   }

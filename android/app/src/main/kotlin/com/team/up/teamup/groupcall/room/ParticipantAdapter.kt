@@ -133,9 +133,14 @@ class ParticipantAdapter(
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(participant: Participant) {
             val context = binding.root.context
-            val userId = String.format(
+            /*val userId = String.format(
                 context.getString(R.string.user_id_template),
                 participant.user.userId
+            )*/
+
+            val userId = String.format(
+                context.getString(R.string.user_id_template),
+                participant.user.nickname
             )
 
             binding.participantTextViewUserId.text = userId

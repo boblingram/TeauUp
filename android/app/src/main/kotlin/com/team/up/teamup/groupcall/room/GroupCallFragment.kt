@@ -198,7 +198,8 @@ class GroupCallFragment : Fragment() {
     }
 
     private fun showNewlyCreatedRoomInfo(roomId: String) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_room_creation, null)
+        //Show the share room id dialog
+        /*val dialogView = layoutInflater.inflate(R.layout.dialog_room_creation, null)
         val dialog = AlertDialog.Builder(context)
             .setView(dialogView)
             .create()
@@ -213,6 +214,6 @@ class GroupCallFragment : Fragment() {
             activity?.showToast(getString(R.string.group_call_copied))
         }
 
-        dialog.show()
+        dialog.show()*/
     }
 }

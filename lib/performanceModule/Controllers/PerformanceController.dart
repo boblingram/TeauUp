@@ -82,10 +82,16 @@ class PerformanceController extends GetxController{
     fetchLeaderboardList();
   }
 
+  void refreshPerformanceList(){
+    GraphQLService.tempWAClient.resetStore(refetchQueries: false);
+    fetchMyPerformance();
+  }
+
   void fetchLeaderboardList()async{
     //Graphql
-    final query = gql('''query MyQuery {
-  leaderBoard(goalId:"1") {
+    //Testing userId: "0efcc320-219d-44bb-a5d9-4206bc809c20"
+    final query = '''query MyQuery {
+  leaderBoard(goalId:"", userId: "$userID") {
      FNLN
      id
     userId
@@ -93,9 +99,10 @@ class PerformanceController extends GetxController{
     sevenDayStats
     thirtyDayStats
   }
-}''');
+}''';
     updateLeaderboardNetworkEnum(NetworkCallEnum.Loading);
-    var result = await GraphQLService.makeGraphQLRequest(QueryOptions( document: query));
+    //print("Leaderboard Query is ${query}");
+    var result = await GraphQLService.makeGraphQLRequest(QueryOptions( document: gql(query)));
     //It can have exception or data
     //log(result.data.toString());
     json.encode(result.data);
@@ -107,10 +114,37 @@ class PerformanceController extends GetxController{
     }
     var leaderList = LeardboardListModel.fromJson(result.data!);
     leaderboardList.value = leaderList.leaderBoard;
+    //leaderboardList.value = leaderBoards;
     print("Length of List is ${leaderList.leaderBoard.length}");
     updateLeaderboardNetworkEnum(NetworkCallEnum.Completed);
-
   }
+
+  List<LeaderBoard> leaderBoards = [
+    LeaderBoard(
+        fnln: "John Doe",
+        id: "1",
+        allTimeStats: [50, 30, 20],
+        sevenDayStats: [10, 10, 10],
+        thirtyDayStats: [20, 10, 10],
+        userId: "1",
+        goalId: "1"),
+    LeaderBoard(
+        fnln: "Jane Smith",
+        id: "2",
+        allTimeStats: [60, 20, 10],
+        sevenDayStats: [5, 5, 100],
+        thirtyDayStats: [15, 5, 5],
+        userId: "2",
+        goalId: "2"),
+    LeaderBoard(
+        fnln: "Alice Johnson",
+        id: "3",
+        allTimeStats: [40, 25, 15],
+        sevenDayStats: [18, 8, 70],
+        thirtyDayStats: [18, 78, 8],
+        userId: "3",
+        goalId: "3"),
+  ];
 
 
   Future<LeaderboardItemExpansionModel?> fetchExpansionValue(String userId) async{
@@ -220,6 +254,10 @@ class PerformanceController extends GetxController{
 
   void updateLatestBadge(){
     //It's String
+    print("value of Earned badges is ${earnedBadges.value}");
+    if(earnedBadges.isEmpty){
+      return;
+    }
     var latestBadgeId = earnedBadges.value.last;
     var result = totalBadges.firstWhereOrNull((element){
       if(element is PerformanceModel.Badge){
@@ -231,6 +269,7 @@ class PerformanceController extends GetxController{
     if(result != null && result is PerformanceModel.Badge){
       latestBadgeName.value = (result as PerformanceModel.Badge).name;
     }else{
+      latestBadgeName.value = "None";
       print("Update Latest Badge is Nil");
     }
   }
@@ -255,11 +294,28 @@ class PerformanceController extends GetxController{
         }
       }
     });
-    //print("Length Of List 1 is ${badgesEarnedList.length} Length Of List 2 is ${badgesLeftList.length}");
+    print("Length Of List Earned is ${badgesEarnedList.length} Length Of List empty is ${badgesLeftList.length}");
   }
 
   void updateTimelineFilter(TimelineFilter temp){
     timelineFilter.value = temp;
+    switch(temp){
+      case TimelineFilter.SEVENDAYS:
+        leaderboardList.value.sort((b, a) => a.sevenDayStats[0].compareTo(b.sevenDayStats[0]));
+        print("Leaderboard list ${leaderboardList}");
+        update();
+        break;
+      case TimelineFilter.THIRTYDAYS:
+        leaderboardList.value.sort((b, a) => a.thirtyDayStats[0].compareTo(b.thirtyDayStats[0]));
+        print("Leaderboard list ${leaderboardList}");
+        update();
+        break;
+      case TimelineFilter.ALLTIME:
+        leaderboardList.value.sort((b, a) => a.allTimeStats[0].compareTo(b.allTimeStats[0]));
+        print("Leaderboard list ${leaderboardList}");
+        update();
+        break;
+    }
   }
 
   void hamburgerPressed() {

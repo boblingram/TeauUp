@@ -196,8 +196,8 @@ class VEGoalController extends GetxController {
 
   void getJourneyData({String localGoalId = "", String? newUserId}) async {
     String queryData = "";
-    //Testing purpose
-    //userId = "7abb22f3-9520-468a-beb1-9903d253d088";
+    //TODO - Revert Testing purpose
+    //userId = "2e1a8f17-fde1-4cb7-9e81-41afb6c9f9ad";
     if (localGoalId.isEmpty) {
       queryData = '''query MyQuery {
   userJourney(userId: "$userId") {
@@ -842,21 +842,23 @@ class VEGoalController extends GetxController {
     }
 
     DateTime updateTempDate = DateTime.tryParse(tempDate) ?? currentDateTime;
-    if (updateTempDate.isAfter(currentDateTime)) {
-      return JourneyStatus.Upcoming;
-    }
 
     var tempString = tempStatus.toString().trim().toLowerCase();
-    if (tempString == "completed") {
+    //print("Journey Status is ${tempString}");
+    if (tempString == "completed" || tempString == "complete") {
       return JourneyStatus.Success;
     } else if (tempString == "skipped") {
       return JourneyStatus.Failed;
-    } else if (tempString != "completed" &&
+    } else if ((tempString != "completed" || tempString != "complete") &&
         updateTempDate.isBefore(currentDateTime)) {
       return JourneyStatus.Overdue;
-    } else {
+    } else if (updateTempDate.isAfter(currentDateTime)) {
+      return JourneyStatus.Upcoming;
+    }
+      else {
       return JourneyStatus.Failed;
     }
+
   }
 
   void updateActivityModel(IndividualGoalActivityModel activityModel) {

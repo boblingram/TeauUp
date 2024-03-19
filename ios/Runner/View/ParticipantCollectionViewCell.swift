@@ -34,7 +34,8 @@ class ParticipantCollectionViewCell: UICollectionViewCell {
     }
     
     func updateView(with participant: Participant) {
-        userIdLabel.text = "User ID: \(participant.user.userId)"
+        userIdLabel.text = "\(participant.user.nickname)"
+        //userIdLabel.text = "User ID: \(participant.user.userId)"
         audioMutedImageView.isHidden = participant.isAudioEnabled
         profileImageView.isHidden = participant.isVideoEnabled
         profileImageBackgroundView.isHidden = participant.isVideoEnabled

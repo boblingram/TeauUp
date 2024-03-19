@@ -101,8 +101,11 @@ class _Journey_ViewState extends State<Journey_View> {
                         print("Date Difference is ${dateDifference.inDays}");
 
                         var isLastItem = (index + 1) ==
+                            veGoalController.journeyGoalList.length;
+
+                        var isLastItemLabel = (index + 1) ==
                             veGoalController.journeyGoalList.length && dateDifference.inDays > 45;
-                        print("Last Item");
+
 
                         if (veGoalController.checkJDate(
                             veGoalController.currentDateTime, newDate)) {
@@ -182,6 +185,7 @@ class _Journey_ViewState extends State<Journey_View> {
                               section.toLowerCase() == "today",
                           showDate: showJourneyDate,
                           showLastItem: isLastItem,
+                          showLastItemLabel: isLastItemLabel,
                           timeText: veGoalController
                               .convertJTimeToTimeText(item.time),
                           dateText: veGoalController
@@ -224,6 +228,7 @@ class IndividualJourneyItemWidget extends StatelessWidget {
   final String taskId;
   final int rowIndex;
   final bool showLastItem;
+  final bool showLastItemLabel;
 
   IndividualJourneyItemWidget(
       {super.key,
@@ -240,6 +245,7 @@ class IndividualJourneyItemWidget extends StatelessWidget {
       this.dateSortedText = "",
       this.taskId = "",
       this.isDateBold = false,
+        this.showLastItemLabel = false,
       required this.rowIndex});
 
   final VEGoalController veGoalController = Get.find();
@@ -407,7 +413,7 @@ class IndividualJourneyItemWidget extends StatelessWidget {
               //Name Description with Mark as Complete and Skip it
               Expanded(
                   flex: 6,
-                  child: showLastItem ? Column(
+                  child: showLastItemLabel ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(

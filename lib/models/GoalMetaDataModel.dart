@@ -114,7 +114,7 @@ class UserGoalInfo{
     backup: json["backup"],
     createdByName: json["createdByName"],
     createdBy: json["createdBy"],
-    members: List<UserMentorData>.from(
+    members: json["members"] == null ? null :List<UserMentorData>.from(
         json["members"]
             .map((x) => UserMentorData.fromJson(x)))
   );

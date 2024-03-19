@@ -61,7 +61,7 @@ class _HomeViewState extends State<HomeView> with BaseClass {
         pageTitle.value = "Performance";
         return Sizer(
             builder: (context, orientation, deviceType) {
-              return PerformanceView();
+              return PerformanceView(refreshScreen: true);
             }
         );
       default:

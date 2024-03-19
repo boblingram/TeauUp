@@ -30,8 +30,9 @@ class RoomInfoFragment : Fragment() {
 
     private fun initView() {
         binding.fragmentRoomInfoTextViewRoomId.text = args.roomId
+        //println("SendBird Nick name is ${SendBirdCall.currentUser?.nickname}");
         binding.fragmentRoomInfoTextViewCreatedBy.text =
-            SendBirdCall.getCachedRoomById(args.roomId)?.createdBy ?: ""
+            SendBirdCall.currentUser?.nickname ?: SendBirdCall.getCachedRoomById(args.roomId)?.createdBy ?: ""
         binding.roomInfoImageViewLeftArrow.setOnClickListener {
             findNavController().navigateUp()
         }

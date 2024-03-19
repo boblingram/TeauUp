@@ -1,5 +1,5 @@
 //Data Type Value if null is received
-const STRINGD = "N/A";
+const STRINGD = "None";
 const INTD = 0;
 const DOUBLED = 0.0;
 const kISTesting = true;

@@ -137,7 +137,7 @@ class GoalCompare {
   factory GoalCompare.fromJson(Map<String, dynamic> json) => GoalCompare(
     activityCompleted: json["activityCompleted"],
     activityNotComplete: json["activityNotComplete"],
-    goalName: json["goalName"] ?? "N/A",
+    goalName: json["goalName"] ?? "None",
     updatedDt: json["updatedDt"],
     userId: json["userId"],
     id: json["id"],

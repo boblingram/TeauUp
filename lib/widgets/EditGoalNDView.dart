@@ -133,7 +133,7 @@ class _EditGoalNDViewState extends State<EditGoalNDView> {
             backgroundColor: isNextAllowed.value
                 ? widget.selectedColor
                 : Colors.grey,
-            text: "Next",
+            text: "Save",
             leftMargin: 0,
             rightMargin: 0,
             topMargin: 20,

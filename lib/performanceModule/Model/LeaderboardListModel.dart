@@ -63,4 +63,9 @@ class LeaderBoard {
     "userId": userId,
     "goalId": goalId,
   };
+
+  @override
+  String toString() {
+    return "Name $fnln";
+  }
 }

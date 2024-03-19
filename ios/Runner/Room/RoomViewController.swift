@@ -42,10 +42,12 @@ class RoomViewController: UIViewController, RoomDataSource {
         
         setupAudioOutputButton()
         configureMediaButtons()
-        
+ 
+        /*
+        //Show the share room id dialog
         if room.createdBy == room.localParticipant?.user.userId {
             performSegue(withIdentifier: "shareRoomId", sender: nil)
-        }
+        }*/
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }

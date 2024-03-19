@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
@@ -9,7 +9,8 @@ import 'LeaderboardView.dart';
 import 'MyPerformanceView.dart';
 
 class PerformanceView extends StatefulWidget {
-  const PerformanceView({Key? key}) : super(key: key);
+  final bool refreshScreen;
+  PerformanceView({Key? key, required this.refreshScreen}) : super(key: key);
 
   @override
   State<PerformanceView> createState() => _PerformanceViewState();
@@ -34,6 +35,10 @@ class _PerformanceViewState extends State<PerformanceView> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    if(widget.refreshScreen){
+      performanceController.refreshLeaderboardList();
+      performanceController.refreshPerformanceList();
+    }
     return Scaffold(
       /*appBar: AppBar(
         backgroundColor: Colors.white,

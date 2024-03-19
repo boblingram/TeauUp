@@ -19,7 +19,8 @@ class Constants{
   static String VIDEOCALLSTARTFUNC = 'video_call_start_function';
   static String VIDEOCALLJOINFUNC = 'video_call_join_function';
 
-  static bool isConnectLocalTesting = true;
+  //TODo when Deploying then make it false
+  static bool isConnectLocalTesting = false;
   //static String loginSendBirdUserId = "Dr Rajan-6a764cf8-98ff-48e2-b158-9c201a3c4551";
   static String loginSendBirdUserId = "Viv18Nov6-24c63baa-d589-494a-9969-8deb599ae4ef";
   //static String testingUserId2 = 'Viv18Nov6-24c63baa-d589-494a-9969-8deb599ae4ef';

@@ -17,11 +17,11 @@ class BadgeWidget extends StatelessWidget {
       children: [
         Text("Badges Earned"),
         SizedBox(height: 1.3.h,),
-        SizedBadgedList(badgeList: performanceController.badgesEarnedList),
+        Obx(()=>performanceController.badgesEarnedList.isEmpty ? Text("None") : SizedBadgedList(badgeList: performanceController.badgesEarnedList)),
         SizedBox(height: 1.7.h,),
         Text("Badges Left"),
         SizedBox(height: 1.3.h,),
-        SizedBadgedList(badgeList: performanceController.badgesLeftList),
+        Obx(()=>SizedBadgedList(badgeList: performanceController.badgesLeftList.value)),
       ],
     );
   }
