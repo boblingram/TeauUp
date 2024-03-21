@@ -1,10 +1,12 @@
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:country_picker/country_picker.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:teamup/controllers/RootController.dart';
 import 'package:teamup/mixins/baseClass.dart';
@@ -29,6 +31,19 @@ class _RegisterViewState extends State<RegisterView> with BaseClass {
 
   var phoneCode = "91".obs;
 
+  String _getCountryCode(BuildContext context) {
+    var countryCode = PlatformDispatcher.instance.locale.countryCode;
+    switch((countryCode ?? "").toLowerCase()){
+      case "in":phoneCode.value = "91";break;
+      case "us":phoneCode.value = "1";break;
+      case "fr":phoneCode.value = "33";break;
+      case "ru":phoneCode.value = "7";break;
+    }
+    //final List<Locale> systemLocales = WidgetsBinding.instance.window.locales;
+    //print("Local Code is ${systemLocales.first.countryCode} Local Code is ${}");
+    return countryCode ?? "";
+  }
+
   @override
   void dispose() {
     nameController.dispose();
@@ -37,6 +52,7 @@ class _RegisterViewState extends State<RegisterView> with BaseClass {
   }
 
   void postUIBuild() async {
+    _getCountryCode(context);
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (GetPlatform.isAndroid) {
       var androidResult = await deviceInfo.androidInfo;

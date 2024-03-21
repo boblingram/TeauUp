@@ -36,7 +36,7 @@ class ConnectController extends GetxController{
     if(Constants.isConnectLocalTesting){
       userId = Constants.loginSendBirdUserId;
     }else{
-      userId = "${userName}-${userId}";
+      userId = "$userId";
     }
     localSendBirdUserId = userId;
     try {
