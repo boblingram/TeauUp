@@ -16,13 +16,15 @@ class Journey_View extends StatefulWidget {
   final String goalId;
   final String? participantId;
   final bool showJourney;
+  final bool refreshScreen;
 
   const Journey_View(
       {super.key,
       this.isGoalTab = false,
       this.goalId = "",
       this.participantId,
-      this.showJourney = true});
+      this.showJourney = true,
+      this.refreshScreen = false});
 
   @override
   State<Journey_View> createState() => _Journey_ViewState();
@@ -46,10 +48,10 @@ class _Journey_ViewState extends State<Journey_View> {
     });
   }
 
-  void postUIBuild() {
+  void postUIBuild({bool cleanCache = false}) {
     if (widget.showJourney) {
       veGoalController.getJourneyData(
-          localGoalId: widget.goalId, newUserId: widget.participantId);
+          localGoalId: widget.goalId, newUserId: widget.participantId,cleanCache: cleanCache);
     } else {
       veGoalController.restrictedJourneyAccess();
     }
@@ -61,6 +63,10 @@ class _Journey_ViewState extends State<Journey_View> {
     String currentSection = "";
     DateTime? upcomingDate;
     bool hasUpcomingDateAssigned = false;
+
+    if(widget.refreshScreen){
+      postUIBuild(cleanCache: true);
+    }
 
     return Container(
         child: GetBuilder<VEGoalController>(builder: (veGoalController) {
@@ -81,6 +87,7 @@ class _Journey_ViewState extends State<Journey_View> {
                             veGoalController.journeyGoalList.elementAt(index);
                         DateTime newDate = DateTime.tryParse(item.date) ??
                             veGoalController.currentDateTime;
+                        print("NewDate is ${newDate.isUtc}");
                         if (index == 0) {
                           showJourneyDate = true;
                         } else {

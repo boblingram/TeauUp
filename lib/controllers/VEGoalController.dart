@@ -164,7 +164,7 @@ class VEGoalController extends GetxController {
 
     try {
       var updateTime = DateTime.tryParse(tempValue) ?? currentDateTime;
-      return DateFormat('EEE').format(updateTime);
+      return DateFormat('EEE').format(updateTime.toLocal());
     } catch (onError) {
       print("VEC - Convert JDate - Day Failed $onError");
       return AppStrings.defaultEndDate;
@@ -177,7 +177,7 @@ class VEGoalController extends GetxController {
     }
     try {
       var updateTime = DateTime.tryParse(tempValue) ?? currentDateTime;
-      return DateFormat('h:mm a').format(updateTime);
+      return DateFormat('h:mm a').format(updateTime.toLocal());
     } catch (onError) {
       print("VEC - Convert JTime - Time Failed $onError");
       return AppStrings.defaultTimeValue;
@@ -194,7 +194,7 @@ class VEGoalController extends GetxController {
     update();
   }
 
-  void getJourneyData({String localGoalId = "", String? newUserId}) async {
+  void getJourneyData({String localGoalId = "", String? newUserId, bool cleanCache = false}) async {
     String queryData = "";
     //Revert Testing purpose
     //userId = "2e1a8f17-fde1-4cb7-9e81-41afb6c9f9ad";
@@ -238,6 +238,9 @@ class VEGoalController extends GetxController {
 
     var query = gql(queryData);
     //showPLoader();
+    if(cleanCache){
+      GraphQLService.tempWAClient.resetStore(refetchQueries: false);
+    }
 
     updateJouneyNetworkEnum(NetworkCallEnum.Loading);
     /*var result = await GraphQLService.tempClient
@@ -246,7 +249,7 @@ class VEGoalController extends GetxController {
         await GraphQLService.makeGraphQLRequest(QueryOptions(document: query));
     //var result = await graphqlClient.query(QueryOptions(document: gql(mutation)));
     //It can have exception or data
-    //log(result.data.toString());
+    log(result.data.toString());
     //json.encode(result.data);
     //Hide Progress Bar
     //hidePLoader();
@@ -419,6 +422,7 @@ class VEGoalController extends GetxController {
     id
     name
     desc
+    type
   }
 }
 """);

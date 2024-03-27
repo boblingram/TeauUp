@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -30,6 +32,7 @@ class ChannelListViewState extends State<ChannelListView>
       return [];
     }
   }
+
   @override
   void initState() {
     super.initState();
@@ -78,6 +81,7 @@ class ChannelListViewState extends State<ChannelListView>
       body: body(context),
     );
   }
+
   PreferredSizeWidget navigationBar() {
     return AppBar(
       automaticallyImplyLeading: true,
@@ -109,20 +113,24 @@ class ChannelListViewState extends State<ChannelListView>
         if (snapshot.hasData == false || snapshot.data == null) {
           // Nothing to display yet - good place for a loading indicator
           return Container(
-            width: 100.w,
+              width: 100.w,
               color: Colors.white,
               height: 100.h,
               child: ListLoadingWidget());
         }
 
-        if(snapshot.data!.isEmpty){
+        if (snapshot.data!.isEmpty) {
           return Container(
-            color:Colors.white,
+            color: Colors.white,
             width: 100.w,
             padding: EdgeInsets.fromLTRB(0, 10.h, 0, 0),
             child: Column(
               children: [
-                Image.asset(AppImages.noConversationImage,width: 50.w,height: 50.w,),
+                Image.asset(
+                  AppImages.noConversationImage,
+                  width: 50.w,
+                  height: 50.w,
+                ),
                 Text("You do not have any conversation yet.")
               ],
             ),
@@ -137,21 +145,31 @@ class ChannelListViewState extends State<ChannelListView>
               itemCount: channels.length,
               itemBuilder: (context, index) {
                 GroupChannel channel = channels[index];
-                print("Time is ${channel.lastMessage?.createdAt}");
                 String timeAgoText = "";
-                if(channel.lastMessage?.createdAt != null){
-                  var tempDate = DateTime.fromMillisecondsSinceEpoch(channel.lastMessage?.createdAt ?? 0);
+                if (channel.lastMessage?.createdAt != null) {
+                  var tempDate = DateTime.fromMillisecondsSinceEpoch(
+                      channel.lastMessage?.createdAt ?? 0);
                   timeAgoText = timeago.format(tempDate);
                 }
-
-                //channel.getMetaData(keys)
-                var channelGoalType = channel.getMetaData(['goaltype']);
+                var goalType = "Teamup";
+                try {
+                  var channelDataDecode = json.decode(channel.data ?? "");
+                  goalType = channelDataDecode["goaltype"] ?? "Teamup";
+                } catch (onError) {
+                  print("failed to decode the goaltype from channel $onError");
+                }
+                print(
+                    "Channel Goal Type is ${channel.data} and goal type is $goalType");
+                //Json goal Type
+                //channel.data
+                //Remove this - channel.getMetaData(keys)
+                /*var channelGoalType = channel.getMetaData(['goaltype']);
                 if (channelGoalType.runtimeType != String || channelGoalType.toString().isEmpty){
                 }
-
                 print("Channel Goal Type is ${channelGoalType} and Channel name is ${channel.name}");
+                */
                 return InkWell(
-                  onTap: (){
+                  onTap: () {
                     gotoChannel(channel.channelUrl);
                   },
                   child: Container(
@@ -159,46 +177,88 @@ class ChannelListViewState extends State<ChannelListView>
                     child: Column(
                       children: [
                         Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              height: 12.w,
-                              width: 12.w,
-                              child: Image.asset(GoalIconandColorStatic.getImageName("Teamup")),
+                          children: [
+                            Expanded(
+                                flex: 1,
+                                child: goalType == "Teamup"
+                                    ? Container(
+                                        height: 12.w,
+                                        width: 12.w,
+                                        child: Image.asset(
+                                            GoalIconandColorStatic.getImageName(
+                                                goalType.trim())),
+                                      )
+                                    : Container(
+                                        height: 11.w,
+                                        width: 11.w,
+                                        decoration: BoxDecoration(
+                                          color: HexColor(GoalIconandColorStatic
+                                              .getColorName(goalType)),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(1.w),
+                                          child: Image.asset(
+                                              GoalIconandColorStatic
+                                                  .getImageName(goalType)),
+                                        ),
+                                      )),
+                            const SizedBox(
+                              width: 8,
                             ),
-                          ),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          Expanded(
-                            flex: 5,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 2.h,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    //channel.getMetaData(keys) - goaltype is key name
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(channel.name ?? ([for (final member in channel.members) member.nickname]
-                                          .join(", ")),maxLines: 1,style: TextStyle(fontWeight: FontWeight.w500,fontSize: 14.sp),),
-                                    ),
-                                    Expanded(flex: 1,child: Text(timeAgoText,textAlign: TextAlign.right,))
-                                  ],
-                                ),
-                                SizedBox(height: 1.h,),
-                                Text(channel.lastMessage?.message ?? ''),
-                              ],
+                            Expanded(
+                              flex: 5,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 2.h,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      //channel.getMetaData(keys) - goaltype is key name
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          channel.name ??
+                                              ([
+                                                for (final member
+                                                    in channel.members)
+                                                  member.nickname
+                                              ].join(", ")),
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 14.sp),
+                                        ),
+                                      ),
+                                      Expanded(
+                                          flex: 1,
+                                          child: Text(
+                                            timeAgoText,
+                                            textAlign: TextAlign.right,
+                                          ))
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 1.h,
+                                  ),
+                                  Text(channel.lastMessage?.message ?? ''),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                  ),
-                        Container(height: 1,color: Colors.grey.shade300,margin: EdgeInsets.fromLTRB(17.w, 1.h, 0, 3),)
+                          ],
+                        ),
+                        Container(
+                          height: 1,
+                          color: Colors.grey.shade300,
+                          margin: EdgeInsets.fromLTRB(17.w, 1.h, 0, 3),
+                        )
                       ],
-                    ),),
+                    ),
+                  ),
                 );
 
                 return ListTile(
@@ -220,11 +280,10 @@ class ChannelListViewState extends State<ChannelListView>
   }
 
   void gotoChannel(String channelUrl) {
-
     print("Channel URL is $channelUrl");
     //Navigate to Chat View
     GroupChannel.getChannel(channelUrl).then((channel) {
-      Get.to(()=>GroupChannelView(groupChannel: channel));
+      Get.to(() => GroupChannelView(groupChannel: channel));
       /*Navigator.pushNamed(context, '/channel_list');
       Navigator.push(
         context,
@@ -237,6 +296,4 @@ class ChannelListViewState extends State<ChannelListView>
       print('channel_list_view: gotoChannel: ERROR: $e');
     });
   }
-
-
 }

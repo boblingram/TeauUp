@@ -178,14 +178,19 @@ class _OnBoardingPageState extends State<OnBoardingPage> with BaseClass {
                                     ),
                                   ),
                                   child: Center(
-                                    child: Text(
-                                      currentIndex == 1
-                                          ? AppStrings.next
-                                          : AppStrings.letsStart,
-                                      style: GoogleFonts.poppins(
-                                        color: AppColors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w400,
+                                    child: Padding(
+                                      padding:  EdgeInsets.symmetric(horizontal: 5.0),
+                                      child: Text(
+                                        currentIndex == 1
+                                            ? AppStrings.next
+                                            : AppStrings.letsStart,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.poppins(
+                                          color: AppColors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
                                     ),
                                   ),

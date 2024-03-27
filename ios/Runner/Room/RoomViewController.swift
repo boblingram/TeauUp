@@ -72,6 +72,12 @@ class RoomViewController: UIViewController, RoomDataSource {
     
     @IBAction func didTapExitButton(_ sender: UIButton) {
         try? room.exit()
+        
+        let controller = FlutterBinaryManager.shared.getFlutterEngine()
+        let channel = FlutterMethodChannel(name: "video_call_method_channel", binaryMessenger: controller)
+        
+        channel.invokeMethod("end_video_call", arguments: ["roomId":"\(room.roomId)"])
+        
         //This is for Join View Controller as present view controller needs to be ended
         // Assuming you are in a view controller that was presented
         if let presentingVC = presentingViewController {

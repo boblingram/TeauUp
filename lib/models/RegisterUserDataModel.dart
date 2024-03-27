@@ -18,15 +18,18 @@ class RegisterUserDataModel {
 class RegisterUser {
   AuthToken authToken;
   User user;
+  bool isNewUser;
 
   RegisterUser({
     required this.authToken,
     required this.user,
+    required this.isNewUser
   });
 
   factory RegisterUser.fromJson(Map<String, dynamic> json) => RegisterUser(
     authToken: AuthToken.fromJson(json["authToken"]),
     user: User.fromJson(json["user"]),
+    isNewUser: json["isNewUser"] == null ? false : json["isNewUser"]
   );
 
   Map<String, dynamic> toJson() => {

@@ -113,6 +113,7 @@ class RootController extends GetxController{
       JWTString
       authKey
     }
+    isNewUser
     user {
       id
       ph
@@ -141,6 +142,10 @@ class RootController extends GetxController{
     localStorage.write(AppStrings.localAuthkeyValue, registerUserDataModel.registerUser.authToken.authKey);
     jwtToken = registerUserDataModel.registerUser.authToken.jwtString.toString();
     localStorage.write(AppStrings.localClientNameValue, name);
+    if(!registerUserDataModel.registerUser.isNewUser){
+      navigateToHomeView(milliseconds: 0);
+      return;
+    }
     navigateToOnBoardingPage();
     return;
   }

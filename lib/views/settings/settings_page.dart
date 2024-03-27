@@ -246,7 +246,7 @@ class SettingsPage extends StatelessWidget with BaseClass {
               TermsBottomSheet().termsBottomSheet(
                   context: context,
                   title: "Terms & Conditions",
-                  data: AppStrings.dummyData,
+                  data: AppStrings.termsData,
                   onCloseClick: () {
                     popToPreviousScreen(context: context);
                   });
@@ -264,7 +264,7 @@ class SettingsPage extends StatelessWidget with BaseClass {
               PrivacyPolicyBottomSheet().privacyBottomSheet(
                   context: context,
                   title: "Privacy Policy",
-                  data: AppStrings.dummyData,
+                  data: AppStrings.privacyData,
                   onCloseClick: () {
                     popToPreviousScreen(context: context);
                   });

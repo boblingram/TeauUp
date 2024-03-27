@@ -95,15 +95,16 @@ class _RegisterViewState extends State<RegisterView> with BaseClass {
       appBar: AppBar(
         backgroundColor: Colors.red,
       ),
-      body: Container(
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(),
-              flex: 2,
-            ),
-            Expanded(
-              child: Container(
+      body: SingleChildScrollView(
+        child: Container(
+          color: Colors.white,
+          child: Column(
+            children: [
+              Container(
+                color: Colors.white,
+                height: 30.h,
+              ),
+              Container(
                 padding: EdgeInsets.fromLTRB(5.w, 0, 5.w, 0),
                 child: SingleChildScrollView(
                   child: Column(
@@ -210,10 +211,7 @@ class _RegisterViewState extends State<RegisterView> with BaseClass {
                   ),
                 ),
               ),
-              flex: 4,
-            ),
-            Expanded(
-              child: Text.rich(
+              Text.rich(
                 TextSpan(
                   children: [
                     TextSpan(text: 'By Signing up you agree to the '),
@@ -234,9 +232,9 @@ class _RegisterViewState extends State<RegisterView> with BaseClass {
                 ),
                 textAlign: TextAlign.center,
               ),
-              flex: 1,
-            )
-          ],
+              Container(height: 70.h,color: Colors.white,)
+            ],
+          ),
         ),
       ),
     );

@@ -73,7 +73,17 @@ class ConnectController extends GetxController{
             print("Failed to parse the roomId");
           }
           break;
+        case "end_video_call":
+          log("End Video Call Function Called");
+          try{
+            var roomId = call.arguments["roomId"];
+            sendEndVideoCallMessage(roomId);
+          }catch(onError,stacktrace){
+            print("Failed to parse the roomId");
+          }
+          break;
         default:
+          log("Method Invoke Default Function Called");
       }
 
     });
@@ -151,6 +161,16 @@ class ConnectController extends GetxController{
   void sendVideoCallMessage(String roomId){
     if(groupChannel != null){
       UserMessageParams userMessageParams = UserMessageParams(message: "$globalUserName has started a video call. Click to join the video room",data: roomId);
+      var userMessage = groupChannel!.sendUserMessage(userMessageParams);
+      messages.insert(0,userMessage);
+      update();
+    }
+  }
+
+  //Click to send End Video call message
+  void sendEndVideoCallMessage(String roomId){
+    if(groupChannel != null){
+      UserMessageParams userMessageParams = UserMessageParams(message: "$globalUserName left the call.",data: roomId);
       var userMessage = groupChannel!.sendUserMessage(userMessageParams);
       messages.insert(0,userMessage);
       update();

@@ -68,7 +68,7 @@ class FaqBottomSheet {
                   ),
                   Expanded(
                       child: ListView.builder(
-                          itemCount: 5,
+                          itemCount: AppStrings.questionFAQ.length,
                           shrinkWrap: true,
                           itemBuilder: (BuildContext context, int index) {
                             return ExpansionTile(
@@ -78,7 +78,7 @@ class FaqBottomSheet {
                               childrenPadding: const EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 10),
                               title: Text(
-                                "What is team up",
+                                "${index+1}. ${AppStrings.questionFAQ.elementAt(index)}",
                                 style: GoogleFonts.roboto(
                                   color: Colors.black,
                                   fontSize: 16,
@@ -87,7 +87,7 @@ class FaqBottomSheet {
                               ),
                               children: [
                                 Text(
-                                  AppStrings.dummyData,
+                                  AppStrings.answersFAQ.elementAt(index),
                                   style: GoogleFonts.roboto(
                                     color: Colors.black,
                                     fontSize: 14,

@@ -12,6 +12,9 @@ import SendBirdCalls
       
       let controller = window?.rootViewController as! FlutterViewController
       let channel = FlutterMethodChannel(name: "video_call_method_channel", binaryMessenger: controller.binaryMessenger)
+      
+      FlutterBinaryManager.shared.initFlutterEngine(tempFlutterMessenger: controller.binaryMessenger)
+      
       channel.setMethodCallHandler { [weak self] (call, result) in
           
           switch(call.method){
@@ -140,3 +143,4 @@ import SendBirdCalls
     }
     
 }
+

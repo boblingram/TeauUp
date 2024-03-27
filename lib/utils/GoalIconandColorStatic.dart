@@ -66,8 +66,8 @@ class GoalIconandColorStatic{
     }
   }
 
-  static String getImageName(String elementAt) {
-    switch (elementAt) {
+  static String getImageName(String element) {
+    switch (element) {
       case "Wellness":
         return AppImages.wellnessIcon;
       case "Walking":

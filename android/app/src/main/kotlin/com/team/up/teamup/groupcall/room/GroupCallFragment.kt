@@ -2,6 +2,7 @@ package com.team.up.teamup.groupcall.room
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,17 +15,21 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.sendbird.calls.AudioDevice
 import com.sendbird.calls.SendBirdCall
+import com.team.up.teamup.FlutterEngineManager
 import com.team.up.teamup.R
 import com.team.up.teamup.databinding.FragmentGroupCallBinding
 import com.team.up.teamup.groupcall.util.Status
 import com.team.up.teamup.groupcall.util.copyText
 import com.team.up.teamup.groupcall.util.showToast
 import com.team.up.teamup.groupcall.util.toReadableString
+import io.flutter.plugin.common.MethodChannel
 
 class GroupCallFragment : Fragment() {
+    private val CHANNEL = "video_call_method_channel"
     lateinit var binding: FragmentGroupCallBinding
     lateinit var viewModel: GroupCallViewModel
     private var isNewlyCreatedRoomInfoShown = false
+    lateinit var globalRoomId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +50,7 @@ class GroupCallFragment : Fragment() {
     }
 
     private fun initView(roomId: String) {
+        globalRoomId = roomId;
         val room = SendBirdCall.getCachedRoomById(roomId)
 
         // views
@@ -125,6 +131,16 @@ class GroupCallFragment : Fragment() {
         }
 
         viewModel.isExited.observe(viewLifecycleOwner) {
+            val flutterEngine = FlutterEngineManager.getFlutterEngine()
+            flutterEngine.dartExecutor.binaryMessenger.let {
+                try {
+                    var roomSendArgument = mapOf("roomId" to globalRoomId)
+                    MethodChannel(it, CHANNEL).invokeMethod("end_video_call", roomSendArgument)
+                } catch (e: Exception) {
+                    Log.d("MethodChannel", "Error invoking method: ${e.message}")
+                }
+            }
+
             if (it.status == Status.SUCCESS) {
                 activity?.finish()
             } else {

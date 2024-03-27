@@ -40,7 +40,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
   @override
   void initState() {
     super.initState();
-    controller = TabController(length: 3, vsync: this);
+    controller = TabController(length: 2, vsync: this);
 
     veGoalController.updateGoalId(widget.userGoalPerInfo.goalInfo.id.toString());
     veGoalController.updateUserGoalPerInfo(widget.userGoalPerInfo);
@@ -215,9 +215,6 @@ class _GoalDetailPageState extends State<GoalDetailPage>
                           ),
                           Tab(
                             text: "Participants",
-                          ),
-                          Tab(
-                            text: "Journey",
                           ),
                           //  Tab(icon: Icon(Icons.directions_bike)),
                         ],

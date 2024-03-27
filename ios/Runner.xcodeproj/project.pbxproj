@@ -34,6 +34,7 @@
 		C046D77B2B57F5E000A70563 /* RoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D77A2B57F5E000A70563 /* RoomViewController.swift */; };
 		C046D77D2B57F5E400A70563 /* RoomInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D77C2B57F5E400A70563 /* RoomInformationViewController.swift */; };
 		C046D77F2B57F5E800A70563 /* ParticipantsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C046D77E2B57F5E700A70563 /* ParticipantsViewController.swift */; };
+		C047DECE2BB3FD26003094BF /* FlutterBinaryMessageSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C047DECD2BB3FD26003094BF /* FlutterBinaryMessageSingleton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +98,7 @@
 		C046D77A2B57F5E000A70563 /* RoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomViewController.swift; sourceTree = "<group>"; };
 		C046D77C2B57F5E400A70563 /* RoomInformationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomInformationViewController.swift; sourceTree = "<group>"; };
 		C046D77E2B57F5E700A70563 /* ParticipantsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantsViewController.swift; sourceTree = "<group>"; };
+		C047DECD2BB3FD26003094BF /* FlutterBinaryMessageSingleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlutterBinaryMessageSingleton.swift; sourceTree = "<group>"; };
 		C0E51D812AAAF6200052DF2D /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		C94A039702BF7C81FBED7519 /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
 		CBE7C43676F4DAF925D944AB /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				C046D75C2B57F34700A70563 /* ApplicationInfoViewController.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				C046D7522B57EEA200A70563 /* FlutterCommunicationVideoCall.swift */,
+				C047DECD2BB3FD26003094BF /* FlutterBinaryMessageSingleton.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -473,6 +476,7 @@
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				C046D77B2B57F5E000A70563 /* RoomViewController.swift in Sources */,
 				C046D7532B57EEA200A70563 /* FlutterCommunicationVideoCall.swift in Sources */,
+				C047DECE2BB3FD26003094BF /* FlutterBinaryMessageSingleton.swift in Sources */,
 				C046D7662B57F37800A70563 /* FlowLayout.swift in Sources */,
 				C046D7572B57F31900A70563 /* MainViewController.swift in Sources */,
 			);

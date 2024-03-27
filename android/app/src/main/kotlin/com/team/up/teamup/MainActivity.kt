@@ -1,5 +1,6 @@
 package com.team.up.teamup
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -55,6 +56,7 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        FlutterEngineManager.initFlutterEngine(flutterEngine)
         observeViewModel();
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
@@ -255,3 +257,17 @@ class MainActivity : FlutterActivity() {
         }
     }
 }
+
+
+object FlutterEngineManager {
+    private var flutterEngine: FlutterEngine? = null
+
+    fun initFlutterEngine(tempFlutterEngine: FlutterEngine) {
+        flutterEngine = tempFlutterEngine
+    }
+
+    fun getFlutterEngine(): FlutterEngine {
+        return flutterEngine ?: throw IllegalStateException("FlutterEngine is not initialized. Call initFlutterEngine() first.")
+    }
+}
+

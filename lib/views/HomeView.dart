@@ -53,7 +53,7 @@ class _HomeViewState extends State<HomeView> with BaseClass {
         return GoalView();
       case 1:
         pageTitle.value = "Journey";
-        return Journey_View();
+        return Journey_View(refreshScreen: true,);
       case 3:
         pageTitle.value = "Connect";
         return ChannelListView();
@@ -104,9 +104,7 @@ class _HomeViewState extends State<HomeView> with BaseClass {
           IconButton(
             onPressed: (){
               veGoalController.showNotifDot.value = false;
-              connectController.startVideoCall();
-              //TODO Reactivate the same
-              //Get.to(()=>NotificationView());
+              Get.to(()=>NotificationView());
             },
             icon: Stack(
               alignment: Alignment.topRight,

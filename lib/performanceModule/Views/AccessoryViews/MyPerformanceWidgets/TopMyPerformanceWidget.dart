@@ -31,17 +31,17 @@ class TopPerformanceWidget extends StatelessWidget {
         border: Border.all(color: Colors.grey[300] ?? Colors.grey),
         borderRadius: BorderRadius.circular(5),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(icon,color: Colors.red,),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Icon(icon,color: Colors.red,),
               Text(topText,style: TextStyle(fontSize: 15.sp),),
-              SizedBox(height: 5,),
-              Text(bottomText,style: TextStyle(fontSize: 12.sp),)
-            ],)
+            ],),
+          SizedBox(height: 5,),
+          Text(bottomText,style: TextStyle(fontSize: 12.sp),)
         ],
       ),
     );
