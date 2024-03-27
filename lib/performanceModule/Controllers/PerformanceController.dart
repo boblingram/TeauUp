@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:teamup/controllers/VEGoalController.dart';
 import 'package:teamup/utils/Enums.dart';
 import '../../utils/Constants.dart';
 import '../../utils/GraphQLService.dart';
@@ -63,6 +64,9 @@ class PerformanceController extends GetxController{
 
   final localStorage = GetStorage();
 
+  final goalDropDownList = <DropdownMenuItem>[].obs;
+  final selectedGoal = "";
+
   @override
   void onInit() {
     super.onInit();
@@ -77,9 +81,9 @@ class PerformanceController extends GetxController{
     leaderboardNetworkEnum.value = temp;
   }
 
-  void refreshLeaderboardList(){
+  void refreshLeaderboardList({String goalId = ""}){
     GraphQLService.tempWAClient.resetStore(refetchQueries: false);
-    fetchLeaderboardList();
+    fetchLeaderboardList(goalId: goalId);
   }
 
   void refreshPerformanceList(){
@@ -87,11 +91,11 @@ class PerformanceController extends GetxController{
     fetchMyPerformance();
   }
 
-  void fetchLeaderboardList()async{
+  void fetchLeaderboardList({String goalId = ""})async{
     //Graphql
     //Testing userId: "0efcc320-219d-44bb-a5d9-4206bc809c20"
     final query = '''query MyQuery {
-  leaderBoard(goalId:"", userId: "$userID") {
+  leaderBoard(goalId:"$goalId", userId: "$userID") {
      FNLN
      id
     userId
@@ -324,6 +328,25 @@ class PerformanceController extends GetxController{
 
   void notificationPressed() {
     print("Notification Pressed");
+  }
+
+  void fetchGoals() {
+    try{
+      VEGoalController veGoalController = Get.find();
+      //Map the activegoallist to dropdown
+      goalDropDownList.clear();
+      veGoalController.activeGoalList?.forEach((keyData) {
+        goalDropDownList.add(DropdownMenuItem(
+          child: Text(
+            keyData.goalInfo.name.toString(),
+          ),
+          value: keyData.goalInfo.id.toString(),
+        ));
+      });
+    }catch(onError, stacktrace){
+      print("Fetching Goals in Performance Controller Error $onError, Stacktrace $stacktrace");
+    }
+
   }
 
 }

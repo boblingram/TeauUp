@@ -30,6 +30,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
 
   void uiBuildingIsDone() {
     performanceController.fetchLeaderboardList();
+    performanceController.fetchGoals();
   }
 
   @override
@@ -44,6 +45,31 @@ class _LeaderboardViewState extends State<LeaderboardView> {
               margin: EdgeInsets.fromLTRB(0, 5, 0, 8),
               color: Colors.grey.withOpacity(0.3),
             ),
+          Obx(()=>Padding(
+            padding: const EdgeInsets.fromLTRB(0, 5, 0, 15),
+            child: DropdownButtonFormField<dynamic>(
+                hint: Text("Select Goal"),
+                isExpanded: true,
+                focusColor: Colors.grey.shade300,
+                value: performanceController.selectedGoal.isEmpty ? null : performanceController.selectedGoal,
+                decoration: InputDecoration(
+                    labelText: "Select Goal", //label text of field
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(color: Colors.grey.shade300)
+                    ),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(color: Colors.grey.shade300)
+                  ),
+                ),
+                items: performanceController.goalDropDownList.value,
+                onChanged: (var value) async {
+                  //Fetch the Data of leaderboard according the list goal id selected
+                  print("Selected Value is ${value}");
+                  performanceController.fetchLeaderboardList(goalId: value);
+                }),
+          )),
             Row(
               children: [
                 TimeLineWidget(
@@ -104,6 +130,7 @@ class CompletedLeaderboardList extends StatelessWidget {
         : RefreshIndicator(
             onRefresh: () async {
               performanceController.refreshLeaderboardList();
+              performanceController.fetchGoals();
             },
             color: Colors.red,
             child: GetBuilder<PerformanceController>(
