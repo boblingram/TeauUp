@@ -631,7 +631,7 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 
   String errorText = "Please try again!";
 
-  Future<bool> validationOfAddActivity({Color? selectedColor}) async {
+  Future<bool> validationOfAddActivity({Color? selectedColor, String? editedGoalId}) async {
     bool shouldContinue = true;
     if (isReminderToggleOn &&
         (initialActivityModel.reminder == null ||
@@ -716,17 +716,19 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
       errorText = "";
     }
 
-    return await initiateCreateActivityMutation(selectedColor: selectedColor);
+    return await initiateCreateActivityMutation(selectedColor: selectedColor,editedGoalId: editedGoalId);
   }
 
-  Future<bool> initiateCreateActivityMutation({Color? selectedColor}) async {
+  Future<bool> initiateCreateActivityMutation({Color? selectedColor, String? editedGoalId}) async {
     String instructionFiles = "";
     if (selectedFileList.isNotEmpty) {
       instructionFiles = selectedFileList.join(",");
     }
     print("Instructed Files is $instructionFiles");
-    var mutation = gql(
-        '''mutation MyMutation( \$customDay: [String] = ${json.encode(initialActivityModel.customDay)}, \$monthDay: [String] = ${json.encode(initialActivityModel.monthDay)}, \$weekDay: [String] = ${json.encode(initialActivityModel.weekDay)}) {
+    var mutation;
+    if(editedGoalId == null || editedGoalId.isEmpty){
+      mutation = gql(
+          '''mutation MyMutation( \$customDay: [String] = ${json.encode(initialActivityModel.customDay)}, \$monthDay: [String] = ${json.encode(initialActivityModel.monthDay)}, \$weekDay: [String] = ${json.encode(initialActivityModel.weekDay)}) {
   addGoalActivity(activity: {customDay: \$customDay, desc: "${initialActivityModel.desc}", 
   duration: "${initialActivityModel.duration.toString()}", endDt: "${initialActivityModel.endDt}", 
   freq: "${initialActivityModel.freq}", monthDay: \$monthDay, 
@@ -755,7 +757,38 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
 
 }
 ''');
+    }else{
+      mutation = gql(
+          '''mutation MyMutation( \$customDay: [String] = ${json.encode(initialActivityModel.customDay)}, \$monthDay: [String] = ${json.encode(initialActivityModel.monthDay)}, \$weekDay: [String] = ${json.encode(initialActivityModel.weekDay)}) {
+  addGoalActivity(activity: {customDay: \$customDay, desc: "${initialActivityModel.desc}", 
+  duration: "${initialActivityModel.duration.toString()}", endDt: "${initialActivityModel.endDt}", 
+  freq: "${initialActivityModel.freq}", monthDay: \$monthDay, 
+  name: "${initialActivityModel.name}", reminder: "${initialActivityModel.reminder}", 
+  time: "${initialActivityModel.time}", weekDay: \$weekDay, instrFile : "${instructionFiles.toString()}"}, goalId: "$editedGoalId") {
+    customDay
+    desc
+    duration
+    endDt
+    freq
+    id
+    monthDay
+    name
+    reminder
+    time
+    weekDay
+    instrFile
+  }
+  postNotification(notice: {frm: "1", to: "1", msg: "A new activity ${initialActivityModel.name} has been assigned to your goal $newGoalName", status: "NEW", type: "New activity added"}) {
+    createdDt
+    id
+    msg
+    status
+    type
+  }
 
+}
+''');
+    }
     print("Mutation called is ${mutation.toString()}");
 
     showPLoader();
@@ -1090,6 +1123,10 @@ mutation MyMutation(\$activities: [String] = [], \$members: [GoalMemberIP] = [])
         break;
       case GoalCreatedSuccessPageEnum.GoalCreateActivityPage:
         Get.close(3);
+        break;
+      case GoalCreatedSuccessPageEnum.GoalDetailpage:
+        Get.close(1);
+        return;
         break;
     }
 

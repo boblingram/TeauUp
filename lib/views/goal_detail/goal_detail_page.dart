@@ -42,7 +42,7 @@ class _GoalDetailPageState extends State<GoalDetailPage>
     super.initState();
     controller = TabController(length: 2, vsync: this);
 
-    veGoalController.updateGoalId(widget.userGoalPerInfo.goalInfo.id.toString());
+    veGoalController.updateGoalId(widget.userGoalPerInfo.goalInfo.id.toString(),widget.userGoalPerInfo.goalInfo.type.toString());
     veGoalController.updateUserGoalPerInfo(widget.userGoalPerInfo);
     veGoalController.updateSelectedItemIndex(widget.itemIndex);
 

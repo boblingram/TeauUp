@@ -20,6 +20,7 @@ import 'package:teamup/utils/app_colors.dart';
 import 'package:teamup/utils/app_integers.dart';
 import 'package:teamup/utils/app_strings.dart';
 import 'package:teamup/utils/json_constants.dart';
+import 'package:teamup/views/add_goals/create_goal_activities/create_goal_activities_page.dart';
 import 'package:teamup/views/journey_views/journey_view.dart';
 import 'package:teamup/widgets/EditGoalActivityView.dart';
 
@@ -38,6 +39,7 @@ class VEGoalController extends GetxController {
   var showNotifDot = false.obs;
 
   String goalId = "";
+  String goalType = "";
   UserGoalPerInfo? userGoalPerInfo;
   var selectedGoalListIndex = 0;
 
@@ -64,8 +66,9 @@ class VEGoalController extends GetxController {
     print("UserId is $userId");
   }
 
-  void updateGoalId(String tempId) {
+  void updateGoalId(String tempId, String tempType) {
     goalId = tempId;
+    goalType = tempType;
   }
 
   //Make All the Queries and Mutation here
@@ -1231,5 +1234,13 @@ setMemberMentor(goalId: "$goalId", memberId: "$memberID", mentorId: "$mentorID")
   void refreshJourneyData({required String localGoalId, String? newUserId}) {
     GraphQLService.tempWAClient.resetStore(refetchQueries: false);
     getJourneyData(localGoalId: localGoalId, newUserId: newUserId);
+  }
+
+  void addMoreActivity() async{
+    print("Add More Activity is Pressed");
+    print("Name of Goal is ${goalType}");
+    await Get.to(()=>CreateGoalActivities(selectedGoal: goalType,isFromGoalDetail: true,editedGoalId: goalId,));
+    //Refresh this list
+    refreshGoalActivityList();
   }
 }

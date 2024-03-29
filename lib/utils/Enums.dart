@@ -23,5 +23,6 @@ enum NotificationMutationEnum{
 
 enum GoalCreatedSuccessPageEnum{
   GoalSuccessPage,
-  GoalCreateActivityPage
+  GoalCreateActivityPage,
+  GoalDetailpage,
 }

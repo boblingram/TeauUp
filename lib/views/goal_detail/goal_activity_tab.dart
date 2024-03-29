@@ -27,6 +27,13 @@ class GoalActivityTabPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      floatingActionButton: isEditingEnabled ? FloatingActionButton(
+        onPressed: () {
+          veGoalController.addMoreActivity();
+        },
+        child: Icon(Icons.add),
+        backgroundColor: HexColor(GoalIconandColorStatic.getColorName(localGoalType)),
+      ) : null,
       bottomNavigationBar: isEditingEnabled
           ? Container(
               height: 5.h,

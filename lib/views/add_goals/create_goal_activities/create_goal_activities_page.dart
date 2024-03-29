@@ -8,6 +8,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:sizer/sizer.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:teamup/mixins/baseClass.dart';
+import 'package:teamup/utils/Enums.dart';
 import 'package:teamup/utils/GoalIconandColorStatic.dart';
 import 'package:teamup/utils/app_colors.dart';
 import 'package:teamup/utils/app_integers.dart';
@@ -25,8 +26,10 @@ import '../invite_to_goal_page.dart';
 
 class CreateGoalActivities extends StatefulWidget {
   final String selectedGoal;
+  final bool isFromGoalDetail;
+  final String? editedGoalId;
 
-  const CreateGoalActivities({super.key, required this.selectedGoal});
+  const CreateGoalActivities({super.key, required this.selectedGoal, this.isFromGoalDetail = false, this.editedGoalId});
 
   @override
   State<CreateGoalActivities> createState() => _CreateGoalActivitiesState();
@@ -93,8 +96,13 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                   children: [
                     CreateGoalMetaDataView(
                       onPressed: () {
-                        activityGC.closeGoalActivity();
+                        if(widget.isFromGoalDetail){
+                          activityGC.resetCreateGoalAndActivity(GoalCreatedSuccessPageEnum.GoalDetailpage);
+                        }else{
+                          activityGC.closeGoalActivity();
+                        }
                       },
+                      hideSlider: widget.isFromGoalDetail,
                       sliderText: "3/4",
                       sliderValue: 80,
                       sliderColor: HexColor(AppColors.sliderColor),
@@ -833,7 +841,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                                   .trim());
                               var response =
                                   await activityGC.validationOfAddActivity(
-                                      selectedColor: selectionColor);
+                                      selectedColor: selectionColor, editedGoalId: widget.editedGoalId);
                               if (!response) {
                                 showError(
                                     title: "Error",
@@ -874,7 +882,7 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                           ),
                           RoundedEdgeButton(
                               backgroundColor: selectionColor,
-                              text: "Next",
+                              text: widget.isFromGoalDetail ? "Save" : "Next",
                               leftMargin: 0,
                               buttonRadius: 10,
                               rightMargin: 0,
@@ -882,6 +890,34 @@ class _CreateGoalActivitiesState extends State<CreateGoalActivities>
                               bottomMargin: 20,
                               onPressed: () async {
                                 _focusNode.unfocus();
+                                if(widget.isFromGoalDetail && activityGC.successfullyCreatedActivityList.isNotEmpty){
+                                  activityGC.resetCreateGoalAndActivity(GoalCreatedSuccessPageEnum.GoalDetailpage);
+                                  return;
+                                }else if (widget.isFromGoalDetail){
+                                  //Single Adding case
+                                  if (activityGC.activityNameController.text
+                                      .trim()
+                                      .isEmpty) {
+                                    showError(
+                                        title: "Empty",
+                                        message: "Please add activity name");
+                                    return;
+                                  }
+                                  activityGC.updateActivityName(activityGC
+                                      .activityNameController.text
+                                      .trim());
+                                  var response =
+                                  await activityGC.validationOfAddActivity(
+                                      selectedColor: selectionColor,editedGoalId: widget.editedGoalId);
+                                  if (!response) {
+                                    showError(
+                                        title: "Error",
+                                        message: activityGC.errorText);
+                                    return;
+                                  }
+                                  activityGC.resetCreateGoalAndActivity(GoalCreatedSuccessPageEnum.GoalDetailpage);
+                                  return;
+                                }
                                 if (activityGC.successfullyCreatedActivityList
                                     .isNotEmpty) {
                                   pushToNextScreen(

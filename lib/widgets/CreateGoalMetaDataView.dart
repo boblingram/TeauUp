@@ -15,6 +15,7 @@ class CreateGoalMetaDataView extends StatelessWidget {
   final bool showWelcome;
   final String welcomeName;
   final bool showBack;
+  final bool hideSlider;
   final String? containerBackgroundColor;
 
   const CreateGoalMetaDataView(
@@ -27,6 +28,7 @@ class CreateGoalMetaDataView extends StatelessWidget {
       this.sliderText = "",
       this.sliderColor = Colors.black,
       this.showWelcome = false,
+        this.hideSlider = false,
       this.welcomeName = "", this.containerBackgroundColor});
 
   @override
@@ -61,12 +63,12 @@ class CreateGoalMetaDataView extends StatelessWidget {
               : SizedBox(
                   height: 11.h,
                 ),
-          SliderWidget(
+          hideSlider ? Container() : SliderWidget(
             sliderValue: sliderValue,
             sliderText: sliderText,
             sliderColor: sliderColor,
           ),
-          SizedBox(
+          hideSlider ? Container() : SizedBox(
             height: 2.h,
           ),
           Text(
